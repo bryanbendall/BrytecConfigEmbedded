@@ -1,5 +1,22 @@
 #include "ENode.h"
 #include "Nodes/EAndNode.h"
+#include "Nodes/ECanBusNode.h"
+#include "Nodes/ECompareNode.h"
+#include "Nodes/ECurveNode.h"
+#include "Nodes/EDelayNode.h"
+#include "Nodes/EFinalValueNode.h"
+#include "Nodes/EInitialValueNode.h"
+#include "Nodes/EInvertNode.h"
+#include "Nodes/EMapValueNode.h"
+#include "Nodes/EMathNode.h"
+#include "Nodes/ENodeGroupNode.h"
+#include "Nodes/EOnOffNode.h"
+#include "Nodes/EOrNode.h"
+#include "Nodes/EPushButtonNode.h"
+#include "Nodes/ESwitchNode.h"
+#include "Nodes/EToggleNode.h"
+#include "Nodes/ETwoStageNode.h"
+#include "Nodes/EValueNode.h"
 #include <new>
 
 bool ToBool(float& f)
@@ -22,22 +39,22 @@ ENode* ENode::create(NodeTypes type, void* ptr)
 }
 
 const uint32_t ENode::m_sizes[] = {
-    sizeof(int), // Final_Value = 0,
-    sizeof(int), // Initial_Value,
-    sizeof(int), // Node_Group, // TODO
+    sizeof(EFinalValueNode),
+    sizeof(EInitialValueNode),
+    sizeof(ENodeGroupNode),
     sizeof(EAndNode),
-    sizeof(int), // Or,
-    sizeof(int), // Two_Stage,
-    sizeof(int), // Curve,
-    sizeof(int), // Compare,
-    sizeof(int), // On_Off,
-    sizeof(int), // Invert,
-    sizeof(int), // Toggle,
-    sizeof(int), // Delay,
-    sizeof(int), // Push_Button,
-    sizeof(int), // Map_Value,
-    sizeof(int), // Math,
-    sizeof(int), // Value,
-    sizeof(int), // Switch,
-    sizeof(int), // CanBus,
+    sizeof(EOrNode),
+    sizeof(ETwoStageNode),
+    sizeof(ECurveNode),
+    sizeof(ECompareNode),
+    sizeof(EOnOffNode),
+    sizeof(EInvertNode),
+    sizeof(EToggleNode),
+    sizeof(EDelayNode),
+    sizeof(EPushButtonNode),
+    sizeof(EMapValueNode),
+    sizeof(EMathNode),
+    sizeof(EValueNode),
+    sizeof(ESwitchNode),
+    sizeof(ECanBusNode),
 };
