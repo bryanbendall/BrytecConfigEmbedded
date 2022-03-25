@@ -54,6 +54,6 @@ public:
     virtual uint32_t Size() = 0;
 
 protected:
-    NodeInputMask m_pinMask;
+    NodeInputMask m_mask;
     static const uint32_t m_sizes[(size_t)NodeTypes::Count];
 };
