@@ -1,12 +1,13 @@
 #pragma once
 
-#include "NodeVariant.h"
 #include "Nodes.h"
+#include "Nodes/ENode.h"
 #include <stddef.h>
 
 namespace Embedded {
 
-template <size_t SIZE>
+#define SIZE 1000
+// template <size_t SIZE>
 class NodesVector {
 
 public:
@@ -14,73 +15,54 @@ public:
 
     bool add(NodeTypes type)
     {
-        if (m_size >= MAX_ELEMENTS)
+        void* nextData = &m_nodeData[m_dataNextIndex];
+
+        if ((m_dataNextIndex + ENode::getSize(type)) > SIZE)
             return false;
 
-        m_nodeTypes[m_size] = type;
-
-        float* nextData = &m_nodeData[m_dataNextIndex];
-        NodeVariant var(type, nextData);
-
-        if ((m_dataNextIndex + var.getSize()) > MAX_DATA)
-            return false;
-
-        var.initalizeData();
+        ENode::create(type, nextData);
         m_size++;
-        m_dataNextIndex += var.getSize();
+        m_dataNextIndex += ENode::getSize(type);
         return true;
     }
 
-    NodeVariant at(uint32_t index)
+    ENode* at(uint32_t index)
     {
         if (index >= m_size)
-            return NodeVariant(NodeTypes::Count, nullptr);
+            return nullptr;
 
         uint32_t nodeDataIndex = 0;
         for (uint32_t indexCount = 0; indexCount < index; indexCount++) {
-            NodeVariant var(m_nodeTypes[indexCount], &m_nodeData[nodeDataIndex]);
-            nodeDataIndex += var.getSize();
+            ENode* node = (ENode*)m_nodeData[indexCount];
+            nodeDataIndex += node->Size();
         }
 
-        NodeVariant out(m_nodeTypes[index], &m_nodeData[nodeDataIndex]);
-
-        return out;
-    }
-
-    NodeInputMask& getMask(uint32_t index)
-    {
-        return m_masks[index];
+        return (ENode*)m_nodeData[nodeDataIndex];
     }
 
     void setValue(uint32_t nodeIndex, uint8_t inputIndex, float value)
     {
-        at(nodeIndex).setValue(inputIndex, getMask(nodeIndex), value);
+        at(nodeIndex)->SetValue(inputIndex, value);
     }
 
     void setInput(uint32_t nodeIndex, uint8_t inputIndex, uint32_t connectedNodeIndex, uint8_t outputIndex = 0)
     {
-        at(nodeIndex).setInput(inputIndex, getMask(nodeIndex), at(connectedNodeIndex).getOutput(outputIndex));
+        at(nodeIndex)->SetInput(inputIndex, at(connectedNodeIndex)->GetOutput(outputIndex));
     }
 
     void evaluateAll(float timestep)
     {
         uint32_t nodeDataIndex = 0;
         for (uint32_t indexCount = 0; indexCount < m_size; indexCount++) {
-            NodeVariant var(m_nodeTypes[indexCount], &m_nodeData[nodeDataIndex]);
-            var.evaluate(m_masks[indexCount], timestep);
-            nodeDataIndex += var.getSize();
+            ENode* node = (ENode*)m_nodeData[indexCount];
+            node->Evaluate(timestep);
+            nodeDataIndex += node->Size();
         }
     }
 
 private:
-    // Array max sizes
-    static constexpr size_t MAX_ELEMENTS = SIZE / 4;
-    static constexpr size_t MAX_DATA = SIZE - MAX_ELEMENTS;
-
     // Data
-    NodeTypes m_nodeTypes[MAX_ELEMENTS] = {};
-    NodeInputMask m_masks[MAX_ELEMENTS] = {};
-    float m_nodeData[MAX_DATA] = {};
+    uint8_t m_nodeData[SIZE] = {};
 
     // Vector states
     uint32_t m_size = 0;

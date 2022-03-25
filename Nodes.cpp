@@ -2,16 +2,6 @@
 
 #include <math.h>
 
-namespace Embedded {
-
-bool ToBool(float& f)
-{
-    if (f >= 0.0001f)
-        return true;
-    else
-        return false;
-}
-
 void InitalValueNode::SetInput(uint8_t index, NodeInputMask& mask, float* output)
 {
     if (index == 0)
@@ -63,86 +53,86 @@ void FinalValueNode::Evaluate(NodeInputMask& mask, float timestep)
     // Nothing to do
 }
 
-void AndNode::SetInput(uint8_t index, NodeInputMask& mask, float* output)
-{
-    switch (index) {
-    case 0:
-        m_in1.pointer = output;
-        mask.setPointer(index);
-        break;
-    case 1:
-        m_in2.pointer = output;
-        mask.setPointer(index);
-        break;
-    case 2:
-        m_in3.pointer = output;
-        mask.setPointer(index);
-        break;
-    case 3:
-        m_in4.pointer = output;
-        mask.setPointer(index);
-        break;
-    case 4:
-        m_in5.pointer = output;
-        mask.setPointer(index);
-        break;
-    }
-}
+// void AndNode::SetInput(uint8_t index, NodeInputMask& mask, float* output)
+// {
+//     switch (index) {
+//     case 0:
+//         m_in1.pointer = output;
+//         mask.setPointer(index);
+//         break;
+//     case 1:
+//         m_in2.pointer = output;
+//         mask.setPointer(index);
+//         break;
+//     case 2:
+//         m_in3.pointer = output;
+//         mask.setPointer(index);
+//         break;
+//     case 3:
+//         m_in4.pointer = output;
+//         mask.setPointer(index);
+//         break;
+//     case 4:
+//         m_in5.pointer = output;
+//         mask.setPointer(index);
+//         break;
+//     }
+// }
 
-void AndNode::SetValue(uint8_t index, NodeInputMask& mask, float value)
-{
-    switch (index) {
-    case 0:
-        m_in1.value = value;
-        mask.setValue(index);
-        break;
-    case 1:
-        m_in2.value = value;
-        mask.setValue(index);
-        break;
-    case 2:
-        m_in3.value = value;
-        mask.setValue(index);
-        break;
-    case 3:
-        m_in4.value = value;
-        mask.setValue(index);
-        break;
-    case 4:
-        m_in5.value = value;
-        mask.setValue(index);
-        break;
-    }
-}
+// void AndNode::SetValue(uint8_t index, NodeInputMask& mask, float value)
+// {
+//     switch (index) {
+//     case 0:
+//         m_in1.value = value;
+//         mask.setValue(index);
+//         break;
+//     case 1:
+//         m_in2.value = value;
+//         mask.setValue(index);
+//         break;
+//     case 2:
+//         m_in3.value = value;
+//         mask.setValue(index);
+//         break;
+//     case 3:
+//         m_in4.value = value;
+//         mask.setValue(index);
+//         break;
+//     case 4:
+//         m_in5.value = value;
+//         mask.setValue(index);
+//         break;
+//     }
+// }
 
-float* AndNode::GetOutput(uint8_t index)
-{
-    return index == 0 ? &m_out : nullptr;
-}
+// float* AndNode::GetOutput(uint8_t index)
+// {
+//     return index == 0 ? &m_out : nullptr;
+// }
 
-void AndNode::Evaluate(NodeInputMask& mask, float timestep)
-{
-    bool in1 = ToBool(mask.isPointer(0) ? *m_in1.pointer : m_in1.value);
-    bool in2 = ToBool(mask.isPointer(1) ? *m_in2.pointer : m_in2.value);
-    bool in3 = ToBool(mask.isPointer(2) ? *m_in3.pointer : m_in3.value);
-    bool in4 = ToBool(mask.isPointer(3) ? *m_in4.pointer : m_in4.value);
-    bool in5 = ToBool(mask.isPointer(4) ? *m_in5.pointer : m_in5.value);
+// void AndNode::Evaluate(NodeInputMask& mask, float timestep)
+// {
+//     bool in1 = ToBool(mask.isPointer(0) ? *m_in1.pointer : m_in1.value);
+//     bool in2 = ToBool(mask.isPointer(1) ? *m_in2.pointer : m_in2.value);
+//     bool in3 = ToBool(mask.isPointer(2) ? *m_in3.pointer : m_in3.value);
+//     bool in4 = ToBool(mask.isPointer(3) ? *m_in4.pointer : m_in4.value);
+//     bool in5 = ToBool(mask.isPointer(4) ? *m_in5.pointer : m_in5.value);
 
-    m_out = 0.0f;
+//     m_out = 0.0f;
 
-    if (!in1)
-        return;
-    if (!in2)
-        return;
-    if (!in3)
-        return;
-    if (!in4)
-        return;
-    if (!in5)
-        return;
+//     if (!in1)
+//         return;
+//     if (!in2)
+//         return;
+//     if (!in3)
+//         return;
+//     if (!in4)
+//         return;
+//     if (!in5)
+//         return;
 
-    m_out = 1.0f;
-}
+//     m_out = 1.0f;
+// }
 
 void OrNode::SetInput(uint8_t index, NodeInputMask& mask, float* output)
 {
@@ -973,4 +963,19 @@ void NodeGroupNode::Evaluate(NodeInputMask& mask, float timestep)
         m_out = 0.0f;
 }
 
+void CanBusNode::SetInput(uint8_t index, NodeInputMask& mask, float* output)
+{
+}
+
+void CanBusNode::SetValue(uint8_t index, NodeInputMask& mask, float value)
+{
+}
+
+float* CanBusNode::GetOutput(uint8_t index)
+{
+    return &id;
+}
+
+void CanBusNode::Evaluate(NodeInputMask& mask, float timestep)
+{
 }
