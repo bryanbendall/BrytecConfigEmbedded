@@ -15,4 +15,6 @@ private:
     InputOrValue m_in;
     InputOrValue m_lastValue;
     float m_out;
+
+    friend class ToggleNode;
 };

@@ -18,4 +18,6 @@ private:
     InputOrValue m_toMin;
     InputOrValue m_toMax;
     float m_out;
+
+    friend class MapValueNode;
 };

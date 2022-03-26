@@ -14,4 +14,6 @@ public:
 private:
     InputOrValue m_in;
     float m_out;
+
+    friend class InvertNode;
 };

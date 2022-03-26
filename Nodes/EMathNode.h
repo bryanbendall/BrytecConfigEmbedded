@@ -11,7 +11,6 @@ public:
     void Evaluate(float timestep) override;
     uint32_t Size() override { return sizeof(EMathNode); };
 
-private:
     enum class Types : uint8_t {
         Add,
         Subtract,
@@ -19,8 +18,12 @@ private:
         Divide,
         Count
     };
+
+private:
     InputOrValue m_input1;
     InputOrValue m_input2;
     InputOrValue m_mathType;
     float m_out;
+
+    friend class MathNode;
 };

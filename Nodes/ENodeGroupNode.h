@@ -14,4 +14,6 @@ public:
 private:
     InputOrValue m_rawData;
     float m_out;
+
+    friend class NodeGroupNode;
 };

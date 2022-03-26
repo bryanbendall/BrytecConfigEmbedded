@@ -18,4 +18,6 @@ private:
     InputOrValue m_lastButtonState;
     float m_ignitionOut;
     float m_starterOut;
+
+    friend class PushButtonNode;
 };

@@ -11,7 +11,6 @@ public:
     void Evaluate(float timestep) override;
     uint32_t Size() override { return sizeof(ECurveNode); };
 
-private:
     enum class Types : uint8_t {
         Toggle,
         Linear,
@@ -19,10 +18,14 @@ private:
         Breathing,
         Count
     };
+
+private:
     InputOrValue m_in;
     InputOrValue m_repeat;
     InputOrValue m_timeout;
     InputOrValue m_curveType;
     InputOrValue m_timerCounter;
     float m_out;
+
+    friend class CurveNode;
 };

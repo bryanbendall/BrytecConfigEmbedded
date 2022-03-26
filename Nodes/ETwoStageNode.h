@@ -17,4 +17,6 @@ private:
     InputOrValue m_stage2Trigger;
     InputOrValue m_stage2Percent;
     float m_out;
+
+    friend class TwoStageNode;
 };

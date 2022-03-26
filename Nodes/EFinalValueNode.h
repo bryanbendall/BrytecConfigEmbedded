@@ -13,4 +13,6 @@ public:
 
 private:
     InputOrValue m_in;
+
+    friend class FinalValueNode;
 };

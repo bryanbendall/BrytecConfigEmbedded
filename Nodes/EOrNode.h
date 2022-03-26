@@ -18,4 +18,6 @@ private:
     InputOrValue m_in4;
     InputOrValue m_in5;
     float m_out;
+
+    friend class OrNode;
 };

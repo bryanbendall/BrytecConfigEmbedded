@@ -18,4 +18,6 @@ private:
     InputOrValue m_in4 = { 1.0f };
     InputOrValue m_in5 = { 1.0f };
     float m_out;
+
+    friend class AndNode;
 };

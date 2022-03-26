@@ -16,4 +16,6 @@ private:
     InputOrValue m_input1;
     InputOrValue m_input2;
     float m_out;
+
+    friend class SwitchNode;
 };

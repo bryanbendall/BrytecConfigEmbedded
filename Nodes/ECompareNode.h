@@ -11,7 +11,6 @@ public:
     void Evaluate(float timestep) override;
     uint32_t Size() override { return sizeof(ECompareNode); };
 
-private:
     enum class Types : uint8_t {
         Greater,
         GreaterEqual,
@@ -19,8 +18,12 @@ private:
         LessEqual,
         Count
     };
+
+private:
     InputOrValue m_input1;
     InputOrValue m_input2;
     InputOrValue m_compareType;
     float m_out;
+
+    friend class CompareNode;
 };

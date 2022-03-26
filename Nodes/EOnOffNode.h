@@ -15,4 +15,6 @@ private:
     InputOrValue m_on;
     InputOrValue m_off;
     float m_out;
+
+    friend class OnOffNode;
 };

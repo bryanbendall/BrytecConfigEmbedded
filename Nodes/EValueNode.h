@@ -13,4 +13,6 @@ public:
 
 private:
     float m_out;
+
+    friend class ValueNode;
 };

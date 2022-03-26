@@ -21,4 +21,6 @@ private:
     float data5;
     float data6;
     float data7;
+
+    friend class CanBusNode;
 };
