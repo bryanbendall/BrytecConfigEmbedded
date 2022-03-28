@@ -12,6 +12,8 @@ public:
     uint32_t Size() override { return sizeof(ECompareNode); };
 
     enum class Types : uint8_t {
+        Equal,
+        NotEqual,
         Greater,
         GreaterEqual,
         Less,
@@ -24,6 +26,8 @@ private:
     InputOrValue m_input2;
     InputOrValue m_compareType;
     float m_out;
+
+    const float m_epsilon = 0.0001;
 
     friend class CompareNode;
 };

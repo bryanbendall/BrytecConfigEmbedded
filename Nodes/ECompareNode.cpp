@@ -1,5 +1,7 @@
 #include "ECompareNode.h"
 
+#include <cmath>
+
 void ECompareNode::SetInput(uint8_t index, float* output)
 {
     switch (index) {
@@ -45,6 +47,14 @@ void ECompareNode::Evaluate(float timestep)
 
     m_out = 0.0f;
     switch (compareType) {
+    case Types::Equal:
+        if (fabs(input1 - input2) <= m_epsilon)
+            m_out = 1.0f;
+        break;
+    case Types::NotEqual:
+        if (fabs(input1 - input2) > m_epsilon)
+            m_out = 1.0f;
+        break;
     case Types::Greater:
         if (input1 > input2)
             m_out = 1.0f;
