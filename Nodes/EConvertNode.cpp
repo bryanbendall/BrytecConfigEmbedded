@@ -1,0 +1,17 @@
+#include "EConvertNode.h"
+
+void EConvertNode::SetInput(uint8_t index, float* output)
+{
+}
+
+void EConvertNode::SetValue(uint8_t index, float value)
+{
+}
+
+float* EConvertNode::GetOutput(uint8_t index)
+{
+}
+
+void EConvertNode::Evaluate(float timestep)
+{
+}
