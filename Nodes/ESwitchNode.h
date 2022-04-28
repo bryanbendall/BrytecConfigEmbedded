@@ -12,9 +12,9 @@ public:
     uint32_t Size() override { return sizeof(ESwitchNode); };
 
 private:
-    InputOrValue m_selection;
-    InputOrValue m_input1;
-    InputOrValue m_input2;
+    // InputOrValue m_selection;
+    // InputOrValue m_input1;
+    // InputOrValue m_input2;
     float m_out;
 
     friend class SwitchNode;

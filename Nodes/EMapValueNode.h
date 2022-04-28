@@ -12,11 +12,11 @@ public:
     uint32_t Size() override { return sizeof(EMapValueNode); };
 
 private:
-    InputOrValue m_in;
-    InputOrValue m_fromMin;
-    InputOrValue m_fromMax;
-    InputOrValue m_toMin;
-    InputOrValue m_toMax;
+    // InputOrValue m_in;
+    // InputOrValue m_fromMin;
+    // InputOrValue m_fromMax;
+    // InputOrValue m_toMin;
+    // InputOrValue m_toMax;
     float m_out;
 
     friend class MapValueNode;

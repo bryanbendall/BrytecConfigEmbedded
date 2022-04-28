@@ -1,60 +1,58 @@
 #include "EMathNode.h"
+#include <new>
 
-void EMathNode::SetInput(uint8_t index, float* output)
+ENode* EMathNode::CreateInPlace(EMathNodeSpecification spec, uint8_t* destination)
 {
-    switch (index) {
-    case 0:
-        m_input1.pointer = output;
-        m_mask.setPointer(index);
-        break;
-    case 1:
-        m_input2.pointer = output;
-        m_mask.setPointer(index);
-        break;
+    switch (spec.type) {
+    case MathType::Add:
+        if (spec.input0 == Float && spec.input1 == Float)
+            return new (destination) EMathNodeInternal<MathType::Add, float, float>();
+        if (spec.input0 == Float && spec.input1 == Pointer)
+            return new (destination) EMathNodeInternal<MathType::Add, float, float*>();
+        if (spec.input0 == Pointer && spec.input1 == Float)
+            return new (destination) EMathNodeInternal<MathType::Add, float*, float>();
+        if (spec.input0 == Pointer && spec.input1 == Pointer)
+            return new (destination) EMathNodeInternal<MathType::Add, float*, float*>();
+
+    case MathType::Subtract:
+        if (spec.input0 == Float && spec.input1 == Float)
+            return new (destination) EMathNodeInternal<MathType::Subtract, float, float>();
+        if (spec.input0 == Float && spec.input1 == Pointer)
+            return new (destination) EMathNodeInternal<MathType::Subtract, float, float*>();
+        if (spec.input0 == Pointer && spec.input1 == Float)
+            return new (destination) EMathNodeInternal<MathType::Subtract, float*, float>();
+        if (spec.input0 == Pointer && spec.input1 == Pointer)
+            return new (destination) EMathNodeInternal<MathType::Subtract, float*, float*>();
+
+    case MathType::Multiply:
+        if (spec.input0 == Float && spec.input1 == Float)
+            return new (destination) EMathNodeInternal<MathType::Multiply, float, float>();
+        if (spec.input0 == Float && spec.input1 == Pointer)
+            return new (destination) EMathNodeInternal<MathType::Multiply, float, float*>();
+        if (spec.input0 == Pointer && spec.input1 == Float)
+            return new (destination) EMathNodeInternal<MathType::Multiply, float*, float>();
+        if (spec.input0 == Pointer && spec.input1 == Pointer)
+            return new (destination) EMathNodeInternal<MathType::Multiply, float*, float*>();
+
+    case MathType::Divide:
+        if (spec.input0 == Float && spec.input1 == Float)
+            return new (destination) EMathNodeInternal<MathType::Divide, float, float>();
+        if (spec.input0 == Float && spec.input1 == Pointer)
+            return new (destination) EMathNodeInternal<MathType::Divide, float, float*>();
+        if (spec.input0 == Pointer && spec.input1 == Float)
+            return new (destination) EMathNodeInternal<MathType::Divide, float*, float>();
+        if (spec.input0 == Pointer && spec.input1 == Pointer)
+            return new (destination) EMathNodeInternal<MathType::Divide, float*, float*>();
     }
+
+    return nullptr;
 }
 
-void EMathNode::SetValue(uint8_t index, float value)
+ENode* EMathNode::DeserializeInPlace(BinaryDeserializer& des, uint8_t* destination)
 {
-    switch (index) {
-    case 0:
-        m_input1.value = value;
-        m_mask.setValue(index);
-        break;
-    case 1:
-        m_input2.value = value;
-        m_mask.setValue(index);
-        break;
-    case 2:
-        m_mathType.value = value;
-        m_mask.setValue(index);
-        break;
-    }
-}
-
-float* EMathNode::GetOutput(uint8_t index)
-{
-    return index == 0 ? &m_out : nullptr;
-}
-
-void EMathNode::Evaluate(float timestep)
-{
-    float& input1 = m_mask.isPointer(0) ? *m_input1.pointer : m_input1.value;
-    float& input2 = m_mask.isPointer(1) ? *m_input2.pointer : m_input2.value;
-    Types mathType = (Types)(m_mask.isPointer(2) ? *m_mathType.pointer : m_mathType.value);
-
-    switch (mathType) {
-    case Types::Add:
-        m_out = input1 + input2;
-        break;
-    case Types::Subtract:
-        m_out = input1 - input2;
-        break;
-    case Types::Multiply:
-        m_out = input1 * input2;
-        break;
-    case Types::Divide:
-        m_out = input1 / input2;
-        break;
-    }
+    EMathNodeSpecification spec;
+    spec.type = (MathType)des.readRaw<int>();
+    spec.input0 = (ConnectionType)des.readRaw<int>();
+    spec.input1 = (ConnectionType)des.readRaw<int>();
+    return CreateInPlace(spec, destination);
 }

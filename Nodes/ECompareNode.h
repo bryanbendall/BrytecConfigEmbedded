@@ -1,33 +1,104 @@
 #pragma once
 
 #include "BrytecConfigEmbedded/ENode.h"
+#include "utils/BinarySerializer.h"
+#include <cmath>
+
+enum class CompareType : uint8_t {
+    Equal,
+    NotEqual,
+    Greater,
+    GreaterEqual,
+    Less,
+    LessEqual,
+    Count
+};
+
+struct ECompareNodeSpecification {
+    CompareType type;
+    ConnectionType input0;
+    ConnectionType input1;
+};
 
 class ECompareNode : public ENode {
 
 public:
-    void SetInput(uint8_t index, float* output) override;
-    void SetValue(uint8_t index, float value) override;
-    float* GetOutput(uint8_t index) override;
-    void Evaluate(float timestep) override;
-    uint32_t Size() override { return sizeof(ECompareNode); };
+    static ENode* CreateInPlace(ECompareNodeSpecification spec, uint8_t* destination);
+    static ENode* DeserializeInPlace(BinaryDeserializer& des, uint8_t* destination);
+};
 
-    enum class Types : uint8_t {
-        Equal,
-        NotEqual,
-        Greater,
-        GreaterEqual,
-        Less,
-        LessEqual,
-        Count
-    };
+template <CompareType type, typename Input1_t, typename Input2_t>
+class ECompareNodeInternal : public ECompareNode {
+
+public:
+    void SetInput(uint8_t index, float* output) override
+    {
+        switch (index) {
+        case 0:
+            m_input1.setPointer(output);
+            break;
+        case 1:
+            m_input2.setPointer(output);
+            break;
+        }
+    }
+    void SetValue(uint8_t index, float value) override
+    {
+        switch (index) {
+        case 0:
+            m_input1.setValue(value);
+            break;
+        case 1:
+            m_input2.setValue(value);
+            break;
+        }
+    }
+    float* GetOutput(uint8_t index = 0) override
+    {
+        return &m_out;
+    }
+
+    void Evaluate(float timestep) override
+    {
+        if constexpr (type == CompareType::Equal) {
+            if (fabs(m_input1.getValue() - m_input2.getValue()) <= m_epsilon)
+                m_out = 1.0f;
+        }
+
+        if constexpr (type == CompareType::NotEqual) {
+            if (fabs(m_input1.getValue() - m_input2.getValue()) > m_epsilon)
+                m_out = 1.0f;
+        }
+
+        if constexpr (type == CompareType::Greater) {
+            if (m_input1.getValue() > m_input2.getValue())
+                m_out = 1.0f;
+        }
+
+        if constexpr (type == CompareType::GreaterEqual) {
+            if (m_input1.getValue() >= m_input2.getValue())
+                m_out = 1.0f;
+        }
+
+        if constexpr (type == CompareType::Less) {
+            if (m_input1.getValue() < m_input2.getValue())
+                m_out = 1.0f;
+        }
+
+        if constexpr (type == CompareType::LessEqual) {
+            if (m_input1.getValue() <= m_input2.getValue())
+                m_out = 1.0f;
+        }
+    }
+
+    uint32_t Size() override { return sizeof(*this); }
 
 private:
-    InputOrValue m_input1;
-    InputOrValue m_input2;
-    InputOrValue m_compareType;
+    ValueOrPointer<Input1_t> m_input1;
+    ValueOrPointer<Input2_t> m_input2;
     float m_out;
 
-    const float m_epsilon = 0.0001;
+    static constexpr float m_epsilon = 0.0001;
 
-    friend class CompareNode;
+    friend class MathNode;
 };

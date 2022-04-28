@@ -12,8 +12,8 @@ public:
     uint32_t Size() override { return sizeof(EOnOffNode); };
 
 private:
-    InputOrValue m_on;
-    InputOrValue m_off;
+    // InputOrValue m_on;
+    // InputOrValue m_off;
     float m_out;
 
     friend class OnOffNode;

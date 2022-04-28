@@ -12,9 +12,9 @@ public:
     uint32_t Size() override { return sizeof(EDelayNode); };
 
 private:
-    InputOrValue m_in;
-    InputOrValue m_delayTime;
-    InputOrValue m_counter;
+    // InputOrValue m_in;
+    // InputOrValue m_delayTime;
+    // InputOrValue m_counter;
     float m_out;
 
     friend class DelayNode;

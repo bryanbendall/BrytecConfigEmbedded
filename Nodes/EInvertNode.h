@@ -12,7 +12,7 @@ public:
     uint32_t Size() override { return sizeof(EInvertNode); };
 
 private:
-    InputOrValue m_in;
+    // InputOrValue m_in;
     float m_out;
 
     friend class InvertNode;

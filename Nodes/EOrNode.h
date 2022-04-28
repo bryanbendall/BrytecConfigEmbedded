@@ -12,11 +12,11 @@ public:
     uint32_t Size() override { return sizeof(EOrNode); };
 
 private:
-    InputOrValue m_in1;
-    InputOrValue m_in2;
-    InputOrValue m_in3;
-    InputOrValue m_in4;
-    InputOrValue m_in5;
+    // InputOrValue m_in1;
+    // InputOrValue m_in2;
+    // InputOrValue m_in3;
+    // InputOrValue m_in4;
+    // InputOrValue m_in5;
     float m_out;
 
     friend class OrNode;

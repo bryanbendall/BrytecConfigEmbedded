@@ -1,75 +1,79 @@
 #include "ECompareNode.h"
 
-#include <cmath>
+#include <new>
 
-void ECompareNode::SetInput(uint8_t index, float* output)
+ENode* ECompareNode::CreateInPlace(ECompareNodeSpecification spec, uint8_t* destination)
 {
-    switch (index) {
-    case 0:
-        m_input1.pointer = output;
-        m_mask.setPointer(index);
-        break;
-    case 1:
-        m_input2.pointer = output;
-        m_mask.setPointer(index);
-        break;
+    switch (spec.type) {
+    case CompareType::Equal:
+        if (spec.input0 == Float && spec.input1 == Float)
+            return new (destination) ECompareNodeInternal<CompareType::Equal, float, float>();
+        if (spec.input0 == Float && spec.input1 == Pointer)
+            return new (destination) ECompareNodeInternal<CompareType::Equal, float, float*>();
+        if (spec.input0 == Pointer && spec.input1 == Float)
+            return new (destination) ECompareNodeInternal<CompareType::Equal, float*, float>();
+        if (spec.input0 == Pointer && spec.input1 == Pointer)
+            return new (destination) ECompareNodeInternal<CompareType::Equal, float*, float*>();
+
+    case CompareType::NotEqual:
+        if (spec.input0 == Float && spec.input1 == Float)
+            return new (destination) ECompareNodeInternal<CompareType::NotEqual, float, float>();
+        if (spec.input0 == Float && spec.input1 == Pointer)
+            return new (destination) ECompareNodeInternal<CompareType::NotEqual, float, float*>();
+        if (spec.input0 == Pointer && spec.input1 == Float)
+            return new (destination) ECompareNodeInternal<CompareType::NotEqual, float*, float>();
+        if (spec.input0 == Pointer && spec.input1 == Pointer)
+            return new (destination) ECompareNodeInternal<CompareType::NotEqual, float*, float*>();
+
+    case CompareType::Greater:
+        if (spec.input0 == Float && spec.input1 == Float)
+            return new (destination) ECompareNodeInternal<CompareType::Greater, float, float>();
+        if (spec.input0 == Float && spec.input1 == Pointer)
+            return new (destination) ECompareNodeInternal<CompareType::Greater, float, float*>();
+        if (spec.input0 == Pointer && spec.input1 == Float)
+            return new (destination) ECompareNodeInternal<CompareType::Greater, float*, float>();
+        if (spec.input0 == Pointer && spec.input1 == Pointer)
+            return new (destination) ECompareNodeInternal<CompareType::Greater, float*, float*>();
+
+    case CompareType::GreaterEqual:
+        if (spec.input0 == Float && spec.input1 == Float)
+            return new (destination) ECompareNodeInternal<CompareType::GreaterEqual, float, float>();
+        if (spec.input0 == Float && spec.input1 == Pointer)
+            return new (destination) ECompareNodeInternal<CompareType::GreaterEqual, float, float*>();
+        if (spec.input0 == Pointer && spec.input1 == Float)
+            return new (destination) ECompareNodeInternal<CompareType::GreaterEqual, float*, float>();
+        if (spec.input0 == Pointer && spec.input1 == Pointer)
+            return new (destination) ECompareNodeInternal<CompareType::GreaterEqual, float*, float*>();
+
+    case CompareType::Less:
+        if (spec.input0 == Float && spec.input1 == Float)
+            return new (destination) ECompareNodeInternal<CompareType::Less, float, float>();
+        if (spec.input0 == Float && spec.input1 == Pointer)
+            return new (destination) ECompareNodeInternal<CompareType::Less, float, float*>();
+        if (spec.input0 == Pointer && spec.input1 == Float)
+            return new (destination) ECompareNodeInternal<CompareType::Less, float*, float>();
+        if (spec.input0 == Pointer && spec.input1 == Pointer)
+            return new (destination) ECompareNodeInternal<CompareType::Less, float*, float*>();
+
+    case CompareType::LessEqual:
+        if (spec.input0 == Float && spec.input1 == Float)
+            return new (destination) ECompareNodeInternal<CompareType::LessEqual, float, float>();
+        if (spec.input0 == Float && spec.input1 == Pointer)
+            return new (destination) ECompareNodeInternal<CompareType::LessEqual, float, float*>();
+        if (spec.input0 == Pointer && spec.input1 == Float)
+            return new (destination) ECompareNodeInternal<CompareType::LessEqual, float*, float>();
+        if (spec.input0 == Pointer && spec.input1 == Pointer)
+            return new (destination) ECompareNodeInternal<CompareType::LessEqual, float*, float*>();
     }
+
+    return nullptr;
 }
 
-void ECompareNode::SetValue(uint8_t index, float value)
+ENode* ECompareNode::DeserializeInPlace(BinaryDeserializer& des, uint8_t* destination)
 {
-    switch (index) {
-    case 0:
-        m_input1.value = value;
-        m_mask.setValue(index);
-        break;
-    case 1:
-        m_input2.value = value;
-        m_mask.setValue(index);
-        break;
-    case 2:
-        m_compareType.value = value;
-        m_mask.setValue(index);
-        break;
-    }
-}
-
-float* ECompareNode::GetOutput(uint8_t index)
-{
-    return index == 0 ? &m_out : nullptr;
-}
-
-void ECompareNode::Evaluate(float timestep)
-{
-    float& input1 = m_mask.isPointer(0) ? *m_input1.pointer : m_input1.value;
-    float& input2 = m_mask.isPointer(1) ? *m_input2.pointer : m_input2.value;
-    Types compareType = (Types)(m_mask.isPointer(2) ? *m_compareType.pointer : m_compareType.value);
-
-    m_out = 0.0f;
-    switch (compareType) {
-    case Types::Equal:
-        if (fabs(input1 - input2) <= m_epsilon)
-            m_out = 1.0f;
-        break;
-    case Types::NotEqual:
-        if (fabs(input1 - input2) > m_epsilon)
-            m_out = 1.0f;
-        break;
-    case Types::Greater:
-        if (input1 > input2)
-            m_out = 1.0f;
-        break;
-    case Types::GreaterEqual:
-        if (input1 >= input2)
-            m_out = 1.0f;
-        break;
-    case Types::Less:
-        if (input1 < input2)
-            m_out = 1.0f;
-        break;
-    case Types::LessEqual:
-        if (input1 <= input2)
-            m_out = 1.0f;
-        break;
-    }
+    ECompareNodeSpecification spec;
+    spec.type = (CompareType)des.readRaw<int>();
+    spec.input0 = (ConnectionType)des.readRaw<int>();
+    spec.input1 = (ConnectionType)des.readRaw<int>();
+    return CreateInPlace(spec, destination);
 }

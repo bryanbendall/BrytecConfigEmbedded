@@ -54,7 +54,7 @@ public:
     {
         uint32_t nodeDataIndex = 0;
         for (uint32_t indexCount = 0; indexCount < m_size; indexCount++) {
-            ENode* node = (ENode*)m_nodeData[indexCount];
+            ENode* node = (ENode*)m_nodeData[nodeDataIndex];
             node->Evaluate(timestep);
             nodeDataIndex += node->Size();
         }

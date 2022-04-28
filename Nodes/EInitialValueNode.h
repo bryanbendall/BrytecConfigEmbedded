@@ -12,7 +12,7 @@ public:
     uint32_t Size() override { return sizeof(EInitialValueNode); };
 
 private:
-    InputOrValue m_rawData;
+    // InputOrValue m_rawData;
     float m_out;
 
     friend class InitialValueNode;

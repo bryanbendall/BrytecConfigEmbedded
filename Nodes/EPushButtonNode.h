@@ -12,10 +12,10 @@ public:
     uint32_t Size() override { return sizeof(EPushButtonNode); };
 
 private:
-    InputOrValue m_button;
-    InputOrValue m_neutralSafety;
-    InputOrValue m_engineRunning;
-    InputOrValue m_lastButtonState;
+    // InputOrValue m_button;
+    // InputOrValue m_neutralSafety;
+    // InputOrValue m_engineRunning;
+    // InputOrValue m_lastButtonState;
     float m_ignitionOut;
     float m_starterOut;
 

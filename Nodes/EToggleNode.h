@@ -12,8 +12,8 @@ public:
     uint32_t Size() override { return sizeof(EToggleNode); };
 
 private:
-    InputOrValue m_in;
-    InputOrValue m_lastValue;
+    // InputOrValue m_in;
+    // InputOrValue m_lastValue;
     float m_out;
 
     friend class ToggleNode;

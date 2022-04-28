@@ -1,28 +1,81 @@
 #pragma once
 
 #include "BrytecConfigEmbedded/ENode.h"
+#include "BrytecConfigEmbedded/ENodeConnection.h"
+#include "utils/BinarySerializer.h"
+
+enum class MathType : uint8_t {
+    Add,
+    Subtract,
+    Multiply,
+    Divide,
+    Count
+};
+
+struct EMathNodeSpecification {
+    MathType type;
+    ConnectionType input0;
+    ConnectionType input1;
+};
 
 class EMathNode : public ENode {
 
 public:
-    void SetInput(uint8_t index, float* output) override;
-    void SetValue(uint8_t index, float value) override;
-    float* GetOutput(uint8_t index) override;
-    void Evaluate(float timestep) override;
-    uint32_t Size() override { return sizeof(EMathNode); };
+    static ENode* CreateInPlace(EMathNodeSpecification spec, uint8_t* destination);
+    static ENode* DeserializeInPlace(BinaryDeserializer& des, uint8_t* destination);
+};
 
-    enum class Types : uint8_t {
-        Add,
-        Subtract,
-        Multiply,
-        Divide,
-        Count
-    };
+template <MathType type, typename Input1_t, typename Input2_t>
+class EMathNodeInternal : public EMathNode {
+
+public:
+    void SetInput(uint8_t index, float* output) override
+    {
+        switch (index) {
+        case 0:
+            m_input1.setPointer(output);
+            break;
+        case 1:
+            m_input2.setPointer(output);
+            break;
+        }
+    }
+    void SetValue(uint8_t index, float value) override
+    {
+        switch (index) {
+        case 0:
+            m_input1.setValue(value);
+            break;
+        case 1:
+            m_input2.setValue(value);
+            break;
+        }
+    }
+    float* GetOutput(uint8_t index = 0) override
+    {
+        return &m_out;
+    }
+
+    void Evaluate(float timestep) override
+    {
+        if constexpr (type == MathType::Add)
+            m_out = m_input1.getValue() + m_input2.getValue();
+
+        if constexpr (type == MathType::Subtract)
+            m_out = m_input1.getValue() - m_input2.getValue();
+
+        if constexpr (type == MathType::Multiply)
+            m_out = m_input1.getValue() * m_input2.getValue();
+
+        if constexpr (type == MathType::Divide)
+            m_out = m_input1.getValue() / m_input2.getValue();
+    }
+
+    uint32_t Size() override { return sizeof(*this); }
 
 private:
-    InputOrValue m_input1;
-    InputOrValue m_input2;
-    InputOrValue m_mathType;
+    ValueOrPointer<Input1_t> m_input1;
+    ValueOrPointer<Input2_t> m_input2;
     float m_out;
 
     friend class MathNode;

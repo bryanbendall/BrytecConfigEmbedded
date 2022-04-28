@@ -20,11 +20,11 @@ public:
     };
 
 private:
-    InputOrValue m_in;
-    InputOrValue m_repeat;
-    InputOrValue m_timeout;
-    InputOrValue m_curveType;
-    InputOrValue m_timerCounter;
+    // InputOrValue m_in;
+    // InputOrValue m_repeat;
+    // InputOrValue m_timeout;
+    // InputOrValue m_curveType;
+    // InputOrValue m_timerCounter;
     float m_out;
 
     friend class CurveNode;

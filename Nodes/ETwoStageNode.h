@@ -12,10 +12,10 @@ public:
     uint32_t Size() override { return sizeof(ETwoStageNode); };
 
 private:
-    InputOrValue m_stage1Trigger;
-    InputOrValue m_stage1Percent;
-    InputOrValue m_stage2Trigger;
-    InputOrValue m_stage2Percent;
+    // InputOrValue m_stage1Trigger;
+    // InputOrValue m_stage1Percent;
+    // InputOrValue m_stage2Trigger;
+    // InputOrValue m_stage2Percent;
     float m_out;
 
     friend class TwoStageNode;
