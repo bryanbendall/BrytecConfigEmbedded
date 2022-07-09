@@ -69,11 +69,11 @@ ENode* ECompareNode::CreateInPlace(ECompareNodeSpecification spec, uint8_t* dest
     return nullptr;
 }
 
-ENode* ECompareNode::DeserializeInPlace(BinaryDeserializer& des, uint8_t* destination)
-{
-    ECompareNodeSpecification spec;
-    spec.type = (CompareType)des.readRaw<int>();
-    spec.input0 = (ConnectionType)des.readRaw<int>();
-    spec.input1 = (ConnectionType)des.readRaw<int>();
-    return CreateInPlace(spec, destination);
-}
+// ENode* ECompareNode::DeserializeInPlace(BinaryDeserializer& des, uint8_t* destination)
+// {
+//     ECompareNodeSpecification spec;
+//     spec.type = (CompareType)des.readRaw<int>();
+//     spec.input0 = (ConnectionType)des.readRaw<int>();
+//     spec.input1 = (ConnectionType)des.readRaw<int>();
+//     return CreateInPlace(spec, destination);
+// }

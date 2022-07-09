@@ -24,7 +24,7 @@ class ECompareNode : public ENode {
 
 public:
     static ENode* CreateInPlace(ECompareNodeSpecification spec, uint8_t* destination);
-    static ENode* DeserializeInPlace(BinaryDeserializer& des, uint8_t* destination);
+    // static ENode* DeserializeInPlace(BinaryDeserializer& des, uint8_t* destination);
 };
 
 template <CompareType type, typename Input1_t, typename Input2_t>

@@ -27,7 +27,7 @@ bool ToBool(float& f)
         return false;
 }
 
-ENode* ENode::CreateInPlace(NodeTypes type, BinaryDeserializer& des, uint8_t* destination)
+ENode* ENode::CreateInPlace(NodeTypes type, /*BinaryDeserializer& des, */ uint8_t* destination)
 {
     switch (type) {
     case NodeTypes::Final_Value:
@@ -45,7 +45,7 @@ ENode* ENode::CreateInPlace(NodeTypes type, BinaryDeserializer& des, uint8_t* de
     case NodeTypes::Curve:
         // return new (ptr) ECurveNode();
     case NodeTypes::Compare:
-        ECompareNode::DeserializeInPlace(des, destination);
+        // ECompareNode::DeserializeInPlace(des, destination);
     case NodeTypes::On_Off:
         // return new (ptr) EOnOffNode();
     case NodeTypes::Invert:
@@ -59,7 +59,7 @@ ENode* ENode::CreateInPlace(NodeTypes type, BinaryDeserializer& des, uint8_t* de
     case NodeTypes::Map_Value:
         // return new (ptr) EMapValueNode();
     case NodeTypes::Math:
-        EMathNode::DeserializeInPlace(des, destination);
+        // EMathNode::DeserializeInPlace(des, destination);
     case NodeTypes::Value:
         // return new (ptr) EValueNode();
     case NodeTypes::Switch:

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ENodeConnection.h"
-#include "utils/BinarySerializer.h"
+// #include "utils/BinarySerializer.h"
 #include <cstddef>
 #include <stdint.h>
 
@@ -33,7 +33,7 @@ bool ToBool(float& f);
 class ENode {
 
 public:
-    static ENode* CreateInPlace(NodeTypes type, BinaryDeserializer& des, uint8_t* destination);
+    static ENode* CreateInPlace(NodeTypes type, /*BinaryDeserializer& des,*/ uint8_t* destination);
 
     virtual void SetInput(uint8_t index, float* output) = 0;
     virtual void SetValue(uint8_t index, float value) = 0;

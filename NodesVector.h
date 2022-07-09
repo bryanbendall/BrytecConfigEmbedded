@@ -1,10 +1,12 @@
 #pragma once
 
-#include "Nodes.h"
-#include "Nodes/ENode.h"
+#include "ENode.h"
 #include <stddef.h>
 
 namespace Embedded {
+
+// TODO: calculate max size of node
+#define NODE_MAX_SIZE 64
 
 #define SIZE 1000
 // template <size_t SIZE>
@@ -13,16 +15,16 @@ class NodesVector {
 public:
     NodesVector() { }
 
-    bool add(NodeTypes type)
+    bool add(NodeTypes type, BinaryDeserializer& des)
     {
-        void* nextData = &m_nodeData[m_dataNextIndex];
+        uint8_t* nextData = &m_nodeData[m_dataNextIndex];
 
-        if ((m_dataNextIndex + ENode::getSize(type)) > SIZE)
+        if ((m_dataNextIndex + NODE_MAX_SIZE) > SIZE)
             return false;
 
-        ENode::create(type, nextData);
+        ENode* node = ENode::CreateInPlace(type, des, nextData);
         m_size++;
-        m_dataNextIndex += ENode::getSize(type);
+        m_dataNextIndex += node->Size();
         return true;
     }
 
@@ -68,5 +70,4 @@ private:
     uint32_t m_size = 0;
     uint32_t m_dataNextIndex = 0;
 };
-
 }
