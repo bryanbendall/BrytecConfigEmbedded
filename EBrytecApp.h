@@ -35,7 +35,7 @@ struct EBrytecNodeGroup {
 class EBrytecApp {
 
 public:
-    EBrytecApp();
+    EBrytecApp() = default;
 
     void deserializeModule(/*serialized data*/);
 
@@ -47,7 +47,7 @@ private:
     uint32_t m_nodeGroupsCount = 0;
 };
 
-void main()
+void testMain()
 {
 
     // start up stuff

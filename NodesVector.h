@@ -15,14 +15,14 @@ class NodesVector {
 public:
     NodesVector() { }
 
-    bool add(NodeTypes type, BinaryDeserializer& des)
+    bool add(const ENodeSpec& spec)
     {
         uint8_t* nextData = &m_nodeData[m_dataNextIndex];
 
         if ((m_dataNextIndex + NODE_MAX_SIZE) > SIZE)
             return false;
 
-        ENode* node = ENode::CreateInPlace(type, des, nextData);
+        ENode* node = ENode::CreateInPlace(spec, nextData);
         m_size++;
         m_dataNextIndex += node->Size();
         return true;

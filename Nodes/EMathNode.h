@@ -2,7 +2,6 @@
 
 #include "BrytecConfigEmbedded/ENode.h"
 #include "BrytecConfigEmbedded/ENodeConnection.h"
-#include "utils/BinarySerializer.h"
 
 enum class MathType : uint8_t {
     Add,
@@ -12,17 +11,10 @@ enum class MathType : uint8_t {
     Count
 };
 
-struct EMathNodeSpecification {
-    MathType type;
-    ConnectionType input0;
-    ConnectionType input1;
-};
-
 class EMathNode : public ENode {
 
 public:
-    static ENode* CreateInPlace(EMathNodeSpecification spec, uint8_t* destination);
-    static ENode* DeserializeInPlace(BinaryDeserializer& des, uint8_t* destination);
+    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
 };
 
 template <MathType type, typename Input1_t, typename Input2_t>

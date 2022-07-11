@@ -1,9 +1,21 @@
 #include "EBrytecApp.h"
 
+#include "Utils/BinaryDeserializer.h"
+#include "Utils/ENodeDeserializer.h"
+
 void EBrytecApp::deserializeModule()
 {
 
+    BinaryDeserializer des(nullptr);
+
     // create nodes in vector
+    int nodeCount = 0;
+    for (int i = 0; i < nodeCount; i++) {
+        ENodeSpec spec = ENodeDeserializer::deserializeNode(des);
+        m_nodeVector.add(spec);
+    }
+
+    // connect nodes
 
     // allocate nodegroups array and assign node start and count
 }
