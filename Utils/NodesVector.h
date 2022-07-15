@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ENode.h"
+#include "BrytecConfigEmbedded/ENode.h"
 #include <stddef.h>
 
 namespace Embedded {
@@ -23,14 +23,14 @@ public:
             return false;
 
         ENode* node = ENode::CreateInPlace(spec, nextData);
-        m_size++;
+        m_count++;
         m_dataNextIndex += node->Size();
         return true;
     }
 
     ENode* at(uint32_t index)
     {
-        if (index >= m_size)
+        if (index >= m_count)
             return nullptr;
 
         uint32_t nodeDataIndex = 0;
@@ -55,19 +55,21 @@ public:
     void evaluateAll(float timestep)
     {
         uint32_t nodeDataIndex = 0;
-        for (uint32_t indexCount = 0; indexCount < m_size; indexCount++) {
+        for (uint32_t indexCount = 0; indexCount < m_count; indexCount++) {
             ENode* node = (ENode*)m_nodeData[nodeDataIndex];
             node->Evaluate(timestep);
             nodeDataIndex += node->Size();
         }
     }
 
+    uint32_t count() { return m_count; }
+
 private:
     // Data
     uint8_t m_nodeData[SIZE] = {};
 
     // Vector states
-    uint32_t m_size = 0;
+    uint32_t m_count = 0;
     uint32_t m_dataNextIndex = 0;
 };
 }

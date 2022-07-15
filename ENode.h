@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ENodeConnection.h"
+#include "BrytecConfigEmbedded/Utils/ENodeConnection.h"
 #include <cstddef>
 #include <stdint.h>
 
@@ -31,17 +31,16 @@ struct ENodeConnection {
     uint8_t connectionNodeIndex = -1;
     uint8_t outputIndex = -1;
     float defaultValue = 0.0f;
-    ConnectionType type = ConnectionType::Float;
 };
 
 struct ENodeSpec {
     NodeTypes type;
 
     uint8_t numInputs = 0;
-    ENodeConnection connections[20];
+    ConnectionType connections[8];
 
     uint8_t numValues = 0;
-    float values[20];
+    float values[8];
 };
 
 bool ToBool(float& f);

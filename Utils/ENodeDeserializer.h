@@ -5,5 +5,6 @@
 
 class ENodeDeserializer {
 public:
-    static ENodeSpec deserializeNode(BinaryDeserializer& des);
+    static ENodeSpec deserializeNodeSpec(BinaryDeserializer& des);
+    static ENodeConnection deserializeNodeConnection(BinaryDeserializer& des);
 };

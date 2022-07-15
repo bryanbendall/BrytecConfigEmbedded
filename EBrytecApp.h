@@ -1,50 +1,19 @@
 #pragma once
 
-#include "NodesVector.h"
+#include "BrytecBoard.h"
+#include "BrytecConfigEmbedded/Utils/NodesVector.h"
+#include "Utils/BinaryDeserializer.h"
 #include <stdint.h>
-
-float getValueFromBoard(int index)
-{
-    switch (index) {
-    case 1:
-        // return DDRB |= 1 << 3;
-        break;
-    }
-
-    return 0;
-}
-
-void setOutputToBoard(int index)
-{
-    switch (index) {
-    case 1:
-        // DDRB &= 1 << PINB3;
-        break;
-    }
-}
-
-struct EBrytecNodeGroup {
-    uint32_t startNodeIndex;
-    uint8_t nodeCount;
-    uint8_t boardIndex;
-
-    void updateInitialValue() { getValueFromBoard(boardIndex); }
-    void updateFinalValue() { setOutputToBoard(boardIndex); }
-};
 
 class EBrytecApp {
 
 public:
-    EBrytecApp() = default;
-
-    void deserializeModule(/*serialized data*/);
-
-    void update(float timestep);
-
-private:
-    Embedded::NodesVector m_nodeVector;
-    EBrytecNodeGroup* m_nodeGroups;
-    uint32_t m_nodeGroupsCount = 0;
+    static void deserializeModule(BinaryDeserializer& des);
+    static void setupPins();
+    static void update(float timestep);
+    static ENode* getNode(int index);
+    static ENode* getInitialValueNode(int startIndex, int nodeCount);
+    static ENode* getFinalValueNode(int startIndex, int nodeCount);
 };
 
 void testMain()
@@ -52,8 +21,9 @@ void testMain()
 
     // start up stuff
 
-    EBrytecApp app;
-    app.deserializeModule();
+    BinaryDeserializer ser(nullptr);
+    EBrytecApp::deserializeModule(ser);
+    EBrytecApp::setupPins();
 
     while (1) {
 
@@ -61,7 +31,7 @@ void testMain()
 
         // read physical pins
 
-        app.update(2.0f);
+        EBrytecApp::update(2.0f);
 
         // write physical pins
     }

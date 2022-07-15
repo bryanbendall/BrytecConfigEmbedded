@@ -1,7 +1,7 @@
 #pragma once
 
 #include "BrytecConfigEmbedded/ENode.h"
-#include "BrytecConfigEmbedded/ENodeConnection.h"
+#include "BrytecConfigEmbedded/Utils//ENodeConnection.h"
 
 enum class MathType : uint8_t {
     Add,

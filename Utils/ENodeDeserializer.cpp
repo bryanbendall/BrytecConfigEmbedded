@@ -1,6 +1,6 @@
 #include "ENodeDeserializer.h"
 
-ENodeSpec ENodeDeserializer::deserializeNode(BinaryDeserializer& des)
+ENodeSpec ENodeDeserializer::deserializeNodeSpec(BinaryDeserializer& des)
 {
     ENodeSpec spec;
 
@@ -9,17 +9,12 @@ ENodeSpec ENodeDeserializer::deserializeNode(BinaryDeserializer& des)
     des.readRaw<float>(); // x
     des.readRaw<float>(); // y
 
-    // Connections
+    // Input types
     {
         spec.numInputs = des.readRaw<uint8_t>();
 
         for (int i = 0; i < spec.numInputs; i++) {
-            spec.connections[i].connectionNodeIndex = des.readRaw<uint8_t>();
-            spec.connections[i].outputIndex = des.readRaw<uint8_t>();
-            spec.connections[i].defaultValue = des.readRaw<float>();
-
-            if (spec.connections[i].connectionNodeIndex > -1 && spec.connections[i].outputIndex > -1)
-                spec.connections[i].type = ConnectionType::Pointer;
+            spec.connections[i] = (ConnectionType)des.readRaw<uint8_t>();
         }
     }
 
@@ -35,4 +30,15 @@ ENodeSpec ENodeDeserializer::deserializeNode(BinaryDeserializer& des)
         des.readRaw<uint64_t>(); // uuid
 
     return spec;
+}
+
+ENodeConnection ENodeDeserializer::deserializeNodeConnection(BinaryDeserializer& des)
+{
+    ENodeConnection connection;
+
+    connection.connectionNodeIndex = des.readRaw<uint8_t>();
+    connection.outputIndex = des.readRaw<uint8_t>();
+    connection.defaultValue = des.readRaw<float>();
+
+    return connection;
 }
