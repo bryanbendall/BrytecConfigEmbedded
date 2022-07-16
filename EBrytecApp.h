@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BrytecBoard.h"
+#include "Boards/BrytecBoard.h"
 #include "BrytecConfigEmbedded/Utils/NodesVector.h"
 #include "Utils/BinaryDeserializer.h"
 #include <stdint.h>
@@ -16,23 +16,19 @@ public:
     static ENode* getFinalValueNode(int startIndex, int nodeCount);
 };
 
-void testMain()
-{
+// void testMain()
+// {
 
-    // start up stuff
+//     // start up stuff
 
-    BinaryDeserializer ser(nullptr);
-    EBrytecApp::deserializeModule(ser);
-    EBrytecApp::setupPins();
+//     BinaryDeserializer ser(nullptr);
+//     EBrytecApp::deserializeModule(ser);
+//     EBrytecApp::setupPins();
 
-    while (1) {
+//     while (1) {
 
-        // board stuff
+//         // board stuff
 
-        // read physical pins
-
-        EBrytecApp::update(2.0f);
-
-        // write physical pins
-    }
-}
+//         EBrytecApp::update(2.0f);
+//     }
+// }

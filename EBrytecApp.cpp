@@ -3,36 +3,14 @@
 #include "Nodes/EFinalValueNode.h"
 #include "Nodes/EInitialValueNode.h"
 #include "Utils/ENodeDeserializer.h"
+#include "Utils/ENodeGroup.h"
 
 struct EBrytecAppData {
     Embedded::NodesVector nodeVector;
-    EBrytecNodeGroup* nodeGroups;
+    ENodeGroup* nodeGroups;
     uint32_t nodeGroupsCount = 0;
 };
 static EBrytecAppData s_data;
-
-void EBrytecNodeGroup::setupPin()
-{
-    BrytecBoard::setupPin(boardPinIndex, type);
-}
-
-void EBrytecNodeGroup::updateInitialValue()
-{
-    ENode* node = EBrytecApp::getInitialValueNode(startNodeIndex, nodeCount);
-    if (!node)
-        return;
-
-    node->SetValue(0, BrytecBoard::getPinValue(boardPinIndex));
-}
-
-void EBrytecNodeGroup::updateFinalValue()
-{
-    ENode* node = EBrytecApp::getFinalValueNode(startNodeIndex, nodeCount);
-    if (!node)
-        return;
-
-    BrytecBoard::setPinValue(boardPinIndex, *node->GetOutput());
-}
 
 void EBrytecApp::deserializeModule(BinaryDeserializer& des)
 {
@@ -54,13 +32,13 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
     // deserialize node groups
     uint16_t nodeGroupCount = des.readRaw<uint16_t>();
     s_data.nodeGroupsCount = nodeGroupCount;
-    s_data.nodeGroups = new EBrytecNodeGroup[nodeGroupCount];
+    s_data.nodeGroups = new ENodeGroup[nodeGroupCount];
 
     // node start and length
 
     for (int nodeGroupIndex = 0; nodeGroupIndex < nodeGroupCount; nodeGroupIndex++) {
 
-        EBrytecNodeGroup& currentNodeGroup = s_data.nodeGroups[nodeGroupIndex];
+        ENodeGroup& currentNodeGroup = s_data.nodeGroups[nodeGroupIndex];
         currentNodeGroup.startNodeIndex = s_data.nodeVector.count();
         currentNodeGroup.boardPinIndex = des.readRaw<uint16_t>();
 
