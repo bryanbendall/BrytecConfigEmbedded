@@ -35,6 +35,10 @@ template <>
 inline std::string BinaryDeserializer::readRaw<std::string>()
 {
     uint32_t length = readRaw<uint32_t>();
+
+    if (length <= 0)
+        return "";
+
     char data[length];
 
     for (int i = 0; i < length; i++)

@@ -5,6 +5,8 @@
 class EFinalValueNode : public ENode {
 
 public:
+    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
+
     void SetInput(uint8_t index, float* output) override;
     void SetValue(uint8_t index, float value) override;
     float* GetOutput(uint8_t index) override;

@@ -35,11 +35,11 @@ public:
 
         uint32_t nodeDataIndex = 0;
         for (uint32_t indexCount = 0; indexCount < index; indexCount++) {
-            ENode* node = (ENode*)m_nodeData[indexCount];
+            ENode* node = (ENode*)&m_nodeData[nodeDataIndex];
             nodeDataIndex += node->Size();
         }
 
-        return (ENode*)m_nodeData[nodeDataIndex];
+        return (ENode*)&m_nodeData[nodeDataIndex];
     }
 
     void setValue(uint32_t nodeIndex, uint8_t inputIndex, float value)
@@ -56,7 +56,7 @@ public:
     {
         uint32_t nodeDataIndex = 0;
         for (uint32_t indexCount = 0; indexCount < m_count; indexCount++) {
-            ENode* node = (ENode*)m_nodeData[nodeDataIndex];
+            ENode* node = (ENode*)&m_nodeData[nodeDataIndex];
             node->Evaluate(timestep);
             nodeDataIndex += node->Size();
         }

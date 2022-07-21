@@ -24,5 +24,9 @@ void ENodeGroup::updateFinalValue()
     if (!node)
         return;
 
-    BrytecBoard::setPinValue(boardPinIndex, *node->GetOutput());
+    float* output = node->GetOutput();
+    if (!output)
+        return;
+
+    BrytecBoard::setPinValue(boardPinIndex, *output);
 }

@@ -1,5 +1,12 @@
 #include "EFinalValueNode.h"
 
+#include <new>
+
+ENode* EFinalValueNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
+{
+    return new (destination) EFinalValueNode();
+}
+
 void EFinalValueNode::SetInput(uint8_t index, float* output)
 {
     // if (index == 0)

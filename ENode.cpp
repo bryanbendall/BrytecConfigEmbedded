@@ -35,8 +35,9 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     switch (spec.type) {
     case NodeTypes::Final_Value:
         // return new (ptr) EFinalValueNode();
+        return EFinalValueNode::CreateInPlace(spec, destination);
     case NodeTypes::Initial_Value:
-        // return new (ptr) EInitialValueNode();
+        return EInitialValueNode::CreateInPlace(spec, destination);
     case NodeTypes::Node_Group:
         // return new (ptr) ENodeGroupNode();
     case NodeTypes::And:
@@ -62,7 +63,7 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     case NodeTypes::Map_Value:
         // return new (ptr) EMapValueNode();
     case NodeTypes::Math:
-        EMathNode::CreateInPlace(spec, destination);
+        return EMathNode::CreateInPlace(spec, destination);
     case NodeTypes::Value:
         // return new (ptr) EValueNode();
     case NodeTypes::Switch:

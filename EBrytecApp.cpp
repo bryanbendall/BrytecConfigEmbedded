@@ -59,7 +59,7 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
 
         // create nodes in vector
         {
-            int nodeCount = des.readRaw<uint8_t>();
+            int nodeCount = des.readRaw<uint16_t>();
             for (int i = 0; i < nodeCount; i++) {
                 ENodeSpec spec = ENodeDeserializer::deserializeNodeSpec(des);
                 s_data.nodeVector.add(spec);

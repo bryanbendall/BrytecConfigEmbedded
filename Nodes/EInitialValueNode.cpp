@@ -1,5 +1,12 @@
 #include "EInitialValueNode.h"
 
+#include <new>
+
+ENode* EInitialValueNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
+{
+    return new (destination) EInitialValueNode();
+}
+
 void EInitialValueNode::SetInput(uint8_t index, float* output)
 {
     // if (index == 0)
