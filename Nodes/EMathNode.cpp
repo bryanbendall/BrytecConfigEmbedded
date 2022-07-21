@@ -1,6 +1,4 @@
 #include "EMathNode.h"
-#include "BrytecConfigEmbedded/Utils/ENodeDeserializer.h"
-#include <new>
 
 ENode* EMathNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {

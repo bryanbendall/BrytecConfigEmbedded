@@ -23,6 +23,10 @@ public:
             return false;
 
         ENode* node = ENode::CreateInPlace(spec, nextData);
+
+        if (!node)
+            return false;
+
         m_count++;
         m_dataNextIndex += node->Size();
         return true;

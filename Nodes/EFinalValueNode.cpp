@@ -1,33 +1,16 @@
 #include "EFinalValueNode.h"
 
-#include <new>
-
 ENode* EFinalValueNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
-    return new (destination) EFinalValueNode();
-}
+    if (spec.type != NodeTypes::Final_Value || spec.numInputs != 1 || spec.numValues != 0)
+        return nullptr;
 
-void EFinalValueNode::SetInput(uint8_t index, float* output)
-{
-    // if (index == 0)
-    //     m_in.pointer = output;
-    // m_mask.setPointer(index);
-}
+    switch (spec.connections[0]) {
+    case Float:
+        return new (destination) EFinalValueNodeInternal<float>();
+    case Pointer:
+        return new (destination) EFinalValueNodeInternal<float*>();
+    }
 
-void EFinalValueNode::SetValue(uint8_t index, float value)
-{
-    // if (index == 0)
-    //     m_in.value = value;
-    // m_mask.setValue(index);
-}
-
-float* EFinalValueNode::GetOutput(uint8_t index)
-{
-    // No outputs
     return nullptr;
-}
-
-void EFinalValueNode::Evaluate(float timestep)
-{
-    // Nothing to do
 }

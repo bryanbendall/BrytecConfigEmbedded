@@ -14,17 +14,10 @@ enum class CompareType : uint8_t {
     Count
 };
 
-struct ECompareNodeSpecification {
-    CompareType type;
-    ConnectionType input0;
-    ConnectionType input1;
-};
-
 class ECompareNode : public ENode {
 
 public:
-    static ENode* CreateInPlace(ECompareNodeSpecification spec, uint8_t* destination);
-    // static ENode* DeserializeInPlace(BinaryDeserializer& des, uint8_t* destination);
+    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
 };
 
 template <CompareType type, typename Input1_t, typename Input2_t>
@@ -99,6 +92,4 @@ private:
     float m_out;
 
     static constexpr float m_epsilon = 0.0001;
-
-    friend class MathNode;
 };

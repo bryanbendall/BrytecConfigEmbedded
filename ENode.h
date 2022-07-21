@@ -2,6 +2,7 @@
 
 #include "BrytecConfigEmbedded/Utils/ENodeConnection.h"
 #include <cstddef>
+#include <new>
 #include <stdint.h>
 
 enum class NodeTypes : uint8_t {
@@ -43,8 +44,13 @@ struct ENodeSpec {
     float values[8];
 };
 
-bool ToBool(float& f);
-
+inline bool ToBool(float f)
+{
+    if (f >= 0.0001f)
+        return true;
+    else
+        return false;
+}
 class ENode {
 
 public:

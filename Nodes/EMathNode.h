@@ -1,7 +1,6 @@
 #pragma once
 
 #include "BrytecConfigEmbedded/ENode.h"
-#include "BrytecConfigEmbedded/Utils//ENodeConnection.h"
 
 enum class MathType : uint8_t {
     Add,
@@ -69,6 +68,4 @@ private:
     ValueOrPointer<Input1_t> m_input1;
     ValueOrPointer<Input2_t> m_input2;
     float m_out;
-
-    friend class MathNode;
 };

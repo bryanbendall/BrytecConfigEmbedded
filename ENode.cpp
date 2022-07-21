@@ -19,14 +19,6 @@
 #include "Nodes/EValueNode.h"
 #include <new>
 
-bool ToBool(float& f)
-{
-    if (f >= 0.0001f)
-        return true;
-    else
-        return false;
-}
-
 ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
     if (!destination)
@@ -34,7 +26,6 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 
     switch (spec.type) {
     case NodeTypes::Final_Value:
-        // return new (ptr) EFinalValueNode();
         return EFinalValueNode::CreateInPlace(spec, destination);
     case NodeTypes::Initial_Value:
         return EInitialValueNode::CreateInPlace(spec, destination);
@@ -47,9 +38,9 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     case NodeTypes::Two_Stage:
         // return new (ptr) ETwoStageNode();
     case NodeTypes::Curve:
-        // return new (ptr) ECurveNode();
+        return ECurveNode::CreateInPlace(spec, destination);
     case NodeTypes::Compare:
-        // ECompareNode::DeserializeInPlace(des, destination);
+        return ECompareNode::CreateInPlace(spec, destination);
     case NodeTypes::On_Off:
         // return new (ptr) EOnOffNode();
     case NodeTypes::Invert:
