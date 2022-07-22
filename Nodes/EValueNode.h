@@ -5,14 +5,30 @@
 class EValueNode : public ENode {
 
 public:
-    void SetInput(uint8_t index, float* output) override;
-    void SetValue(uint8_t index, float value) override;
-    float* GetOutput(uint8_t index) override;
-    void Evaluate(float timestep) override;
-    uint32_t Size() override { return sizeof(EValueNode); };
+    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
+};
+
+class EValueNodeInternal : public EValueNode {
+
+public:
+    void SetInput(uint8_t index, float* output) override
+    {
+    }
+    void SetValue(uint8_t index, float value) override
+    {
+        m_out = value;
+    }
+    float* GetOutput(uint8_t index = 0) override
+    {
+        return &m_out;
+    }
+
+    void Evaluate(float timestep) override
+    {
+    }
+
+    uint32_t Size() override { return sizeof(*this); }
 
 private:
     float m_out;
-
-    friend class ValueNode;
 };

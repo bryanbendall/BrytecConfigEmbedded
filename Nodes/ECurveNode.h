@@ -52,6 +52,9 @@ public:
         case 2:
             m_timeout.setValue(value);
             break;
+        case 3:
+            m_timerCounter = value;
+            break;
         }
     }
     float* GetOutput(uint8_t index = 0) override

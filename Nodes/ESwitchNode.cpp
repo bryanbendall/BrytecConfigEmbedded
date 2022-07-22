@@ -1,54 +1,34 @@
 #include "ESwitchNode.h"
 
-void ESwitchNode::SetInput(uint8_t index, float* output)
+ENode* ESwitchNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
-    // switch (index) {
-    // case 0:
-    //     m_selection.pointer = output;
-    //     m_mask.setPointer(index);
-    //     break;
-    // case 1:
-    //     m_input1.pointer = output;
-    //     m_mask.setPointer(index);
-    //     break;
-    // case 2:
-    //     m_input2.pointer = output;
-    //     m_mask.setPointer(index);
-    //     break;
-    // }
-}
 
-void ESwitchNode::SetValue(uint8_t index, float value)
-{
-    // switch (index) {
-    // case 0:
-    //     m_selection.value = value;
-    //     m_mask.setValue(index);
-    //     break;
-    // case 1:
-    //     m_input1.value = value;
-    //     m_mask.setValue(index);
-    //     break;
-    // case 2:
-    //     m_input2.value = value;
-    //     m_mask.setValue(index);
-    //     break;
-    // }
-}
+    if (spec.type != NodeTypes::Switch || spec.numInputs != 3 || spec.numValues != 0)
+        return nullptr;
 
-float* ESwitchNode::GetOutput(uint8_t index)
-{
-    return index == 0 ? &m_out : nullptr;
-}
+    auto selection = spec.connections[0];
+    auto input1 = spec.connections[1];
+    auto input2 = spec.connections[2];
 
-void ESwitchNode::Evaluate(float timestep)
-{
-    // bool selection = ToBool(m_mask.isPointer(0) ? *m_selection.pointer : m_selection.value);
-    // float& input1 = m_mask.isPointer(1) ? *m_input1.pointer : m_input1.value;
-    // float& input2 = m_mask.isPointer(2) ? *m_input2.pointer : m_input2.value;
+    if (selection == Float && input1 == Float && input2 == Float)
+        return new (destination) ESwitchNodeInternal<float, float, float>();
+    if (selection == Float && input1 == Float && input2 == Pointer)
+        return new (destination) ESwitchNodeInternal<float, float, float*>();
 
-    // if (selection)
-    //     m_out = input1;
-    // else
-    //     m_out = input2;
+    if (selection == Float && input1 == Pointer && input2 == Float)
+        return new (destination) ESwitchNodeInternal<float, float*, float>();
+    if (selection == Float && input1 == Pointer && input2 == Pointer)
+        return new (destination) ESwitchNodeInternal<float, float*, float*>();
+
+    if (selection == Pointer && input1 == Float && input2 == Float)
+        return new (destination) ESwitchNodeInternal<float*, float, float>();
+    if (selection == Pointer && input1 == Float && input2 == Pointer)
+        return new (destination) ESwitchNodeInternal<float*, float, float*>();
+
+    if (selection == Pointer && input1 == Pointer && input2 == Float)
+        return new (destination) ESwitchNodeInternal<float*, float*, float>();
+    if (selection == Pointer && input1 == Pointer && input2 == Pointer)
+        return new (destination) ESwitchNodeInternal<float*, float*, float*>();
+
+    return nullptr;
 }
