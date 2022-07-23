@@ -36,29 +36,29 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     case NodeTypes::Or:
         // return new (ptr) EOrNode();
     case NodeTypes::Two_Stage:
-        // return new (ptr) ETwoStageNode();
+        return ETwoStageNode::CreateInPlace(spec, destination);
     case NodeTypes::Curve:
         return ECurveNode::CreateInPlace(spec, destination);
     case NodeTypes::Compare:
         return ECompareNode::CreateInPlace(spec, destination);
     case NodeTypes::On_Off:
-        // return new (ptr) EOnOffNode();
+        return EOnOffNode::CreateInPlace(spec, destination);
     case NodeTypes::Invert:
-        // return new (ptr) EInvertNode();
+        return EInvertNode::CreateInPlace(spec, destination);
     case NodeTypes::Toggle:
-        // return new (ptr) EToggleNode();
+        return EToggleNode::CreateInPlace(spec, destination);
     case NodeTypes::Delay:
-        // return new (ptr) EDelayNode();
+        return EDelayNode::CreateInPlace(spec, destination);
     case NodeTypes::Push_Button:
-        // return new (ptr) EPushButtonNode();
+        return EPushButtonNode::CreateInPlace(spec, destination);
     case NodeTypes::Map_Value:
-        // return new (ptr) EMapValueNode();
+        return EMapValueNode::CreateInPlace(spec, destination);
     case NodeTypes::Math:
         return EMathNode::CreateInPlace(spec, destination);
     case NodeTypes::Value:
-        // return new (ptr) EValueNode();
+        return EValueNode::CreateInPlace(spec, destination);
     case NodeTypes::Switch:
-        // return new (ptr) ESwitchNode();
+        return ESwitchNode::CreateInPlace(spec, destination);
     case NodeTypes::CanBus:
         // return new (ptr) ECanBusNode();
 

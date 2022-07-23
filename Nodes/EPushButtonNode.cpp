@@ -1,95 +1,34 @@
 #include "EPushButtonNode.h"
 
-void EPushButtonNode::SetInput(uint8_t index, float* output)
+ENode* EPushButtonNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
-    // switch (index) {
-    // case 0:
-    //     m_button.pointer = output;
-    //     m_mask.setPointer(index);
-    //     break;
-    // case 1:
-    //     m_neutralSafety.pointer = output;
-    //     m_mask.setPointer(index);
-    //     break;
-    // case 2:
-    //     m_engineRunning.pointer = output;
-    //     m_mask.setPointer(index);
-    //     break;
-    // }
-}
 
-void EPushButtonNode::SetValue(uint8_t index, float value)
-{
-    // switch (index) {
-    // case 0:
-    //     m_button.value = value;
-    //     m_mask.setValue(index);
-    //     break;
-    // case 1:
-    //     m_neutralSafety.value = value;
-    //     m_mask.setValue(index);
-    //     break;
-    // case 2:
-    //     m_engineRunning.value = value;
-    //     m_mask.setValue(index);
-    //     break;
-    // case 3:
-    //     m_lastButtonState.value = value;
-    //     m_mask.setValue(index);
-    //     break;
-    // }
-}
+    if (spec.type != NodeTypes::Push_Button || spec.numInputs != 3 || spec.numValues != 1)
+        return nullptr;
 
-float* EPushButtonNode::GetOutput(uint8_t index)
-{
-    switch (index) {
-    case 0:
-        return &m_ignitionOut;
-    case 1:
-        return &m_starterOut;
-    }
+    auto button = spec.connections[0];
+    auto neutralSafety = spec.connections[1];
+    auto engineRunning = spec.connections[2];
+
+    if (button == Float && neutralSafety == Float && engineRunning == Float)
+        return new (destination) EPushButtonNodeInternal<float, float, float>();
+    if (button == Float && neutralSafety == Float && engineRunning == Pointer)
+        return new (destination) EPushButtonNodeInternal<float, float, float*>();
+
+    if (button == Float && neutralSafety == Pointer && engineRunning == Float)
+        return new (destination) EPushButtonNodeInternal<float, float*, float>();
+    if (button == Float && neutralSafety == Pointer && engineRunning == Pointer)
+        return new (destination) EPushButtonNodeInternal<float, float*, float*>();
+
+    if (button == Pointer && neutralSafety == Float && engineRunning == Float)
+        return new (destination) EPushButtonNodeInternal<float*, float, float>();
+    if (button == Pointer && neutralSafety == Float && engineRunning == Pointer)
+        return new (destination) EPushButtonNodeInternal<float*, float, float*>();
+
+    if (button == Pointer && neutralSafety == Pointer && engineRunning == Float)
+        return new (destination) EPushButtonNodeInternal<float*, float*, float>();
+    if (button == Pointer && neutralSafety == Pointer && engineRunning == Pointer)
+        return new (destination) EPushButtonNodeInternal<float*, float*, float*>();
+
     return nullptr;
-}
-
-void EPushButtonNode::Evaluate(float timestep)
-{
-    // bool button = ToBool(m_mask.isPointer(0) ? *m_button.pointer : m_button.value);
-    // bool neutralSafety = ToBool(m_mask.isPointer(1) ? *m_neutralSafety.pointer : m_neutralSafety.value);
-    // bool engineRunning = ToBool(m_mask.isPointer(2) ? *m_engineRunning.pointer : m_engineRunning.value);
-    // float& lastButtonState = m_mask.isPointer(3) ? *m_lastButtonState.pointer : m_lastButtonState.value;
-
-    // if (engineRunning && ToBool(m_starterOut)) {
-    //     m_starterOut = 0.0f;
-    //     return;
-    // }
-
-    // if (ToBool(lastButtonState) == button) {
-    //     return;
-    // }
-    // lastButtonState = button;
-
-    // if (button && !ToBool(m_ignitionOut)) {
-    //     m_ignitionOut = 1.0f;
-    //     m_starterOut = 0.0f;
-    //     return;
-    // }
-
-    // if (button && !engineRunning && !neutralSafety) {
-    //     m_ignitionOut = 0.0f;
-    //     m_starterOut = 0.0f;
-    //     return;
-    // }
-
-    // if (button && engineRunning) {
-    //     m_ignitionOut = 0.0f;
-    //     m_starterOut = 0.0f;
-    //     return;
-    // }
-
-    // if (button && !engineRunning && neutralSafety) {
-    //     m_starterOut = 1.0f;
-    //     return;
-    // }
-
-    // m_starterOut = 0.0f;
 }

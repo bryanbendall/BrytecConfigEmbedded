@@ -1,50 +1,17 @@
 #include "EToggleNode.h"
 
-void EToggleNode::SetInput(uint8_t index, float* output)
+ENode* EToggleNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
-    // switch (index) {
-    // case 0:
-    //     m_in.pointer = output;
-    //     m_mask.setPointer(index);
-    //     break;
-    // }
-}
 
-void EToggleNode::SetValue(uint8_t index, float value)
-{
-    // switch (index) {
-    // case 0:
-    //     m_in.value = value;
-    //     m_mask.setValue(index);
-    //     break;
-    // case 1:
-    //     m_lastValue.value = value;
-    //     m_mask.setValue(index);
-    //     break;
-    // }
-}
+    if (spec.type != NodeTypes::Toggle || spec.numInputs != 1 || spec.numValues != 1)
+        return nullptr;
 
-float* EToggleNode::GetOutput(uint8_t index)
-{
-    return index == 0 ? &m_out : nullptr;
-}
+    auto in = spec.connections[0];
 
-void EToggleNode::Evaluate(float timestep)
-{
-    // bool in = ToBool(m_mask.isPointer(0) ? *m_in.pointer : m_in.value);
-    // float& lastValue = m_mask.isPointer(1) ? *m_lastValue.pointer : m_lastValue.value;
+    if (in == Float)
+        return new (destination) EToggleNodeInternal<float>();
+    if (in == Pointer)
+        return new (destination) EToggleNodeInternal<float*>();
 
-    // if (in) {
-    //     if (ToBool(lastValue)) {
-    //         return;
-    //     } else {
-    //         lastValue = true;
-    //         if (ToBool(m_out))
-    //             m_out = 0.0f;
-    //         else
-    //             m_out = 1.0f;
-    //     }
-    // } else {
-    //     lastValue = false;
-    // }
+    return nullptr;
 }
