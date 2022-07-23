@@ -77,8 +77,8 @@ public:
 private:
     ValueOrPointer<Input1_t> m_in;
     ValueOrPointer<Input2_t> m_fromMin;
-    ValueOrPointer<Input1_t> m_fromMax;
-    ValueOrPointer<Input2_t> m_toMin;
-    ValueOrPointer<Input2_t> m_toMax;
+    ValueOrPointer<Input3_t> m_fromMax;
+    ValueOrPointer<Input4_t> m_toMin;
+    ValueOrPointer<Input5_t> m_toMax;
     float m_out;
 };

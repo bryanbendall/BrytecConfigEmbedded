@@ -1,82 +1,95 @@
 #include "EAndNode.h"
 
-void EAndNode::SetInput(uint8_t index, float* output)
+ENode* EAndNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
-    // switch (index) {
-    // case 0:
-    //     m_in1.pointer = output;
-    //     m_mask.setPointer(index);
-    //     break;
-    // case 1:
-    //     m_in2.pointer = output;
-    //     m_mask.setPointer(index);
-    //     break;
-    // case 2:
-    //     m_in3.pointer = output;
-    //     m_mask.setPointer(index);
-    //     break;
-    // case 3:
-    //     m_in4.pointer = output;
-    //     m_mask.setPointer(index);
-    //     break;
-    // case 4:
-    //     m_in5.pointer = output;
-    //     m_mask.setPointer(index);
-    //     break;
-    // }
-}
+    if (spec.type != NodeTypes::And || spec.numInputs != 5 || spec.numValues != 0)
+        return nullptr;
 
-void EAndNode::SetValue(uint8_t index, float value)
-{
-    // switch (index) {
-    // case 0:
-    //     m_in1.value = value;
-    //     m_mask.setValue(index);
-    //     break;
-    // case 1:
-    //     m_in2.value = value;
-    //     m_mask.setValue(index);
-    //     break;
-    // case 2:
-    //     m_in3.value = value;
-    //     m_mask.setValue(index);
-    //     break;
-    // case 3:
-    //     m_in4.value = value;
-    //     m_mask.setValue(index);
-    //     break;
-    // case 4:
-    //     m_in5.value = value;
-    //     m_mask.setValue(index);
-    //     break;
-    // }
-}
+    auto input0 = spec.connections[0];
+    auto input1 = spec.connections[1];
+    auto input2 = spec.connections[2];
+    auto input3 = spec.connections[3];
+    auto input4 = spec.connections[4];
 
-float* EAndNode::GetOutput(uint8_t index)
-{
-    return index == 0 ? &m_out : nullptr;
-}
+    if (input0 == Float && input1 == Float && input2 == Float && input3 == Float && input4 == Float)
+        return new (destination) EAndNodeInternal<float, float, float, float, float>();
+    if (input0 == Float && input1 == Float && input2 == Float && input3 == Float && input4 == Pointer)
+        return new (destination) EAndNodeInternal<float, float, float, float, float*>();
 
-void EAndNode::Evaluate(float timestep)
-{
-    // bool in1 = ToBool(m_mask.isPointer(0) ? *m_in1.pointer : m_in1.value);
-    // bool in2 = ToBool(m_mask.isPointer(1) ? *m_in2.pointer : m_in2.value);
-    // bool in3 = ToBool(m_mask.isPointer(2) ? *m_in3.pointer : m_in3.value);
-    // bool in4 = ToBool(m_mask.isPointer(3) ? *m_in4.pointer : m_in4.value);
-    // bool in5 = ToBool(m_mask.isPointer(4) ? *m_in5.pointer : m_in5.value);
+    if (input0 == Float && input1 == Float && input2 == Float && input3 == Pointer && input4 == Float)
+        return new (destination) EAndNodeInternal<float, float, float, float*, float>();
+    if (input0 == Float && input1 == Float && input2 == Float && input3 == Pointer && input4 == Pointer)
+        return new (destination) EAndNodeInternal<float, float, float, float*, float*>();
 
-    // m_out = 0.0f;
+    if (input0 == Float && input1 == Float && input2 == Pointer && input3 == Float && input4 == Float)
+        return new (destination) EAndNodeInternal<float, float, float*, float, float>();
+    if (input0 == Float && input1 == Float && input2 == Pointer && input3 == Float && input4 == Pointer)
+        return new (destination) EAndNodeInternal<float, float, float*, float, float*>();
 
-    // if (!in1)
-    //     return;
-    // if (!in2)
-    //     return;
-    // if (!in3)
-    //     return;
-    // if (!in4)
-    //     return;
-    // if (!in5)
-    //     return;
+    if (input0 == Float && input1 == Float && input2 == Pointer && input3 == Pointer && input4 == Float)
+        return new (destination) EAndNodeInternal<float, float, float*, float*, float>();
+    if (input0 == Float && input1 == Float && input2 == Pointer && input3 == Pointer && input4 == Pointer)
+        return new (destination) EAndNodeInternal<float, float, float*, float*, float*>();
 
-    // m_out = 1.0f;
+    if (input0 == Float && input1 == Pointer && input2 == Float && input3 == Float && input4 == Float)
+        return new (destination) EAndNodeInternal<float, float*, float, float, float>();
+    if (input0 == Float && input1 == Pointer && input2 == Float && input3 == Float && input4 == Pointer)
+        return new (destination) EAndNodeInternal<float, float*, float, float, float*>();
+
+    if (input0 == Float && input1 == Pointer && input2 == Float && input3 == Pointer && input4 == Float)
+        return new (destination) EAndNodeInternal<float, float*, float, float*, float>();
+    if (input0 == Float && input1 == Pointer && input2 == Float && input3 == Pointer && input4 == Pointer)
+        return new (destination) EAndNodeInternal<float, float*, float, float*, float*>();
+
+    if (input0 == Float && input1 == Pointer && input2 == Pointer && input3 == Float && input4 == Float)
+        return new (destination) EAndNodeInternal<float, float*, float*, float, float>();
+    if (input0 == Float && input1 == Pointer && input2 == Pointer && input3 == Float && input4 == Pointer)
+        return new (destination) EAndNodeInternal<float, float*, float*, float, float*>();
+
+    if (input0 == Float && input1 == Pointer && input2 == Pointer && input3 == Pointer && input4 == Float)
+        return new (destination) EAndNodeInternal<float, float*, float*, float*, float>();
+    if (input0 == Float && input1 == Pointer && input2 == Pointer && input3 == Pointer && input4 == Pointer)
+        return new (destination) EAndNodeInternal<float, float*, float*, float*, float*>();
+
+    if (input0 == Pointer && input1 == Float && input2 == Float && input3 == Float && input4 == Float)
+        return new (destination) EAndNodeInternal<float*, float, float, float, float>();
+    if (input0 == Pointer && input1 == Float && input2 == Float && input3 == Float && input4 == Pointer)
+        return new (destination) EAndNodeInternal<float*, float, float, float, float*>();
+
+    if (input0 == Pointer && input1 == Float && input2 == Float && input3 == Pointer && input4 == Float)
+        return new (destination) EAndNodeInternal<float*, float, float, float*, float>();
+    if (input0 == Pointer && input1 == Float && input2 == Float && input3 == Pointer && input4 == Pointer)
+        return new (destination) EAndNodeInternal<float*, float, float, float*, float*>();
+
+    if (input0 == Pointer && input1 == Float && input2 == Pointer && input3 == Float && input4 == Float)
+        return new (destination) EAndNodeInternal<float*, float, float*, float, float>();
+    if (input0 == Pointer && input1 == Float && input2 == Pointer && input3 == Float && input4 == Pointer)
+        return new (destination) EAndNodeInternal<float*, float, float*, float, float*>();
+
+    if (input0 == Pointer && input1 == Float && input2 == Pointer && input3 == Pointer && input4 == Float)
+        return new (destination) EAndNodeInternal<float*, float, float*, float*, float>();
+    if (input0 == Pointer && input1 == Float && input2 == Pointer && input3 == Pointer && input4 == Pointer)
+        return new (destination) EAndNodeInternal<float*, float, float*, float*, float*>();
+
+    if (input0 == Pointer && input1 == Pointer && input2 == Float && input3 == Float && input4 == Float)
+        return new (destination) EAndNodeInternal<float*, float*, float, float, float>();
+    if (input0 == Pointer && input1 == Pointer && input2 == Float && input3 == Float && input4 == Pointer)
+        return new (destination) EAndNodeInternal<float*, float*, float, float, float*>();
+
+    if (input0 == Pointer && input1 == Pointer && input2 == Float && input3 == Pointer && input4 == Float)
+        return new (destination) EAndNodeInternal<float*, float*, float, float*, float>();
+    if (input0 == Pointer && input1 == Pointer && input2 == Float && input3 == Pointer && input4 == Pointer)
+        return new (destination) EAndNodeInternal<float*, float*, float, float*, float*>();
+
+    if (input0 == Pointer && input1 == Pointer && input2 == Pointer && input3 == Float && input4 == Float)
+        return new (destination) EAndNodeInternal<float*, float*, float*, float, float>();
+    if (input0 == Pointer && input1 == Pointer && input2 == Pointer && input3 == Float && input4 == Pointer)
+        return new (destination) EAndNodeInternal<float*, float*, float*, float, float*>();
+
+    if (input0 == Pointer && input1 == Pointer && input2 == Pointer && input3 == Pointer && input4 == Float)
+        return new (destination) EAndNodeInternal<float*, float*, float*, float*, float>();
+    if (input0 == Pointer && input1 == Pointer && input2 == Pointer && input3 == Pointer && input4 == Pointer)
+        return new (destination) EAndNodeInternal<float*, float*, float*, float*, float*>();
+
+    return nullptr;
 }
