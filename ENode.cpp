@@ -30,11 +30,11 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     case NodeTypes::Initial_Value:
         return EInitialValueNode::CreateInPlace(spec, destination);
     case NodeTypes::Node_Group:
-        // return new (ptr) ENodeGroupNode();
+        return ENodeGroupNode::CreateInPlace(spec, destination);
     case NodeTypes::And:
-        // return new (ptr) EAndNode();
+        return EAndNode::CreateInPlace(spec, destination);
     case NodeTypes::Or:
-        // return new (ptr) EOrNode();
+        return EOrNode::CreateInPlace(spec, destination);
     case NodeTypes::Two_Stage:
         return ETwoStageNode::CreateInPlace(spec, destination);
     case NodeTypes::Curve:
