@@ -32,7 +32,7 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
     // deserialize node groups
     uint16_t nodeGroupCount = des.readRaw<uint16_t>();
     s_data.nodeGroupsCount = nodeGroupCount;
-    s_data.nodeGroups = new ENodeGroup[nodeGroupCount];
+    s_data.nodeGroups = (ENodeGroup*)malloc(sizeof(ENodeGroup) * nodeGroupCount);
 
     // node start and length
 
@@ -70,10 +70,21 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
 
         // connect nodes
         {
-            int nodeCount = des.readRaw<uint8_t>();
-            for (int i = 0; i < nodeCount; i++) {
-                ENodeConnection connection = ENodeDeserializer::deserializeNodeConnection(des);
-                // set connection
+            uint16_t nodeCount = des.readRaw<uint16_t>();
+            for (int nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++) {
+
+                uint8_t inputCount = des.readRaw<uint8_t>();
+                for (int inputIndex = 0; inputIndex < inputCount; inputIndex++) {
+
+                    ENodeConnection connection = ENodeDeserializer::deserializeNodeConnection(des);
+
+                    if (connection.connectionNodeIndex != -1 && connection.outputIndex != -1) {
+                        // Valid connection
+                        ENode* thisNode = s_data.nodeVector.at(nodeIndex);
+                        ENode* connectedNode = s_data.nodeVector.at(connection.connectionNodeIndex);
+                        thisNode->SetInput(inputIndex, connectedNode->GetOutput(connection.outputIndex));
+                    }
+                }
             }
         }
     }

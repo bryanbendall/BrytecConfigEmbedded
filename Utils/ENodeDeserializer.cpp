@@ -36,8 +36,8 @@ ENodeConnection ENodeDeserializer::deserializeNodeConnection(BinaryDeserializer&
 {
     ENodeConnection connection;
 
-    connection.connectionNodeIndex = des.readRaw<uint8_t>();
-    connection.outputIndex = des.readRaw<uint8_t>();
+    connection.connectionNodeIndex = des.readRaw<int8_t>();
+    connection.outputIndex = des.readRaw<int8_t>();
     connection.defaultValue = des.readRaw<float>();
 
     return connection;

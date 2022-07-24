@@ -29,8 +29,8 @@ enum class NodeTypes : uint8_t {
 };
 
 struct ENodeConnection {
-    uint8_t connectionNodeIndex = -1;
-    uint8_t outputIndex = -1;
+    int8_t connectionNodeIndex = -1;
+    int8_t outputIndex = -1;
     float defaultValue = 0.0f;
 };
 
