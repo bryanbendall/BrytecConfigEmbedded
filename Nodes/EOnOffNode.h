@@ -23,6 +23,7 @@ public:
             break;
         }
     }
+
     void SetValue(uint8_t index, float value) override
     {
         switch (index) {
@@ -34,6 +35,12 @@ public:
             break;
         }
     }
+
+    float GetValue(uint8_t index) override
+    {
+        return 0.0f;
+    }
+
     float* GetOutput(uint8_t index = 0) override
     {
         return &m_out;

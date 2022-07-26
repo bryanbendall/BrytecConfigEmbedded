@@ -15,21 +15,21 @@ class NodesVector {
 public:
     NodesVector() { }
 
-    bool add(const ENodeSpec& spec)
+    ENode* add(const ENodeSpec& spec)
     {
         uint8_t* nextData = &m_nodeData[m_dataNextIndex];
 
         if ((m_dataNextIndex + NODE_MAX_SIZE) > SIZE)
-            return false;
+            return nullptr;
 
         ENode* node = ENode::CreateInPlace(spec, nextData);
 
         if (!node)
-            return false;
+            return nullptr;
 
         m_count++;
         m_dataNextIndex += node->Size();
-        return true;
+        return node;
     }
 
     ENode* at(uint32_t index)
@@ -64,6 +64,12 @@ public:
             node->Evaluate(timestep);
             nodeDataIndex += node->Size();
         }
+    }
+
+    void reset()
+    {
+        m_count = 0;
+        m_dataNextIndex = 0;
     }
 
     uint32_t count() { return m_count; }

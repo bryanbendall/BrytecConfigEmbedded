@@ -58,6 +58,7 @@ public:
 
     virtual void SetInput(uint8_t index, float* output) = 0;
     virtual void SetValue(uint8_t index, float value) = 0;
+    virtual float GetValue(uint8_t index) = 0;
     virtual float* GetOutput(uint8_t index = 0) = 0;
     virtual void Evaluate(float timestep) = 0;
     virtual uint32_t Size() = 0;

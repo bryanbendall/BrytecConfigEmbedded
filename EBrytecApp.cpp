@@ -14,6 +14,12 @@ static EBrytecAppData s_data;
 
 void EBrytecApp::deserializeModule(BinaryDeserializer& des)
 {
+    // Delete old node groups because it is a static class
+    if (s_data.nodeGroups) {
+        s_data.nodeVector.reset();
+        free(s_data.nodeGroups);
+        s_data.nodeGroups = nullptr;
+    }
 
     // deserialize modules specs
     des.readRaw<char>(); // M
@@ -32,10 +38,10 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
     // deserialize node groups
     uint16_t nodeGroupCount = des.readRaw<uint16_t>();
     s_data.nodeGroupsCount = nodeGroupCount;
+
     s_data.nodeGroups = (ENodeGroup*)malloc(sizeof(ENodeGroup) * nodeGroupCount);
 
-    // node start and length
-
+    // node group start and length
     for (int nodeGroupIndex = 0; nodeGroupIndex < nodeGroupCount; nodeGroupIndex++) {
 
         ENodeGroup& currentNodeGroup = s_data.nodeGroups[nodeGroupIndex];
@@ -61,8 +67,16 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
         {
             int nodeCount = des.readRaw<uint16_t>();
             for (int i = 0; i < nodeCount; i++) {
+                // Create Node
                 ENodeSpec spec = ENodeDeserializer::deserializeNodeSpec(des);
-                s_data.nodeVector.add(spec);
+                ENode* node = s_data.nodeVector.add(spec);
+                if (!node)
+                    return;
+
+                // Set Values
+                for (int j = 0; j < spec.numValues; j++) {
+                    node->SetValue(spec.numInputs + j, spec.values[j]);
+                }
             }
 
             currentNodeGroup.nodeCount = nodeCount;
@@ -78,11 +92,13 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
 
                     ENodeConnection connection = ENodeDeserializer::deserializeNodeConnection(des);
 
+                    ENode* thisNode = s_data.nodeVector.at(currentNodeGroup.startNodeIndex + nodeIndex);
                     if (connection.connectionNodeIndex != -1 && connection.outputIndex != -1) {
                         // Valid connection
-                        ENode* thisNode = s_data.nodeVector.at(nodeIndex);
-                        ENode* connectedNode = s_data.nodeVector.at(connection.connectionNodeIndex);
+                        ENode* connectedNode = s_data.nodeVector.at(currentNodeGroup.startNodeIndex + connection.connectionNodeIndex);
                         thisNode->SetInput(inputIndex, connectedNode->GetOutput(connection.outputIndex));
+                    } else {
+                        thisNode->SetValue(inputIndex, connection.defaultValue);
                     }
                 }
             }
@@ -136,4 +152,10 @@ ENode* EBrytecApp::getFinalValueNode(int startIndex, int nodeCount)
 ENode* EBrytecApp::getNode(int index)
 {
     return s_data.nodeVector.at(index);
+}
+
+void EBrytecApp::evaulateJustNodes(float timestep)
+{
+    // calculate all nodes
+    s_data.nodeVector.evaluateAll(timestep);
 }

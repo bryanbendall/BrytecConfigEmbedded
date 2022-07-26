@@ -20,6 +20,7 @@ public:
             break;
         }
     }
+
     void SetValue(uint8_t index, float value) override
     {
         switch (index) {
@@ -27,10 +28,27 @@ public:
             m_in.setValue(value);
             break;
         case 1:
-            m_lastValue = value;
+            m_lastIn = value;
+            break;
+        case 2:
+            m_lastOut = value;
+            m_out = value;
             break;
         }
     }
+
+    float GetValue(uint8_t index) override
+    {
+        switch (index) {
+        case 1:
+            return m_lastIn;
+        case 2:
+            return m_lastOut;
+        }
+
+        return 0.0f;
+    }
+
     float* GetOutput(uint8_t index = 0) override
     {
         return &m_out;
@@ -38,27 +56,30 @@ public:
 
     void Evaluate(float timestep) override
     {
-        bool in = ToBool(m_in.getValue());
 
-        if (in) {
-            if (ToBool(m_lastValue)) {
-                return;
-            } else {
-                m_lastValue = true;
-                if (ToBool(m_out))
-                    m_out = 0.0f;
-                else
-                    m_out = 1.0f;
-            }
-        } else {
-            m_lastValue = false;
+        if (ToBool(m_in.getValue()) == ToBool(m_lastIn)) {
+            return;
         }
+
+        if (ToBool(m_in.getValue())) {
+            if (ToBool(m_lastOut))
+                m_out = 0.0f;
+            else
+                m_out = 1.0f;
+
+            m_lastOut = m_out;
+            m_lastIn = 1.0f;
+            return;
+        }
+
+        m_lastIn = 0.0f;
     }
 
     uint32_t Size() override { return sizeof(*this); }
 
 private:
     ValueOrPointer<Input1_t> m_in;
-    float m_lastValue;
+    float m_lastIn;
+    float m_lastOut;
     float m_out;
 };

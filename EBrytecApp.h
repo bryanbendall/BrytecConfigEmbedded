@@ -14,6 +14,11 @@ public:
     static ENode* getNode(int index);
     static ENode* getInitialValueNode(int startIndex, int nodeCount);
     static ENode* getFinalValueNode(int startIndex, int nodeCount);
+
+private:
+    static void evaulateJustNodes(float timestep);
+
+    friend class NodeGroup;
 };
 
 // void testMain()
