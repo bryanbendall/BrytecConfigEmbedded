@@ -6,11 +6,17 @@
 
 void ENodeGroup::setupPin()
 {
+    if (!enabled)
+        return;
+
     BrytecBoard::setupPin(boardPinIndex, type);
 }
 
 void ENodeGroup::updateInitialValue()
 {
+    if (!enabled)
+        return;
+
     ENode* node = EBrytecApp::getInitialValueNode(startNodeIndex, nodeCount);
     if (!node)
         return;
@@ -20,6 +26,9 @@ void ENodeGroup::updateInitialValue()
 
 void ENodeGroup::updateFinalValue()
 {
+    if (!enabled)
+        return;
+
     ENode* node = EBrytecApp::getFinalValueNode(startNodeIndex, nodeCount);
     if (!node)
         return;

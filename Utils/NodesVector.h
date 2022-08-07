@@ -1,6 +1,8 @@
 #pragma once
 
+#include "BrytecConfigEmbedded/Boards/BrytecBoard.h"
 #include "BrytecConfigEmbedded/ENode.h"
+#include "BrytecConfigEmbedded/Utils/EBrytecErrors.h"
 #include <stddef.h>
 
 namespace Embedded {
@@ -19,13 +21,17 @@ public:
     {
         uint8_t* nextData = &m_nodeData[m_dataNextIndex];
 
-        if ((m_dataNextIndex + NODE_MAX_SIZE) > SIZE)
+        if ((m_dataNextIndex + NODE_MAX_SIZE) > SIZE) {
+            BrytecBoard::error(EBrytecErrors::NodeVectorOutOfSpace);
             return nullptr;
+        }
 
         ENode* node = ENode::CreateInPlace(spec, nextData);
 
-        if (!node)
+        if (!node) {
+            BrytecBoard::error(EBrytecErrors::FailedToCreateNode);
             return nullptr;
+        }
 
         m_count++;
         m_dataNextIndex += node->Size();
@@ -34,8 +40,10 @@ public:
 
     ENode* at(uint32_t index)
     {
-        if (index >= m_count)
+        if (index >= m_count) {
+            BrytecBoard::error(EBrytecErrors::NodeIndexOutOfBounds);
             return nullptr;
+        }
 
         uint32_t nodeDataIndex = 0;
         for (uint32_t indexCount = 0; indexCount < index; indexCount++) {

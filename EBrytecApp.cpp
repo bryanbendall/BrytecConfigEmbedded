@@ -6,6 +6,7 @@
 #include "Utils/ENodeGroup.h"
 
 struct EBrytecAppData {
+    uint8_t moduleAddress = 0;
     Embedded::NodesVector nodeVector;
     ENodeGroup* nodeGroups;
     uint32_t nodeGroupsCount = 0;
@@ -22,9 +23,10 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
     }
 
     // deserialize modules specs
-    des.readRaw<char>(); // M
-    des.readRaw<char>(); // D
-    // TODO check header
+    char m = des.readRaw<char>(); // M
+    char d = des.readRaw<char>(); // D
+    if (m != 'M' || d != 'D')
+        BrytecBoard::error(EBrytecErrors::ModuleHeader);
 
     uint8_t major = des.readRaw<uint8_t>();
     uint8_t minor = des.readRaw<uint8_t>();
@@ -32,8 +34,12 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
 
     // module info
     des.readRaw<std::string>(); // name
-    des.readRaw<uint8_t>(); // address
-    des.readRaw<uint8_t>(); // enabled
+    s_data.moduleAddress = des.readRaw<uint8_t>(); // address
+    bool moduleEnabled = des.readRaw<uint8_t>(); // enabled
+    if (!moduleEnabled) {
+        BrytecBoard::error(EBrytecErrors::NotEnabled);
+        return;
+    }
 
     // deserialize node groups
     uint16_t nodeGroupCount = des.readRaw<uint16_t>();
@@ -49,9 +55,10 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
         currentNodeGroup.boardPinIndex = des.readRaw<uint16_t>();
 
         // deserialize modules specs
-        des.readRaw<char>(); // N
-        des.readRaw<char>(); // G
-        // TODO check header
+        char n = des.readRaw<char>(); // N
+        char g = des.readRaw<char>(); // G
+        if (n != 'N' || g != 'G')
+            BrytecBoard::error(EBrytecErrors::NodeGroupHeader);
 
         uint8_t major = des.readRaw<uint8_t>();
         uint8_t minor = des.readRaw<uint8_t>();
@@ -61,7 +68,9 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
         des.readRaw<std::string>(); // name
         des.readRaw<uint64_t>(); // uuid
         currentNodeGroup.type = (IOTypes::Types)des.readRaw<uint8_t>(); // type
-        des.readRaw<uint8_t>(); // enabled
+        currentNodeGroup.enabled = des.readRaw<uint8_t>(); // enabled
+        if (!currentNodeGroup.enabled)
+            BrytecBoard::error(EBrytecErrors::NotEnabled);
 
         // create nodes in vector
         {
@@ -70,8 +79,10 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
                 // Create Node
                 ENodeSpec spec = ENodeDeserializer::deserializeNodeSpec(des);
                 ENode* node = s_data.nodeVector.add(spec);
-                if (!node)
+                if (!node) {
+                    BrytecBoard::error(EBrytecErrors::AddNodeFailed);
                     return;
+                }
 
                 // Set Values
                 for (int j = 0; j < spec.numValues; j++) {
