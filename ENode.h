@@ -42,6 +42,9 @@ struct ENodeSpec {
 
     uint8_t numValues = 0;
     float values[8];
+
+    uint8_t moduleAddress = 0;
+    uint8_t pinIndex = 0;
 };
 
 inline bool ToBool(float f)

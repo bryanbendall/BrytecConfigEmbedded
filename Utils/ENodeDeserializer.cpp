@@ -26,8 +26,11 @@ ENodeSpec ENodeDeserializer::deserializeNodeSpec(BinaryDeserializer& des)
             spec.values[i] = des.readRaw<float>();
     }
 
-    if (spec.type == NodeTypes::Node_Group)
+    if (spec.type == NodeTypes::Node_Group) {
         des.readRaw<uint64_t>(); // uuid
+        spec.moduleAddress = des.readRaw<uint8_t>(); // Module Address
+        spec.pinIndex = des.readRaw<uint8_t>(); // Pin Index
+    }
 
     return spec;
 }
