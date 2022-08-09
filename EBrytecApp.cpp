@@ -2,6 +2,7 @@
 
 #include "Nodes/EFinalValueNode.h"
 #include "Nodes/EInitialValueNode.h"
+#include "Nodes/ENodeGroupNode.h"
 #include "Utils/ENodeDeserializer.h"
 #include "Utils/ENodeGroup.h"
 
@@ -125,6 +126,9 @@ void EBrytecApp::setupPins()
 
 void EBrytecApp::update(float timestep)
 {
+    // update node group nodes
+    updateNodeGroupNodes();
+
     // get inputs
     for (int i = 0; i < s_data.nodeGroupsCount; i++) {
         s_data.nodeGroups[i].updateInitialValue();
@@ -163,6 +167,16 @@ ENode* EBrytecApp::getFinalValueNode(int startIndex, int nodeCount)
 ENode* EBrytecApp::getNode(int index)
 {
     return s_data.nodeVector.at(index);
+}
+
+void EBrytecApp::updateNodeGroupNodes()
+{
+    for (int i = 0; i < s_data.nodeVector.count(); i++) {
+        if (auto nodeGroupNode = dynamic_cast<ENodeGroupNodeInternal*>(s_data.nodeVector.at(i))) {
+            float value = BrytecBoard::getCanValue(nodeGroupNode->getModuleAddress(), nodeGroupNode->getPinIndex());
+            nodeGroupNode->SetValue(0, value);
+        }
+    }
 }
 
 void EBrytecApp::evaulateJustNodes(float timestep)

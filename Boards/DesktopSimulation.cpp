@@ -41,6 +41,11 @@ float BrytecBoard::getPinValue(uint8_t index)
     return 0.0f;
 }
 
+float BrytecBoard::getCanValue(uint8_t moduleAddress, uint8_t pinIndex)
+{
+    return 0.0f;
+}
+
 void BrytecBoard::setPinValue(uint8_t index, float value)
 {
 }

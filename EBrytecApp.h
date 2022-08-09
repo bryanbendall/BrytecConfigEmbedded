@@ -16,6 +16,7 @@ public:
     static ENode* getFinalValueNode(int startIndex, int nodeCount);
 
 private:
+    static void updateNodeGroupNodes();
     static void evaulateJustNodes(float timestep);
 
     friend class NodeGroup;

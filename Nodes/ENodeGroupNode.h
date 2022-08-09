@@ -11,7 +11,14 @@ public:
 class ENodeGroupNodeInternal : public ENodeGroupNode {
 
 public:
-    void SetInput(uint8_t index, float* output) override
+    ENodeGroupNodeInternal(uint8_t moduleAddress, uint8_t pinIndex)
+        : m_moduleAddress(moduleAddress)
+        , m_pinIndex(pinIndex)
+    {
+    }
+
+    void
+    SetInput(uint8_t index, float* output) override
     {
     }
 
@@ -19,7 +26,7 @@ public:
     {
         switch (index) {
         case 0:
-            m_simValue = value;
+            m_out = value;
         }
     }
 
@@ -27,7 +34,7 @@ public:
     {
         switch (index) {
         case 0:
-            return m_simValue;
+            return m_out;
         }
 
         return 0.0f;
@@ -40,13 +47,14 @@ public:
 
     void Evaluate(float timestep) override
     {
-        // TODO remove m_rawData?
-        m_out = m_simValue;
     }
 
     uint32_t Size() override { return sizeof(*this); }
+    uint8_t getModuleAddress() { return m_moduleAddress; }
+    uint8_t getPinIndex() { return m_pinIndex; }
 
 private:
-    float m_simValue;
+    uint8_t m_moduleAddress;
+    uint8_t m_pinIndex;
     float m_out;
 };

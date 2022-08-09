@@ -10,5 +10,6 @@ public:
     static void error(EBrytecErrors error);
     static void setupPin(uint8_t index, IOTypes::Types type);
     static float getPinValue(uint8_t index);
+    static float getCanValue(uint8_t moduleAddress, uint8_t pinIndex);
     static void setPinValue(uint8_t index, float value);
 };
