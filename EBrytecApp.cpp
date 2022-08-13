@@ -118,6 +118,11 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
     }
 }
 
+void EBrytecApp::setupModule()
+{
+    BrytecBoard::setupBrytecCan(s_data.moduleAddress);
+}
+
 void EBrytecApp::setupPins()
 {
     for (int i = 0; i < s_data.nodeGroupsCount; i++)
@@ -164,6 +169,11 @@ ENode* EBrytecApp::getFinalValueNode(int startIndex, int nodeCount)
     return nullptr;
 }
 
+float EBrytecApp::getBrytecNetworkValue(uint8_t moduleAddress, uint8_t pinIndex)
+{
+    return BrytecBoard::getBrytecNetworkValue(moduleAddress, pinIndex);
+}
+
 ENode* EBrytecApp::getNode(int index)
 {
     return s_data.nodeVector.at(index);
@@ -173,7 +183,7 @@ void EBrytecApp::updateNodeGroupNodes()
 {
     for (int i = 0; i < s_data.nodeVector.count(); i++) {
         if (auto nodeGroupNode = dynamic_cast<ENodeGroupNodeInternal*>(s_data.nodeVector.at(i))) {
-            float value = BrytecBoard::getCanValue(nodeGroupNode->getModuleAddress(), nodeGroupNode->getPinIndex());
+            float value = EBrytecApp::getBrytecNetworkValue(nodeGroupNode->getModuleAddress(), nodeGroupNode->getPinIndex());
             nodeGroupNode->SetValue(0, value);
         }
     }

@@ -32,6 +32,10 @@ void BrytecBoard::error(EBrytecErrors error)
     }
 }
 
+void BrytecBoard::setupBrytecCan(uint8_t moduleAddress)
+{
+}
+
 void BrytecBoard::setupPin(uint8_t index, IOTypes::Types type)
 {
 }
@@ -41,7 +45,7 @@ float BrytecBoard::getPinValue(uint8_t index)
     return 0.0f;
 }
 
-float BrytecBoard::getCanValue(uint8_t moduleAddress, uint8_t pinIndex)
+float BrytecBoard::getBrytecNetworkValue(uint8_t moduleAddress, uint8_t pinIndex)
 {
     return 0.0f;
 }
