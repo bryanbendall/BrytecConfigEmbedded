@@ -17,7 +17,6 @@
 #include "Nodes/EToggleNode.h"
 #include "Nodes/ETwoStageNode.h"
 #include "Nodes/EValueNode.h"
-#include <new>
 
 ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {

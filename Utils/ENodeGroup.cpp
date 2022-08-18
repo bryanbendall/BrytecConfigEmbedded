@@ -1,8 +1,8 @@
 #include "ENodeGroup.h"
 
-#include "BrytecConfigEmbedded/Boards/BrytecBoard.h"
-#include "BrytecConfigEmbedded/EBrytecApp.h"
-#include "BrytecConfigEmbedded/ENode.h"
+#include "Boards/BrytecBoard.h"
+#include "EBrytecApp.h"
+#include "ENode.h"
 
 void ENodeGroup::setupPin()
 {

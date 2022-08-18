@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BrytecConfigEmbedded/Utils/ENodeConnection.h"
+#include "Utils/ENodeConnection.h"
 #include <cstddef>
 #include <new>
 #include <stdint.h>

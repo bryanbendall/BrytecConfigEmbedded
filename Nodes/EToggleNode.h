@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BrytecConfigEmbedded/ENode.h"
+#include "ENode.h"
 
 class EToggleNode : public ENode {
 

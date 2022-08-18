@@ -1,7 +1,5 @@
 #include "ECompareNode.h"
 
-#include <new>
-
 ENode* ECompareNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
     if (spec.type != NodeTypes::Compare || spec.numInputs != 2 || spec.numValues != 1)

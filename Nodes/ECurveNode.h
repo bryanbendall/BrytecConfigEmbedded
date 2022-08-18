@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BrytecConfigEmbedded/ENode.h"
+#include "ENode.h"
 #include <math.h>
 
 enum class CurveType : uint8_t {

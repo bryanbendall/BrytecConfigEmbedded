@@ -1,7 +1,6 @@
 #pragma once
 
-#include "BrytecConfigEmbedded/ENode.h"
-#include "utils/BinarySerializer.h"
+#include "ENode.h"
 #include <cmath>
 
 enum class CompareType : uint8_t {

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Boards/BrytecBoard.h"
-#include "BrytecConfigEmbedded/Utils/NodesVector.h"
 #include "Utils/BinaryDeserializer.h"
+#include "Utils/NodesVector.h"
 #include <stdint.h>
 
 class EBrytecApp {

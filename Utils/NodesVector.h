@@ -1,8 +1,8 @@
 #pragma once
 
-#include "BrytecConfigEmbedded/Boards/BrytecBoard.h"
-#include "BrytecConfigEmbedded/ENode.h"
-#include "BrytecConfigEmbedded/Utils/EBrytecErrors.h"
+#include "Boards/BrytecBoard.h"
+#include "ENode.h"
+#include "Utils/EBrytecErrors.h"
 #include <stddef.h>
 
 namespace Embedded {

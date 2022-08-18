@@ -1,7 +1,7 @@
 #pragma once
 
-#include "BrytecConfigEmbedded/ENode.h"
-#include "BrytecConfigEmbedded/Utils/BinaryDeserializer.h"
+#include "ENode.h"
+#include "Utils/BinaryDeserializer.h"
 
 class ENodeDeserializer {
 public:

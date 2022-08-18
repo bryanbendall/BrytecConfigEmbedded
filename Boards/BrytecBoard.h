@@ -1,7 +1,7 @@
 #pragma once
 
-#include "BrytecConfigEmbedded/IOTypes.h"
-#include "BrytecConfigEmbedded/Utils/EBrytecErrors.h"
+#include "IOTypes.h"
+#include "Utils/EBrytecErrors.h"
 #include <stdint.h>
 
 class BrytecBoard {

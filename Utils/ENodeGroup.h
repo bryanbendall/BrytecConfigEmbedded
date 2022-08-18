@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BrytecConfigEmbedded/IOTypes.h"
+#include "IOTypes.h"
 #include <stdint.h>
 
 struct ENodeGroup {
