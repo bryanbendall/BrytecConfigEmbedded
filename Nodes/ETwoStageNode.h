@@ -77,6 +77,8 @@ public:
 
     uint32_t Size() override { return sizeof(*this); }
 
+    NodeTypes NodeType() override { return NodeTypes::Two_Stage; }
+
 private:
     ValueOrPointer<Input1_t> m_stage1Trigger;
     ValueOrPointer<Input2_t> m_stage1Percent;

@@ -63,6 +63,8 @@ public:
 
     uint32_t Size() override { return sizeof(*this); }
 
+    NodeTypes NodeType() override { return NodeTypes::On_Off; }
+
 private:
     ValueOrPointer<Input1_t> m_on;
     ValueOrPointer<Input2_t> m_off;

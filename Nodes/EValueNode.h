@@ -41,6 +41,8 @@ public:
 
     uint32_t Size() override { return sizeof(*this); }
 
+    NodeTypes NodeType() override { return NodeTypes::Value; }
+
 private:
     float m_out;
 };

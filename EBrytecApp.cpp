@@ -151,7 +151,8 @@ void EBrytecApp::update(float timestep)
 ENode* EBrytecApp::getInitialValueNode(int startIndex, int nodeCount)
 {
     for (int i = startIndex; i < startIndex + nodeCount; i++) {
-        if (auto node = dynamic_cast<EInitialValueNode*>(s_data.nodeVector.at(i)))
+        ENode* node = s_data.nodeVector.at(i);
+        if (node->NodeType() == NodeTypes::Initial_Value)
             return node;
     }
 
@@ -162,7 +163,8 @@ ENode* EBrytecApp::getFinalValueNode(int startIndex, int nodeCount)
 {
     // Start at the last one because it should always be the last
     for (int i = startIndex + nodeCount - 1; i >= startIndex; i--) {
-        if (auto node = dynamic_cast<EFinalValueNode*>(s_data.nodeVector.at(i)))
+        ENode* node = s_data.nodeVector.at(i);
+        if (node->NodeType() == NodeTypes::Final_Value)
             return node;
     }
 
@@ -182,7 +184,10 @@ ENode* EBrytecApp::getNode(int index)
 void EBrytecApp::updateNodeGroupNodes()
 {
     for (int i = 0; i < s_data.nodeVector.count(); i++) {
-        if (auto nodeGroupNode = dynamic_cast<ENodeGroupNodeInternal*>(s_data.nodeVector.at(i))) {
+
+        ENode* node = s_data.nodeVector.at(i);
+        if (node->NodeType() == NodeTypes::Node_Group) {
+            ENodeGroupNodeInternal* nodeGroupNode = (ENodeGroupNodeInternal*)node;
             float value = EBrytecApp::getBrytecNetworkValue(nodeGroupNode->getModuleAddress(), nodeGroupNode->getPinIndex());
             nodeGroupNode->SetValue(0, value);
         }

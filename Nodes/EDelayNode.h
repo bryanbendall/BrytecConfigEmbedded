@@ -73,6 +73,8 @@ public:
 
     uint32_t Size() override { return sizeof(*this); }
 
+    NodeTypes NodeType() override { return NodeTypes::Delay; }
+
 private:
     ValueOrPointer<Input1_t> m_in;
     ValueOrPointer<Input2_t> m_delayTime;

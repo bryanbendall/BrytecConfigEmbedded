@@ -111,6 +111,8 @@ public:
 
     uint32_t Size() override { return sizeof(*this); }
 
+    NodeTypes NodeType() override { return NodeTypes::Push_Button; }
+
 private:
     ValueOrPointer<Input1_t> m_button;
     ValueOrPointer<Input2_t> m_neutralSafety;

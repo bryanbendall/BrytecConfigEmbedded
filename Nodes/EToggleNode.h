@@ -77,6 +77,8 @@ public:
 
     uint32_t Size() override { return sizeof(*this); }
 
+    NodeTypes NodeType() override { return NodeTypes::Toggle; }
+
 private:
     ValueOrPointer<Input1_t> m_in;
     float m_lastIn;

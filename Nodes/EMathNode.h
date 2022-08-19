@@ -76,6 +76,8 @@ public:
 
     uint32_t Size() override { return sizeof(*this); }
 
+    NodeTypes NodeType() override { return NodeTypes::Math; }
+
 private:
     ValueOrPointer<Input1_t> m_input1;
     ValueOrPointer<Input2_t> m_input2;

@@ -14,6 +14,7 @@ public:
     float* GetOutput(uint8_t index) override;
     void Evaluate(float timestep) override;
     uint32_t Size() override { return sizeof(ECanBusNode); };
+    NodeTypes NodeType() override { return NodeTypes::CanBus; }
 
 private:
     float id;

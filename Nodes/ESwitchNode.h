@@ -66,6 +66,8 @@ public:
 
     uint32_t Size() override { return sizeof(*this); }
 
+    NodeTypes NodeType() override { return NodeTypes::Switch; }
+
 private:
     ValueOrPointer<Input1_t> m_selection;
     ValueOrPointer<Input2_t> m_input1;

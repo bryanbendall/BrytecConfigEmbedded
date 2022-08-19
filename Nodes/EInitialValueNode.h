@@ -42,6 +42,9 @@ public:
 
     uint32_t Size() override { return sizeof(*this); }
 
+    // NodeTypes NodeType() override { return m_type; }
+
 private:
+    // static const NodeTypes m_type = NodeTypes::Initial_Value;
     float m_out;
 };

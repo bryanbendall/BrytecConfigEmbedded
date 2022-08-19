@@ -54,6 +54,7 @@ inline bool ToBool(float f)
     else
         return false;
 }
+
 class ENode {
 
 public:
@@ -65,4 +66,5 @@ public:
     virtual float* GetOutput(uint8_t index = 0) = 0;
     virtual void Evaluate(float timestep) = 0;
     virtual uint32_t Size() = 0;
+    virtual NodeTypes NodeType() = 0;
 };

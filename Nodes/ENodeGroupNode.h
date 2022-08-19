@@ -50,7 +50,11 @@ public:
     }
 
     uint32_t Size() override { return sizeof(*this); }
+
+    NodeTypes NodeType() override { return NodeTypes::Node_Group; }
+
     uint8_t getModuleAddress() { return m_moduleAddress; }
+
     uint8_t getPinIndex() { return m_pinIndex; }
 
 private:
