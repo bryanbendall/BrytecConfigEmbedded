@@ -1,8 +1,10 @@
 #pragma once
 
+#include <stdint.h>
+
 struct EmptyString { };
 
-// #define Embedded
+#define Embedded
 #ifndef Embedded
 #include <filesystem>
 #endif
