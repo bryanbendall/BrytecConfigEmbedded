@@ -4,7 +4,7 @@ ENodeSpec ENodeDeserializer::deserializeNodeSpec(BinaryDeserializer& des)
 {
     ENodeSpec spec;
 
-    des.readRaw<std::string>(); // name
+    des.readRaw<EmptyString>(); // name
     spec.type = (NodeTypes)des.readRaw<uint16_t>();
     des.readRaw<float>(); // x
     des.readRaw<float>(); // y

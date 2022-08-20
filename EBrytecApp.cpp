@@ -5,7 +5,6 @@
 #include "Nodes/ENodeGroupNode.h"
 #include "Utils/ENodeDeserializer.h"
 #include "Utils/ENodeGroup.h"
-
 #include <stdlib.h>
 
 struct EBrytecAppData {
@@ -36,7 +35,7 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
     // TODO check version
 
     // module info
-    // des.readRaw<std::string>(); // name
+    des.readRaw<EmptyString>(); // name
     s_data.moduleAddress = des.readRaw<uint8_t>(); // address
     bool moduleEnabled = des.readRaw<uint8_t>(); // enabled
     if (!moduleEnabled) {
@@ -68,7 +67,7 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
         // TODO check version
 
         // node group info
-        // des.readRaw<std::string>(); // name
+        des.readRaw<EmptyString>(); // name
         des.readRaw<uint64_t>(); // uuid
         currentNodeGroup.type = (IOTypes::Types)des.readRaw<uint8_t>(); // type
         currentNodeGroup.enabled = des.readRaw<uint8_t>(); // enabled

@@ -7,6 +7,7 @@ BinaryDeserializer::BinaryDeserializer(uint8_t* data)
 {
 }
 
+#ifndef Embedded
 BinaryDeserializer::BinaryDeserializer(std::filesystem::path path)
 {
     std::ifstream is(path, std::ifstream::binary);
@@ -23,6 +24,7 @@ BinaryDeserializer::BinaryDeserializer(std::filesystem::path path)
         m_ownData = true;
     }
 }
+#endif
 
 BinaryDeserializer ::~BinaryDeserializer()
 {

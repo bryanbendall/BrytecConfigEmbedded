@@ -1,12 +1,19 @@
 #pragma once
 
+struct EmptyString { };
+
+// #define Embedded
+#ifndef Embedded
 #include <filesystem>
+#endif
 
 class BinaryDeserializer {
 
 public:
     BinaryDeserializer(uint8_t* data);
+#ifndef Embedded
     BinaryDeserializer(std::filesystem::path path);
+#endif
 
     ~BinaryDeserializer();
 
@@ -31,6 +38,7 @@ private:
     uint64_t m_savedOffset = 0;
 };
 
+#ifndef Embedded
 template <>
 inline std::string BinaryDeserializer::readRaw<std::string>()
 {
@@ -45,4 +53,21 @@ inline std::string BinaryDeserializer::readRaw<std::string>()
         data[i] = readRaw<char>();
 
     return std::string(data, length);
+}
+#endif
+
+template <>
+inline EmptyString BinaryDeserializer::readRaw<EmptyString>()
+{
+    uint32_t length = readRaw<uint32_t>();
+
+    if (length <= 0)
+        return {};
+
+    char data[length];
+
+    for (int i = 0; i < length; i++)
+        data[i] = readRaw<char>();
+
+    return {};
 }
