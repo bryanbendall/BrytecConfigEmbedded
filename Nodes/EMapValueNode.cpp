@@ -11,6 +11,7 @@ ENode* EMapValueNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     auto input3 = spec.connections[3];
     auto input4 = spec.connections[4];
 
+#ifdef ENODE_FULL_TEMPLATE
     if (input0 == Float && input1 == Float && input2 == Float && input3 == Float && input4 == Float)
         return new (destination) EMapValueNodeInternal<float, float, float, float, float>();
     if (input0 == Float && input1 == Float && input2 == Float && input3 == Float && input4 == Pointer)
@@ -90,6 +91,11 @@ ENode* EMapValueNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         return new (destination) EMapValueNodeInternal<float*, float*, float*, float*, float>();
     if (input0 == Pointer && input1 == Pointer && input2 == Pointer && input3 == Pointer && input4 == Pointer)
         return new (destination) EMapValueNodeInternal<float*, float*, float*, float*, float*>();
+
+#else
+    return new (destination) EMapValueNodeInternal<float, float, float, float, float>();
+
+#endif
 
     return nullptr;
 }

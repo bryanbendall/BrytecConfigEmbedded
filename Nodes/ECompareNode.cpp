@@ -9,6 +9,7 @@ ENode* ECompareNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     auto input1 = spec.connections[1];
     auto compareType = (CompareType)spec.values[0];
 
+#ifdef ENODE_FULL_TEMPLATE
     switch (compareType) {
     case CompareType::Equal:
         if (input0 == Float && input1 == Float)
@@ -70,6 +71,29 @@ ENode* ECompareNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         if (input0 == Pointer && input1 == Pointer)
             return new (destination) ECompareNodeInternal<CompareType::LessEqual, float*, float*>();
     }
+
+#else
+    switch (compareType) {
+    case CompareType::Equal:
+        return new (destination) ECompareNodeInternal<CompareType::Equal, float, float>();
+
+    case CompareType::NotEqual:
+        return new (destination) ECompareNodeInternal<CompareType::NotEqual, float, float>();
+
+    case CompareType::Greater:
+        return new (destination) ECompareNodeInternal<CompareType::Greater, float, float>();
+
+    case CompareType::GreaterEqual:
+        return new (destination) ECompareNodeInternal<CompareType::GreaterEqual, float, float>();
+
+    case CompareType::Less:
+        return new (destination) ECompareNodeInternal<CompareType::Less, float, float>();
+
+    case CompareType::LessEqual:
+        return new (destination) ECompareNodeInternal<CompareType::LessEqual, float, float>();
+    }
+
+#endif
 
     return nullptr;
 }

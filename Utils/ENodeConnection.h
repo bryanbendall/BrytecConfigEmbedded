@@ -17,6 +17,33 @@ enum ConnectionType : uint8_t {
 //     static constexpr bool value = true;
 // };
 
+class ValueAndPointer {
+
+public:
+    float getValue()
+    {
+        if (m_pointer)
+            return *m_pointer;
+        else
+            return m_value;
+    }
+
+    void setValue(float value)
+    {
+        m_pointer = nullptr;
+        m_value = value;
+    }
+
+    void setPointer(float* value)
+    {
+        m_pointer = value;
+    }
+
+private:
+    float m_value = 0.0f;
+    float* m_pointer = nullptr;
+};
+
 template <typename T>
 class ValueOrPointer {
 

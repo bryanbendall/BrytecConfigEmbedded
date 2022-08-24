@@ -9,6 +9,7 @@ ENode* EOnOffNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     auto on = spec.connections[0];
     auto off = spec.connections[1];
 
+#ifdef ENODE_FULL_TEMPLATE
     if (on == Float && off == Float)
         return new (destination) EOnOffNodeInternal<float, float>();
     if (on == Float && off == Pointer)
@@ -17,6 +18,11 @@ ENode* EOnOffNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         return new (destination) EOnOffNodeInternal<float*, float>();
     if (on == Pointer && off == Pointer)
         return new (destination) EOnOffNodeInternal<float*, float*>();
+
+#else
+    return new (destination) EOnOffNodeInternal<float, float>();
+
+#endif
 
     return nullptr;
 }

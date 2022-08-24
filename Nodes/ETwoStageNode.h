@@ -80,9 +80,16 @@ public:
     NodeTypes NodeType() override { return NodeTypes::Two_Stage; }
 
 private:
+#ifdef ENODE_FULL_TEMPLATE
     ValueOrPointer<Input1_t> m_stage1Trigger;
     ValueOrPointer<Input2_t> m_stage1Percent;
     ValueOrPointer<Input1_t> m_stage2Trigger;
     ValueOrPointer<Input2_t> m_stage2Percent;
+#else
+    ValueAndPointer m_stage1Trigger;
+    ValueAndPointer m_stage1Percent;
+    ValueAndPointer m_stage2Trigger;
+    ValueAndPointer m_stage2Percent;
+#endif
     float m_out;
 };

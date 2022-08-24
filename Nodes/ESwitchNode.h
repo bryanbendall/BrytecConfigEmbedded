@@ -69,8 +69,14 @@ public:
     NodeTypes NodeType() override { return NodeTypes::Switch; }
 
 private:
+#ifdef ENODE_FULL_TEMPLATE
     ValueOrPointer<Input1_t> m_selection;
     ValueOrPointer<Input2_t> m_input1;
     ValueOrPointer<Input3_t> m_input2;
+#else
+    ValueAndPointer m_selection;
+    ValueAndPointer m_input1;
+    ValueAndPointer m_input2;
+#endif
     float m_out;
 };

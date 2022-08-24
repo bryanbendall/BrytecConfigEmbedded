@@ -5,12 +5,18 @@ ENode* EFinalValueNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destinatio
     if (spec.type != NodeTypes::Final_Value || spec.numInputs != 1 || spec.numValues != 0)
         return nullptr;
 
+#ifdef ENODE_FULL_TEMPLATE
     switch (spec.connections[0]) {
     case Float:
         return new (destination) EFinalValueNodeInternal<float>();
     case Pointer:
         return new (destination) EFinalValueNodeInternal<float*>();
     }
+
+#else
+    return new (destination) EFinalValueNodeInternal<float>();
+
+#endif
 
     return nullptr;
 }

@@ -8,10 +8,16 @@ ENode* EInvertNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 
     auto in = spec.connections[0];
 
+#ifdef ENODE_FULL_TEMPLATE
     if (in == Float)
         return new (destination) EInvertNodeInternal<float>();
     if (in == Pointer)
         return new (destination) EInvertNodeInternal<float*>();
+
+#else
+    return new (destination) EInvertNodeInternal<float>();
+
+#endif
 
     return nullptr;
 }

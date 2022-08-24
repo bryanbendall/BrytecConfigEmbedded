@@ -79,7 +79,12 @@ public:
     NodeTypes NodeType() override { return NodeTypes::Math; }
 
 private:
+#ifdef ENODE_FULL_TEMPLATE
     ValueOrPointer<Input1_t> m_input1;
     ValueOrPointer<Input2_t> m_input2;
+#else
+    ValueAndPointer m_input1;
+    ValueAndPointer m_input2;
+#endif
     float m_out;
 };

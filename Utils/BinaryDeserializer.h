@@ -1,10 +1,10 @@
 #pragma once
 
+#include "EBrytecConfig.h"
 #include <stdint.h>
 
 struct EmptyString { };
 
-#define Embedded
 #ifndef Embedded
 #include <filesystem>
 #endif

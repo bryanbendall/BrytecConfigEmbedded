@@ -114,9 +114,15 @@ public:
     NodeTypes NodeType() override { return NodeTypes::Push_Button; }
 
 private:
+#ifdef ENODE_FULL_TEMPLATE
     ValueOrPointer<Input1_t> m_button;
     ValueOrPointer<Input2_t> m_neutralSafety;
     ValueOrPointer<Input3_t> m_engineRunning;
+#else
+    ValueAndPointer m_button;
+    ValueAndPointer m_neutralSafety;
+    ValueAndPointer m_engineRunning;
+#endif
     float m_lastButtonState;
     float m_ignitionOut;
     float m_starterOut;

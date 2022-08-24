@@ -11,6 +11,7 @@ ENode* ECurveNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     auto timeout = spec.connections[2];
     auto curveType = (CurveType)spec.values[0];
 
+#ifdef ENODE_FULL_TEMPLATE
     switch (curveType) {
     case CurveType::Toggle:
         if (in == Float && repeat == Float && timeout == Float)
@@ -96,6 +97,23 @@ ENode* ECurveNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         if (in == Pointer && repeat == Pointer && timeout == Pointer)
             return new (destination) ECurveNodeInternal<CurveType::Breathing, float*, float*, float*>();
     }
+
+#else
+    switch (curveType) {
+    case CurveType::Toggle:
+        return new (destination) ECurveNodeInternal<CurveType::Toggle, float, float, float>();
+
+    case CurveType::Linear:
+        return new (destination) ECurveNodeInternal<CurveType::Linear, float, float, float>();
+
+    case CurveType::Exponential:
+        return new (destination) ECurveNodeInternal<CurveType::Exponential, float, float, float>();
+
+    case CurveType::Breathing:
+        return new (destination) ECurveNodeInternal<CurveType::Breathing, float, float, float>();
+    }
+
+#endif
 
     return nullptr;
 }

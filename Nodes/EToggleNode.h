@@ -80,7 +80,11 @@ public:
     NodeTypes NodeType() override { return NodeTypes::Toggle; }
 
 private:
+#ifdef ENODE_FULL_TEMPLATE
     ValueOrPointer<Input1_t> m_in;
+#else
+    ValueAndPointer m_in;
+#endif
     float m_lastIn;
     float m_lastOut;
     float m_out;

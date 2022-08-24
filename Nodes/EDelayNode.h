@@ -76,8 +76,13 @@ public:
     NodeTypes NodeType() override { return NodeTypes::Delay; }
 
 private:
+#ifdef ENODE_FULL_TEMPLATE
     ValueOrPointer<Input1_t> m_in;
     ValueOrPointer<Input2_t> m_delayTime;
+#else
+    ValueAndPointer m_in;
+    ValueAndPointer m_delayTime;
+#endif
     float m_timerCounter;
     float m_out;
 };

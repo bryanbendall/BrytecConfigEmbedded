@@ -10,6 +10,7 @@ ENode* ESwitchNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     auto input1 = spec.connections[1];
     auto input2 = spec.connections[2];
 
+#ifdef ENODE_FULL_TEMPLATE
     if (selection == Float && input1 == Float && input2 == Float)
         return new (destination) ESwitchNodeInternal<float, float, float>();
     if (selection == Float && input1 == Float && input2 == Pointer)
@@ -29,6 +30,11 @@ ENode* ESwitchNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         return new (destination) ESwitchNodeInternal<float*, float*, float>();
     if (selection == Pointer && input1 == Pointer && input2 == Pointer)
         return new (destination) ESwitchNodeInternal<float*, float*, float*>();
+
+#else
+    return new (destination) ESwitchNodeInternal<float, float, float>();
+
+#endif
 
     return nullptr;
 }

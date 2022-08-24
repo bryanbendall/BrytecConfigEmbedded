@@ -84,10 +84,18 @@ public:
     NodeTypes NodeType() override { return NodeTypes::Map_Value; }
 
 private:
+#ifdef ENODE_FULL_TEMPLATE
     ValueOrPointer<Input1_t> m_in;
     ValueOrPointer<Input2_t> m_fromMin;
     ValueOrPointer<Input3_t> m_fromMax;
     ValueOrPointer<Input4_t> m_toMin;
     ValueOrPointer<Input5_t> m_toMax;
+#else
+    ValueAndPointer m_in;
+    ValueAndPointer m_fromMin;
+    ValueAndPointer m_fromMax;
+    ValueAndPointer m_toMin;
+    ValueAndPointer m_toMax;
+#endif
     float m_out;
 };

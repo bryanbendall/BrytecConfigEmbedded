@@ -10,6 +10,7 @@ ENode* EPushButtonNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destinatio
     auto neutralSafety = spec.connections[1];
     auto engineRunning = spec.connections[2];
 
+#ifdef ENODE_FULL_TEMPLATE
     if (button == Float && neutralSafety == Float && engineRunning == Float)
         return new (destination) EPushButtonNodeInternal<float, float, float>();
     if (button == Float && neutralSafety == Float && engineRunning == Pointer)
@@ -29,6 +30,11 @@ ENode* EPushButtonNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destinatio
         return new (destination) EPushButtonNodeInternal<float*, float*, float>();
     if (button == Pointer && neutralSafety == Pointer && engineRunning == Pointer)
         return new (destination) EPushButtonNodeInternal<float*, float*, float*>();
+
+#else
+    return new (destination) EPushButtonNodeInternal<float, float, float>();
+
+#endif
 
     return nullptr;
 }

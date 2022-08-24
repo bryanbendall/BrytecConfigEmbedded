@@ -10,6 +10,7 @@ ENode* EMathNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     auto input1 = spec.connections[1];
     auto mathType = (MathType)spec.values[0];
 
+#ifdef ENODE_FULL_TEMPLATE
     switch (mathType) {
     case MathType::Add:
         if (input0 == Float && input1 == Float)
@@ -51,6 +52,23 @@ ENode* EMathNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         if (input0 == Pointer && input1 == Pointer)
             return new (destination) EMathNodeInternal<MathType::Divide, float*, float*>();
     }
+
+#else
+    switch (mathType) {
+    case MathType::Add:
+        return new (destination) EMathNodeInternal<MathType::Add, float, float>();
+
+    case MathType::Subtract:
+        return new (destination) EMathNodeInternal<MathType::Subtract, float, float>();
+
+    case MathType::Multiply:
+        return new (destination) EMathNodeInternal<MathType::Multiply, float, float>();
+
+    case MathType::Divide:
+        return new (destination) EMathNodeInternal<MathType::Divide, float, float>();
+    }
+
+#endif
 
     return nullptr;
 }

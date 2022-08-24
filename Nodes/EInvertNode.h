@@ -56,6 +56,10 @@ public:
     NodeTypes NodeType() override { return NodeTypes::Invert; }
 
 private:
+#ifdef ENODE_FULL_TEMPLATE
     ValueOrPointer<Input1_t> m_in;
+#else
+    ValueAndPointer m_in;
+#endif
     float m_out;
 };

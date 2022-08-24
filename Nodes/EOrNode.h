@@ -91,10 +91,18 @@ public:
     NodeTypes NodeType() override { return NodeTypes::Or; }
 
 private:
+#ifdef ENODE_FULL_TEMPLATE
     ValueOrPointer<Input1_t> m_in1;
     ValueOrPointer<Input2_t> m_in2;
     ValueOrPointer<Input3_t> m_in3;
     ValueOrPointer<Input4_t> m_in4;
     ValueOrPointer<Input5_t> m_in5;
+#else
+    ValueAndPointer m_in1;
+    ValueAndPointer m_in2;
+    ValueAndPointer m_in3;
+    ValueAndPointer m_in4;
+    ValueAndPointer m_in5;
+#endif
     float m_out;
 };

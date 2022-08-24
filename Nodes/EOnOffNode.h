@@ -66,7 +66,12 @@ public:
     NodeTypes NodeType() override { return NodeTypes::On_Off; }
 
 private:
+#ifdef ENODE_FULL_TEMPLATE
     ValueOrPointer<Input1_t> m_on;
     ValueOrPointer<Input2_t> m_off;
+#else
+    ValueAndPointer m_on;
+    ValueAndPointer m_off;
+#endif
     float m_out;
 };
