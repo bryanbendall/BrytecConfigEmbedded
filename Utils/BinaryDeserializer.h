@@ -5,7 +5,7 @@
 
 struct EmptyString { };
 
-#ifndef Embedded
+#ifndef BRYTEC_EMBEDDED
 #include <filesystem>
 #endif
 
@@ -13,7 +13,7 @@ class BinaryDeserializer {
 
 public:
     BinaryDeserializer(uint8_t* data);
-#ifndef Embedded
+#ifndef BRYTEC_EMBEDDED
     BinaryDeserializer(std::filesystem::path path);
 #endif
 
