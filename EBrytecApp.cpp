@@ -9,7 +9,7 @@
 
 struct EBrytecAppData {
     uint8_t moduleAddress = 0;
-    Embedded::NodesVector nodeVector;
+    ENodesVector nodeVector;
     ENodeGroup* nodeGroups;
     uint32_t nodeGroupsCount = 0;
 };

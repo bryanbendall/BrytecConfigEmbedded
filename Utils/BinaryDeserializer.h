@@ -40,7 +40,7 @@ private:
     uint64_t m_savedOffset = 0;
 };
 
-#ifndef Embedded
+#ifndef BRYTEC_EMBEDDED
 template <>
 inline std::string BinaryDeserializer::readRaw<std::string>()
 {
@@ -66,10 +66,8 @@ inline EmptyString BinaryDeserializer::readRaw<EmptyString>()
     if (length <= 0)
         return {};
 
-    char data[length];
-
     for (int i = 0; i < length; i++)
-        data[i] = readRaw<char>();
+        readRaw<char>();
 
     return {};
 }

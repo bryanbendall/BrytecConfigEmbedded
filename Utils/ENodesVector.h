@@ -1,27 +1,21 @@
 #pragma once
 
 #include "Boards/BrytecBoard.h"
+#include "EBrytecConfig.h"
 #include "ENode.h"
 #include "Utils/EBrytecErrors.h"
 #include <stddef.h>
 
-namespace Embedded {
-
-// TODO: calculate max size of node
-#define NODE_MAX_SIZE 64
-
-#define SIZE 1000
-// template <size_t SIZE>
-class NodesVector {
+class ENodesVector {
 
 public:
-    NodesVector() { }
+    ENodesVector() = default;
 
     ENode* add(const ENodeSpec& spec)
     {
         uint8_t* nextData = &m_nodeData[m_dataNextIndex];
 
-        if ((m_dataNextIndex + NODE_MAX_SIZE) > SIZE) {
+        if ((m_dataNextIndex + MAX_NODE_SIZE) > NODES_VECTOR_SIZE_BYTES) {
             BrytecBoard::error(EBrytecErrors::NodeVectorOutOfSpace);
             return nullptr;
         }
@@ -84,10 +78,9 @@ public:
 
 private:
     // Data
-    uint8_t m_nodeData[SIZE] = {};
+    uint8_t m_nodeData[NODES_VECTOR_SIZE_BYTES] = {};
 
     // Vector states
     uint32_t m_count = 0;
     uint32_t m_dataNextIndex = 0;
 };
-}

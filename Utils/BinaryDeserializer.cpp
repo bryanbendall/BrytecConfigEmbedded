@@ -1,13 +1,15 @@
 #include "BinaryDeserializer.h"
 
+#ifndef BRYTEC_EMBEDDED
 #include <fstream>
+#endif
 
 BinaryDeserializer::BinaryDeserializer(uint8_t* data)
     : m_data(data)
 {
 }
 
-#ifndef Embedded
+#ifndef BRYTEC_EMBEDDED
 BinaryDeserializer::BinaryDeserializer(std::filesystem::path path)
 {
     std::ifstream is(path, std::ifstream::binary);

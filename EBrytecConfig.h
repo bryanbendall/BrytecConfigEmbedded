@@ -1,6 +1,10 @@
 #pragma once
 
-// #define Embedded
+// #define BRYTEC_EMBEDDED
 
-// #define ENODE_FULL_TEMPLATE
 // Nodes will use more ram but the program size will be a lot less
+#define ENODE_FULL_TEMPLATE
+
+#define NODES_VECTOR_SIZE_BYTES 1000
+
+#define MAX_NODE_SIZE 64

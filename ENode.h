@@ -2,7 +2,6 @@
 
 #include "EBrytecConfig.h"
 #include "Utils/ENodeConnection.h"
-#include <cstddef>
 #include <new>
 #include <stdint.h>
 

@@ -2,7 +2,7 @@
 
 #include "Boards/BrytecBoard.h"
 #include "Utils/BinaryDeserializer.h"
-#include "Utils/NodesVector.h"
+#include "Utils/ENodesVector.h"
 #include <stdint.h>
 
 class EBrytecApp {
