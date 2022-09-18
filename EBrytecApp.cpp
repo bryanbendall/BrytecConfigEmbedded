@@ -9,9 +9,9 @@
 
 struct EBrytecAppData {
     uint8_t moduleAddress = 0;
-    ENodesVector nodeVector;
-    ENodeGroup* nodeGroups;
-    uint32_t nodeGroupsCount = 0;
+    ENodesVector nodeVector = {};
+    ENodeGroup* nodeGroups = nullptr;
+    uint16_t nodeGroupsCount = 0;
 };
 static EBrytecAppData s_data;
 
@@ -25,61 +25,90 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
     }
 
     // deserialize modules specs
-    char m = des.readRaw<char>(); // M
-    char d = des.readRaw<char>(); // D
+    char m, d;
+    des.readRaw<char>(&m); // M
+    des.readRaw<char>(&d); // D
+
     if (m != 'M' || d != 'D')
         BrytecBoard::error(EBrytecErrors::ModuleHeader);
 
-    uint8_t major = des.readRaw<uint8_t>();
-    uint8_t minor = des.readRaw<uint8_t>();
+    uint8_t major, minor;
+    des.readRaw<uint8_t>(&major);
+    des.readRaw<uint8_t>(&minor);
     // TODO check version
 
-    // module info
-    des.readRaw<EmptyString>(); // name
-    s_data.moduleAddress = des.readRaw<uint8_t>(); // address
-    bool moduleEnabled = des.readRaw<uint8_t>(); // enabled
+    // Module name
+    EmptyString empty;
+    des.readRaw<EmptyString>(&empty);
+
+    // Module address
+    des.readRaw<uint8_t>(&s_data.moduleAddress);
+
+    // Module enabled
+    uint8_t moduleEnabled;
+    des.readRaw<uint8_t>(&moduleEnabled);
     if (!moduleEnabled) {
         BrytecBoard::error(EBrytecErrors::NotEnabled);
         return;
     }
 
-    // deserialize node groups
-    uint16_t nodeGroupCount = des.readRaw<uint16_t>();
-    s_data.nodeGroupsCount = nodeGroupCount;
+    // Deserialize node groups
+    des.readRaw<uint16_t>(&s_data.nodeGroupsCount);
 
-    s_data.nodeGroups = (ENodeGroup*)malloc(sizeof(ENodeGroup) * nodeGroupCount);
+    // Allocate space for node groups
+    s_data.nodeGroups = (ENodeGroup*)malloc(sizeof(ENodeGroup) * s_data.nodeGroupsCount);
+    if (!s_data.nodeGroups)
+        BrytecBoard::error(EBrytecErrors::BadAlloc);
 
-    // node group start and length
-    for (int nodeGroupIndex = 0; nodeGroupIndex < nodeGroupCount; nodeGroupIndex++) {
+    // Node group loop
+    for (uint16_t nodeGroupIndex = 0; nodeGroupIndex < s_data.nodeGroupsCount; nodeGroupIndex++) {
 
         ENodeGroup& currentNodeGroup = s_data.nodeGroups[nodeGroupIndex];
         currentNodeGroup.startNodeIndex = s_data.nodeVector.count();
-        currentNodeGroup.boardPinIndex = des.readRaw<uint16_t>();
+        des.readRaw<uint16_t>(&currentNodeGroup.boardPinIndex);
 
-        // deserialize modules specs
-        char n = des.readRaw<char>(); // N
-        char g = des.readRaw<char>(); // G
+        // Deserialize modules specs
+        char n, g;
+        des.readRaw<char>(&n); // N
+        des.readRaw<char>(&g); // G
         if (n != 'N' || g != 'G')
             BrytecBoard::error(EBrytecErrors::NodeGroupHeader);
 
-        uint8_t major = des.readRaw<uint8_t>();
-        uint8_t minor = des.readRaw<uint8_t>();
+        uint8_t nodeGroupMajor, nodeGroupMinor;
+        des.readRaw<uint8_t>(&nodeGroupMajor);
+        des.readRaw<uint8_t>(&nodeGroupMinor);
         // TODO check version
 
-        // node group info
-        des.readRaw<EmptyString>(); // name
-        des.readRaw<uint64_t>(); // uuid
-        currentNodeGroup.type = (IOTypes::Types)des.readRaw<uint8_t>(); // type
-        currentNodeGroup.enabled = des.readRaw<uint8_t>(); // enabled
+        // Node Group name
+        EmptyString empty;
+        des.readRaw<EmptyString>(&empty);
+
+        // Node Group uuid
+        uint64_t uuid;
+        des.readRaw<uint64_t>(&uuid);
+
+        // Node Group type
+        uint8_t type;
+        des.readRaw<uint8_t>(&type);
+        currentNodeGroup.type = (IOTypes::Types)type;
+
+        // Node Group enabled
+        uint8_t enabled;
+        des.readRaw<uint8_t>(&enabled);
+        currentNodeGroup.enabled = enabled;
         if (!currentNodeGroup.enabled)
             BrytecBoard::error(EBrytecErrors::NotEnabled);
 
-        // create nodes in vector
+        // Create nodes in vector
         {
-            int nodeCount = des.readRaw<uint16_t>();
-            for (int i = 0; i < nodeCount; i++) {
+            uint16_t nodeCount;
+            des.readRaw<uint16_t>(&nodeCount);
+
+            for (uint16_t i = 0; i < nodeCount; i++) {
+
                 // Create Node
                 ENodeSpec spec = ENodeDeserializer::deserializeNodeSpec(des);
+
                 ENode* node = s_data.nodeVector.add(spec);
                 if (!node) {
                     BrytecBoard::error(EBrytecErrors::AddNodeFailed);
@@ -97,11 +126,14 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
 
         // connect nodes
         {
-            uint16_t nodeCount = des.readRaw<uint16_t>();
-            for (int nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++) {
+            uint16_t nodeCount;
+            des.readRaw<uint16_t>(&nodeCount);
 
-                uint8_t inputCount = des.readRaw<uint8_t>();
-                for (int inputIndex = 0; inputIndex < inputCount; inputIndex++) {
+            for (uint16_t nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++) {
+
+                uint8_t inputCount;
+                des.readRaw<uint8_t>(&inputCount);
+                for (uint8_t inputIndex = 0; inputIndex < inputCount; inputIndex++) {
 
                     ENodeConnection connection = ENodeDeserializer::deserializeNodeConnection(des);
 
@@ -126,25 +158,25 @@ void EBrytecApp::setupModule()
 
 void EBrytecApp::setupPins()
 {
-    for (int i = 0; i < s_data.nodeGroupsCount; i++)
+    for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++)
         s_data.nodeGroups[i].setupPin();
 }
 
 void EBrytecApp::update(float timestep)
 {
-    // update node group nodes
+    // Update node group nodes
     updateNodeGroupNodes();
 
-    // get inputs
-    for (int i = 0; i < s_data.nodeGroupsCount; i++) {
+    // Get inputs
+    for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
         s_data.nodeGroups[i].updateInitialValue();
     }
 
-    // calculate all nodes
+    // Calculate all nodes
     s_data.nodeVector.evaluateAll(timestep);
 
-    // set outputs
-    for (int i = 0; i < s_data.nodeGroupsCount; i++) {
+    // Set outputs
+    for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
         s_data.nodeGroups[i].updateFinalValue();
     }
 }
@@ -184,7 +216,7 @@ ENode* EBrytecApp::getNode(int index)
 
 void EBrytecApp::updateNodeGroupNodes()
 {
-    for (int i = 0; i < s_data.nodeVector.count(); i++) {
+    for (uint32_t i = 0; i < s_data.nodeVector.count(); i++) {
 
         ENode* node = s_data.nodeVector.at(i);
         if (node->NodeType() == NodeTypes::Node_Group) {
@@ -197,6 +229,6 @@ void EBrytecApp::updateNodeGroupNodes()
 
 void EBrytecApp::evaulateJustNodes(float timestep)
 {
-    // calculate all nodes
+    // Calculate all nodes
     s_data.nodeVector.evaluateAll(timestep);
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Boards/BrytecBoard.h"
-#include "Utils/BinaryDeserializer.h"
+#include "Deserializer/BinaryDeserializer.h"
 #include "Utils/ENodesVector.h"
 #include <stdint.h>
 
@@ -23,21 +23,3 @@ private:
 
     friend class NodeGroup;
 };
-
-// void testMain()
-// {
-
-//     // start up stuff
-
-//     BinaryDeserializer ser(nullptr);
-//     EBrytecApp::deserializeModule(ser);
-//     EBrytecApp::setupModule();
-//     EBrytecApp::setupPins();
-
-//     while (1) {
-
-//         // board stuff
-
-//         EBrytecApp::update(2.0f);
-//     }
-// }

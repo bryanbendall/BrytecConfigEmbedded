@@ -26,6 +26,9 @@ void BrytecBoard::error(EBrytecErrors error)
     case EBrytecErrors::NodeIndexOutOfBounds:
         std::cout << "Node index out of bounds" << std::endl;
         break;
+    case EBrytecErrors::BadAlloc:
+        std::cout << "Node group allocation failed" << std::endl;
+        break;
 
     default:
         break;

@@ -4,32 +4,45 @@ ENodeSpec ENodeDeserializer::deserializeNodeSpec(BinaryDeserializer& des)
 {
     ENodeSpec spec;
 
-    des.readRaw<EmptyString>(); // name
-    spec.type = (NodeTypes)des.readRaw<uint16_t>();
-    des.readRaw<float>(); // x
-    des.readRaw<float>(); // y
+    // Name
+    EmptyString empty;
+    des.readRaw<EmptyString>(&empty);
 
-    // Input types
+    // Type
+    uint16_t type;
+    des.readRaw<uint16_t>(&type);
+    spec.type = (NodeTypes)type;
+
+    // Position
+    float x, y;
+    des.readRaw<float>(&x);
+    des.readRaw<float>(&y);
+
+    // Input connection types (float or pointer)
     {
-        spec.numInputs = des.readRaw<uint8_t>();
+        des.readRaw<uint8_t>(&spec.numInputs);
 
         for (int i = 0; i < spec.numInputs; i++) {
-            spec.connections[i] = (ConnectionType)des.readRaw<uint8_t>();
+            uint8_t connectionType;
+            des.readRaw<uint8_t>(&connectionType);
+            spec.connections[i] = (ConnectionType)connectionType;
         }
     }
 
     // Values
     {
-        spec.numValues = des.readRaw<uint8_t>();
+        des.readRaw<uint8_t>(&spec.numValues);
 
         for (int i = 0; i < spec.numValues; i++)
-            spec.values[i] = des.readRaw<float>();
+            des.readRaw<float>(&spec.values[i]);
     }
 
+    // Special case for node groups
     if (spec.type == NodeTypes::Node_Group) {
-        des.readRaw<uint64_t>(); // uuid
-        spec.moduleAddress = des.readRaw<uint8_t>(); // Module Address
-        spec.pinIndex = des.readRaw<uint8_t>(); // Pin Index
+        uint64_t uuid;
+        des.readRaw<uint64_t>(&uuid); // uuid
+        des.readRaw<uint8_t>(&spec.moduleAddress); // Module Address
+        des.readRaw<uint8_t>(&spec.pinIndex); // Pin Index
     }
 
     return spec;
@@ -39,9 +52,9 @@ ENodeConnection ENodeDeserializer::deserializeNodeConnection(BinaryDeserializer&
 {
     ENodeConnection connection;
 
-    connection.connectionNodeIndex = des.readRaw<int8_t>();
-    connection.outputIndex = des.readRaw<int8_t>();
-    connection.defaultValue = des.readRaw<float>();
+    des.readRaw<int8_t>(&connection.connectionNodeIndex);
+    des.readRaw<int8_t>(&connection.outputIndex);
+    des.readRaw<float>(&connection.defaultValue);
 
     return connection;
 }

@@ -1,7 +1,7 @@
 #pragma once
 
+#include "Deserializer/BinaryDeserializer.h"
 #include "ENode.h"
-#include "Utils/BinaryDeserializer.h"
 
 class ENodeDeserializer {
 public:
