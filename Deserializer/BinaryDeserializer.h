@@ -3,43 +3,58 @@
 #include "EBrytecConfig.h"
 #include <stdint.h>
 
+#ifndef BRYTEC_EMBEDDED
+#include <filesystem>
+#include <string>
+#endif
+
 struct EmptyString { };
 
 class BinaryDeserializer {
 
 public:
     BinaryDeserializer() = default;
+    ~BinaryDeserializer();
+
+    void setData(uint8_t* data, uint32_t length);
+
+#ifndef BRYTEC_EMMBEDDED
+    void setDataFromPath(std::filesystem::path path);
+#endif
 
     template <typename T>
-    void readRaw(const T* data)
+    void readRaw(T* data)
     {
         readInternal((uint8_t*)data, sizeof(T));
     }
 
     bool readInternal(uint8_t* data, uint32_t dataSize);
 
+private:
+    uint8_t* m_data;
+    uint32_t m_currentOffset = 0;
+    bool m_ownData = false;
 };
 
 #ifndef BRYTEC_EMBEDDED
 template <>
-inline std::string BinaryDeserializer::readRaw<std::string>()
+inline void BinaryDeserializer::readRaw<std::string>(std::string* data)
 {
-    uint32_t length = readRaw<uint32_t>();
+    uint32_t length;
+    readRaw<uint32_t>(&length);
 
     if (length <= 0)
-        return "";
+        return;
 
-    char data[length];
+    data->resize(length + 1, '\0');
 
     for (int i = 0; i < length; i++)
-        data[i] = readRaw<char>();
-
-    return std::string(data, length);
+        readRaw<char>(&data->data()[i]);
 }
 #endif
 
 template <>
-inline void BinaryDeserializer::readRaw<EmptyString>(const EmptyString* data)
+inline void BinaryDeserializer::readRaw<EmptyString>(EmptyString* data)
 {
     uint32_t length;
     readRaw<uint32_t>(&length);

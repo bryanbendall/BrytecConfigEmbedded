@@ -277,3 +277,5 @@ bool BinaryDeserializer::readInternal(uint8_t* data, uint32_t dataSize)
     s_currentOffset += dataSize;
     return true;
 }
+
+void setData(uint8_t* data) { }
