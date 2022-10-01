@@ -206,7 +206,19 @@ ENode* EBrytecApp::getFinalValueNode(int startIndex, int nodeCount)
 
 float EBrytecApp::getBrytecNetworkValue(uint8_t moduleAddress, uint8_t pinIndex)
 {
-    return BrytecBoard::getBrytecNetworkValue(moduleAddress, pinIndex);
+    // Over the network
+    if (moduleAddress != s_data.moduleAddress) {
+        return BrytecBoard::getBrytecNetworkValue(moduleAddress, pinIndex);
+    }
+
+    // In this module
+    for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
+        if (s_data.nodeGroups[i].boardPinIndex == pinIndex) {
+            return s_data.nodeGroups[i].getFinalValue();
+        }
+    }
+
+    return 0.0f;
 }
 
 ENode* EBrytecApp::getNode(int index)

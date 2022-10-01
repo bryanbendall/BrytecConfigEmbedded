@@ -12,5 +12,5 @@ public:
     static void setupPin(uint8_t index, IOTypes::Types type);
     static float getPinValue(uint8_t index);
     static float getBrytecNetworkValue(uint8_t moduleAddress, uint8_t pinIndex);
-    static void setPinValue(uint8_t index, float value);
+    static void setPinValue(uint8_t index, IOTypes::Types type, float value);
 };

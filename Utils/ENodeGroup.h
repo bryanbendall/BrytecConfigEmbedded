@@ -13,4 +13,5 @@ struct ENodeGroup {
     void setupPin();
     void updateInitialValue();
     void updateFinalValue();
+    float getFinalValue();
 };

@@ -18,7 +18,7 @@ public:
 
     void setData(uint8_t* data, uint32_t length);
 
-#ifndef BRYTEC_EMMBEDDED
+#ifndef BRYTEC_EMBEDDED
     void setDataFromPath(std::filesystem::path path);
 #endif
 
