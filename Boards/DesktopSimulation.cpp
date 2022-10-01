@@ -53,6 +53,6 @@ float BrytecBoard::getBrytecNetworkValue(uint8_t moduleAddress, uint8_t pinIndex
     return 0.0f;
 }
 
-void BrytecBoard::setPinValue(uint8_t index, float value)
+void BrytecBoard::setPinValue(uint8_t index, IOTypes::Types type, float value)
 {
 }
