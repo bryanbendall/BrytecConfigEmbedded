@@ -40,6 +40,18 @@ void ENodeGroup::updateFinalValue()
     BrytecBoard::setPinValue(boardPinIndex, type, *output);
 }
 
+void ENodeGroup::updatePinCurrent()
+{
+    if (!enabled)
+        return;
+
+    ENode* node = EBrytecApp::getPinCurrentNode(startNodeIndex, nodeCount);
+    if (!node)
+        return;
+
+    node->SetValue(0, BrytecBoard::getPinCurrent(boardPinIndex));
+}
+
 float ENodeGroup::getFinalValue()
 {
     if (!enabled)

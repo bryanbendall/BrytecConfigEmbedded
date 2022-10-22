@@ -204,6 +204,17 @@ ENode* EBrytecApp::getFinalValueNode(int startIndex, int nodeCount)
     return nullptr;
 }
 
+ENode* EBrytecApp::getPinCurrentNode(int startIndex, int nodeCount)
+{
+    for (int i = startIndex; i < startIndex + nodeCount; i++) {
+        ENode* node = s_data.nodeVector.at(i);
+        if (node->NodeType() == NodeTypes::PinCurrent)
+            return node;
+    }
+
+    return nullptr;
+}
+
 float EBrytecApp::getBrytecNetworkValue(uint8_t moduleAddress, uint8_t pinIndex)
 {
     // Over the network

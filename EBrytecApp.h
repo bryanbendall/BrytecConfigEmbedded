@@ -15,6 +15,7 @@ public:
     static ENode* getNode(int index);
     static ENode* getInitialValueNode(int startIndex, int nodeCount);
     static ENode* getFinalValueNode(int startIndex, int nodeCount);
+    static ENode* getPinCurrentNode(int startIndex, int nodeCount);
     static float getBrytecNetworkValue(uint8_t moduleAddress, uint8_t pinIndex);
 
 private:

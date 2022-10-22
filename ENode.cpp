@@ -12,6 +12,7 @@
 #include "Nodes/ENodeGroupNode.h"
 #include "Nodes/EOnOffNode.h"
 #include "Nodes/EOrNode.h"
+#include "Nodes/EPinCurrentNode.h"
 #include "Nodes/EPushButtonNode.h"
 #include "Nodes/ESwitchNode.h"
 #include "Nodes/EToggleNode.h"
@@ -60,6 +61,8 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         return ESwitchNode::CreateInPlace(spec, destination);
     case NodeTypes::CanBus:
         // return new (ptr) ECanBusNode();
+    case NodeTypes::PinCurrent:
+        return EPinCurrentNode::CreateInPlace(spec, destination);
 
     default:
         return nullptr;
