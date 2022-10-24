@@ -3,7 +3,7 @@
 ENode* EPushButtonNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
 
-    if (spec.type != NodeTypes::Push_Button || spec.numInputs != 3 || spec.numValues != 1)
+    if (spec.type != NodeTypes::Push_Button || spec.numInputs != 3 || spec.numValues != 3)
         return nullptr;
 
     auto button = spec.connections[0];

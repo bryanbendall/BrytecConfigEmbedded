@@ -42,6 +42,12 @@ public:
         case 3:
             m_lastButtonState = value;
             break;
+        case 4:
+            m_ignitionOut = value;
+            break;
+        case 5:
+            m_starterOut = value;
+            break;
         }
     }
 
@@ -50,6 +56,10 @@ public:
         switch (index) {
         case 3:
             return m_lastButtonState;
+        case 4:
+            return m_ignitionOut;
+        case 5:
+            return m_starterOut;
         }
 
         return 0.0f;
