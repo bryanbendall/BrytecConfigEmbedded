@@ -1,5 +1,6 @@
 #include "EBrytecApp.h"
 
+#include "Can/EPinStatusQueue.h"
 #include "Nodes/EFinalValueNode.h"
 #include "Nodes/EInitialValueNode.h"
 #include "Nodes/ENodeGroupNode.h"
@@ -12,6 +13,7 @@ struct EBrytecAppData {
     ENodesVector nodeVector = {};
     ENodeGroup* nodeGroups = nullptr;
     uint16_t nodeGroupsCount = 0;
+    EPinStatusQueue statusQueue;
 };
 static EBrytecAppData s_data;
 
@@ -179,6 +181,14 @@ void EBrytecApp::update(float timestep)
     for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
         s_data.nodeGroups[i].updateFinalValue();
     }
+
+    // Send can data
+    static float canDataTimer = 0.0f;
+    canDataTimer += timestep;
+    if (canDataTimer >= CAN_UPDATE_FREQUENCY) {
+        sendBrytecCanData();
+        canDataTimer = 0.0f;
+    }
 }
 
 ENode* EBrytecApp::getInitialValueNode(int startIndex, int nodeCount)
@@ -215,37 +225,77 @@ ENode* EBrytecApp::getPinCurrentNode(int startIndex, int nodeCount)
     return nullptr;
 }
 
-float EBrytecApp::getBrytecNetworkValue(uint8_t moduleAddress, uint8_t pinIndex)
-{
-    // Over the network
-    if (moduleAddress != s_data.moduleAddress) {
-        return BrytecBoard::getBrytecNetworkValue(moduleAddress, pinIndex);
-    }
-
-    // In this module
-    for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
-        if (s_data.nodeGroups[i].boardPinIndex == pinIndex) {
-            return s_data.nodeGroups[i].getFinalValue();
-        }
-    }
-
-    return 0.0f;
-}
-
 ENode* EBrytecApp::getNode(int index)
 {
     return s_data.nodeVector.at(index);
 }
 
-void EBrytecApp::updateNodeGroupNodes()
+void EBrytecApp::queueCanData(const EBrytecCan::PinStatusBroadcast& bc)
+{
+    s_data.statusQueue.add(bc);
+}
+
+void EBrytecApp::sendBrytecCanData()
+{
+    for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
+
+        ENodeGroup& nodeGroup = s_data.nodeGroups[i];
+
+        EBrytecCan::PinStatusBroadcast bc;
+        bc.moduleAddress = s_data.moduleAddress;
+        bc.pinId = nodeGroup.boardPinIndex;
+        if (nodeGroup.enabled)
+            bc.statusFlags = EBrytecCan::PinStatusBroadcast::StatusFlags::NORMAL;
+        bc.value = nodeGroup.getFinalValue();
+
+        BrytecBoard::sendBrytecCan(bc.getFrame());
+    }
+}
+
+ENodeGroupNodeInternal* EBrytecApp::findNodeGroupNode(uint8_t moduleAddress, uint16_t pinIndex)
 {
     for (uint32_t i = 0; i < s_data.nodeVector.count(); i++) {
 
         ENode* node = s_data.nodeVector.at(i);
         if (node->NodeType() == NodeTypes::Node_Group) {
             ENodeGroupNodeInternal* nodeGroupNode = (ENodeGroupNodeInternal*)node;
-            float value = EBrytecApp::getBrytecNetworkValue(nodeGroupNode->getModuleAddress(), nodeGroupNode->getPinIndex());
-            nodeGroupNode->SetValue(0, value);
+            if (nodeGroupNode->getModuleAddress() == moduleAddress && nodeGroupNode->getPinIndex() == pinIndex)
+                return nodeGroupNode;
+        }
+    }
+
+    return nullptr;
+}
+
+void EBrytecApp::updateNodeGroupNodes()
+{
+    // Internal nodes to this module
+    {
+        for (int i = 0; i < s_data.nodeVector.count(); i++) {
+            ENode* node = s_data.nodeVector.at(i);
+            if (node->NodeType() == NodeTypes::Node_Group) {
+                ENodeGroupNodeInternal* nodeGroupNode = (ENodeGroupNodeInternal*)node;
+                if (nodeGroupNode->getModuleAddress() == s_data.moduleAddress) {
+
+                    // In this module
+                    for (uint16_t j = 0; j < s_data.nodeGroupsCount; j++) {
+                        if (s_data.nodeGroups[j].boardPinIndex == nodeGroupNode->getPinIndex())
+                            nodeGroupNode->SetValue(0, s_data.nodeGroups[j].getFinalValue());
+                    }
+                }
+            }
+        }
+    }
+
+    // External nodes from can messages
+    {
+        for (int i = 0; i < s_data.statusQueue.size(); i++) {
+            EBrytecCan::PinStatusBroadcast* bc = s_data.statusQueue.at(i);
+            if (!bc)
+                continue;
+            ENodeGroupNodeInternal* nodeGroupNode = findNodeGroupNode(bc->moduleAddress, bc->pinId);
+            if (nodeGroupNode)
+                nodeGroupNode->SetValue(0, bc->value);
         }
     }
 }

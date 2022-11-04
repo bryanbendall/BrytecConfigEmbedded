@@ -95,11 +95,6 @@ float BrytecBoard::getPinValue(uint8_t index)
     return 0.0f;
 }
 
-float BrytecBoard::getBrytecNetworkValue(uint8_t moduleAddress, uint8_t pinIndex)
-{
-    return 0.0f;
-}
-
 void BrytecBoard::setPinValue(uint8_t index, IOTypes::Types type, float value)
 {
     int pwmValue = (value * 2.55f);
@@ -125,4 +120,8 @@ void BrytecBoard::setPinValue(uint8_t index, IOTypes::Types type, float value)
         analogWrite(2 + index, pwmValue);
         break;
     }
+}
+
+void BrytecBoard::sendBrytecCan(const EBrytecCan::CanExtFrame& frame)
+{
 }

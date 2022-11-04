@@ -77,11 +77,6 @@ float BrytecBoard::getPinValue(uint8_t index)
     return 0.0f;
 }
 
-float BrytecBoard::getBrytecNetworkValue(uint8_t moduleAddress, uint8_t pinIndex)
-{
-    return 0.0f;
-}
-
 void BrytecBoard::setPinValue(uint8_t index, float value)
 {
     Serial.print("Set pin value - ");
@@ -99,4 +94,8 @@ void BrytecBoard::setPinValue(uint8_t index, float value)
         digitalWrite(8 + index, value);
         break;
     }
+}
+
+void BrytecBoard::sendBrytecCan(const EBrytecCan::CanExtFrame& frame)
+{
 }

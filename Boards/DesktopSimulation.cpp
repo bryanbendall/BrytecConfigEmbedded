@@ -53,11 +53,10 @@ float BrytecBoard::getPinCurrent(uint8_t index)
     return 0.0f;
 }
 
-float BrytecBoard::getBrytecNetworkValue(uint8_t moduleAddress, uint8_t pinIndex)
+void BrytecBoard::setPinValue(uint8_t index, IOTypes::Types type, float value)
 {
-    return 0.0f;
 }
 
-void BrytecBoard::setPinValue(uint8_t index, IOTypes::Types type, float value)
+void BrytecBoard::sendBrytecCan(const EBrytecCan::CanExtFrame& frame)
 {
 }
