@@ -48,6 +48,11 @@ float BrytecBoard::getPinValue(uint8_t index)
     return 0.0f;
 }
 
+float BrytecBoard::getPinVoltage(uint8_t index)
+{
+    return 0.0f;
+}
+
 float BrytecBoard::getPinCurrent(uint8_t index)
 {
     return 0.0f;

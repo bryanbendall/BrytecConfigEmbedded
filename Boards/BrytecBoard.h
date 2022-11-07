@@ -12,6 +12,7 @@ public:
     static void setupBrytecCan(uint8_t moduleAddress);
     static void setupPin(uint8_t index, IOTypes::Types type);
     static float getPinValue(uint8_t index);
+    static float getPinVoltage(uint8_t index);
     static float getPinCurrent(uint8_t index);
     static void setPinValue(uint8_t index, IOTypes::Types type, float value);
     static void sendBrytecCan(const EBrytecCan::CanExtFrame& frame);
