@@ -11,9 +11,9 @@ public:
 class ENodeGroupNodeInternal : public ENodeGroupNode {
 
 public:
-    ENodeGroupNodeInternal(uint8_t moduleAddress, uint8_t pinIndex)
+    ENodeGroupNodeInternal(uint8_t moduleAddress, uint8_t nodeGroupIndex)
         : m_moduleAddress(moduleAddress)
-        , m_pinIndex(pinIndex)
+        , m_nodeGroupIndex(nodeGroupIndex)
     {
     }
 
@@ -55,10 +55,10 @@ public:
 
     uint8_t getModuleAddress() { return m_moduleAddress; }
 
-    uint8_t getPinIndex() { return m_pinIndex; }
+    uint8_t getNodeGroupIndex() { return m_nodeGroupIndex; }
 
 private:
     uint8_t m_moduleAddress;
-    uint8_t m_pinIndex;
+    uint8_t m_nodeGroupIndex;
     float m_out;
 };

@@ -243,23 +243,25 @@ void EBrytecApp::sendBrytecCanData()
 
         EBrytecCan::PinStatusBroadcast bc;
         bc.moduleAddress = s_data.moduleAddress;
-        bc.pinId = nodeGroup.boardPinIndex;
+        bc.nodeGroupIndex = i;
         if (nodeGroup.enabled)
             bc.statusFlags = EBrytecCan::PinStatusBroadcast::StatusFlags::NORMAL;
         bc.value = nodeGroup.getFinalValue();
+        bc.voltage = BrytecBoard::getPinVoltage(nodeGroup.boardPinIndex);
+        bc.current = BrytecBoard::getPinCurrent(nodeGroup.boardPinIndex);
 
         BrytecBoard::sendBrytecCan(bc.getFrame());
     }
 }
 
-ENodeGroupNodeInternal* EBrytecApp::findNodeGroupNode(uint8_t moduleAddress, uint16_t pinIndex)
+ENodeGroupNodeInternal* EBrytecApp::findNodeGroupNode(uint8_t moduleAddress, uint16_t nodeGroupIndex)
 {
     for (uint32_t i = 0; i < s_data.nodeVector.count(); i++) {
 
         ENode* node = s_data.nodeVector.at(i);
         if (node->NodeType() == NodeTypes::Node_Group) {
             ENodeGroupNodeInternal* nodeGroupNode = (ENodeGroupNodeInternal*)node;
-            if (nodeGroupNode->getModuleAddress() == moduleAddress && nodeGroupNode->getPinIndex() == pinIndex)
+            if (nodeGroupNode->getModuleAddress() == moduleAddress && nodeGroupNode->getNodeGroupIndex() == nodeGroupIndex)
                 return nodeGroupNode;
         }
     }
@@ -279,7 +281,7 @@ void EBrytecApp::updateNodeGroupNodes()
 
                     // In this module
                     for (uint16_t j = 0; j < s_data.nodeGroupsCount; j++) {
-                        if (s_data.nodeGroups[j].boardPinIndex == nodeGroupNode->getPinIndex())
+                        if (s_data.nodeGroups[j].boardPinIndex == nodeGroupNode->getNodeGroupIndex())
                             nodeGroupNode->SetValue(0, s_data.nodeGroups[j].getFinalValue());
                     }
                 }
@@ -293,7 +295,7 @@ void EBrytecApp::updateNodeGroupNodes()
             EBrytecCan::PinStatusBroadcast* bc = s_data.statusQueue.at(i);
             if (!bc)
                 continue;
-            ENodeGroupNodeInternal* nodeGroupNode = findNodeGroupNode(bc->moduleAddress, bc->pinId);
+            ENodeGroupNodeInternal* nodeGroupNode = findNodeGroupNode(bc->moduleAddress, bc->nodeGroupIndex);
             if (nodeGroupNode)
                 nodeGroupNode->SetValue(0, bc->value);
         }

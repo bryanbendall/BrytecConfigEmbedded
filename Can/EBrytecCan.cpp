@@ -15,7 +15,7 @@ PinStatusBroadcast::PinStatusBroadcast(const CanExtFrame& frame)
 
     statusFlags = (StatusFlags)((frame.id >> 24) & 0b1111);
     moduleAddress = (frame.id >> 16);
-    pinId = frame.id;
+    nodeGroupIndex = frame.id;
 
     uint64_t* data = (uint64_t*)frame.data;
     uint16_t tempCurrent = ((*data) >> 48);
@@ -33,7 +33,7 @@ CanExtFrame PinStatusBroadcast::getFrame()
     frame.id |= (1 << 28); // Broadcast Flag
     frame.id |= ((uint32_t)(statusFlags & 0b1111) << 24);
     frame.id |= ((uint32_t)moduleAddress << 16);
-    frame.id |= pinId;
+    frame.id |= nodeGroupIndex;
 
     uint64_t* data = (uint64_t*)frame.data;
     *data = 0;

@@ -29,7 +29,7 @@ void EPinStatusQueue::clear()
 int8_t EPinStatusQueue::find(const EBrytecCan::PinStatusBroadcast& bc)
 {
     for (int8_t i = 0; i > m_size; i++) {
-        if (m_broadcasts[i].moduleAddress == bc.moduleAddress && m_broadcasts[i].pinId == bc.pinId) {
+        if (m_broadcasts[i].moduleAddress == bc.moduleAddress && m_broadcasts[i].nodeGroupIndex == bc.nodeGroupIndex) {
             return i;
         }
     }

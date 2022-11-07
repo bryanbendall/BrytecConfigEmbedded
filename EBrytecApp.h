@@ -19,12 +19,11 @@ public:
     static ENode* getInitialValueNode(int startIndex, int nodeCount);
     static ENode* getFinalValueNode(int startIndex, int nodeCount);
     static ENode* getPinCurrentNode(int startIndex, int nodeCount);
-    static bool getBrytecNetworkValue(uint8_t moduleAddress, uint16_t pinIndex, float* outValue);
     static void queueCanData(const EBrytecCan::PinStatusBroadcast& bc);
     static void sendBrytecCanData();
 
 private:
-    static ENodeGroupNodeInternal* findNodeGroupNode(uint8_t moduleAddress, uint16_t pinIndex);
+    static ENodeGroupNodeInternal* findNodeGroupNode(uint8_t moduleAddress, uint16_t nodeGroupIndex);
     static void updateNodeGroupNodes();
     static void evaulateJustNodes(float timestep);
 
