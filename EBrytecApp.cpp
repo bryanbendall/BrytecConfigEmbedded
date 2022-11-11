@@ -55,6 +55,7 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
     }
 
     // Deserialize node groups
+    // Total Node Groups
     des.readRaw<uint16_t>(&s_data.nodeGroupsCount);
 
     // Allocate space for node groups
@@ -62,8 +63,18 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
     if (!s_data.nodeGroups)
         BrytecBoard::error(EBrytecErrors::BadAlloc);
 
-    // Node group loop
+    // Physical Node Group Count
+    uint16_t physicalNodeGroupCount;
+    des.readRaw<uint16_t>(&physicalNodeGroupCount);
+
+    // Node Group Loop
     for (uint16_t nodeGroupIndex = 0; nodeGroupIndex < s_data.nodeGroupsCount; nodeGroupIndex++) {
+
+        // Internal Node Group Count
+        if (nodeGroupIndex == physicalNodeGroupCount) {
+            uint16_t internalNodeGroupCount;
+            des.readRaw<uint16_t>(&internalNodeGroupCount);
+        }
 
         ENodeGroup& currentNodeGroup = s_data.nodeGroups[nodeGroupIndex];
         currentNodeGroup.startNodeIndex = s_data.nodeVector.count();

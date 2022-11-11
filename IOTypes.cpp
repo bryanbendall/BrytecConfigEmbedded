@@ -11,4 +11,5 @@ const char* IOTypes::Strings[] = {
     "5V Switched Input",
     "5V Variable Input",
     "Can Input",
+    "Internal",
 };

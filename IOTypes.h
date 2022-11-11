@@ -14,6 +14,7 @@ struct IOTypes {
         Input_5V,
         Input_5V_Variable,
         Input_Can,
+        Internal,
         Count
     };
 
