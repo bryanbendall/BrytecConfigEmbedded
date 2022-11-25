@@ -4,7 +4,7 @@ namespace EBrytecCan {
 
 bool isBroadcast(const CanExtFrame& frame)
 {
-    return (frame.id & (1 << 28));
+    return (frame.id & ((uint32_t)1 << 28));
 }
 
 PinStatusBroadcast::PinStatusBroadcast(const CanExtFrame& frame)
@@ -30,18 +30,22 @@ CanExtFrame PinStatusBroadcast::getFrame()
     CanExtFrame frame;
 
     frame.id = 0;
-    frame.id |= (1 << 28); // Broadcast Flag
+    frame.id |= ((uint32_t)1 << 28); // Broadcast Flag
     frame.id |= ((uint32_t)(statusFlags & 0b1111) << 24);
     frame.id |= ((uint32_t)moduleAddress << 16);
     frame.id |= nodeGroupIndex;
 
     uint64_t* data = (uint64_t*)frame.data;
     *data = 0;
+
     uint16_t tempCurrent = current * 100.0f;
     *data |= (uint64_t)tempCurrent << 48;
+
     uint16_t tempVoltage = voltage * 100.0f;
     *data |= (uint64_t)tempVoltage << 32;
-    *data |= *((uint32_t*)&value);
+
+    uint32_t* tempValue = (uint32_t*)&value;
+    *data |= *tempValue;
 
     return frame;
 }

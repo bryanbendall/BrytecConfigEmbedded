@@ -9,8 +9,6 @@ struct CanExtFrame {
     uint8_t data[8];
 };
 
-static bool isBroadcast(const CanExtFrame& frame);
-
 struct PinStatusBroadcast {
 
     enum StatusFlags : uint8_t {
