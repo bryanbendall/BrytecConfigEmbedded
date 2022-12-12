@@ -1,7 +1,7 @@
 #pragma once
 
-#include "BrytecConfigEmbedded/EBrytecConfig.h"
 #include "EBrytecCan.h"
+#include "EBrytecConfig.h"
 
 class EPinStatusQueue {
 

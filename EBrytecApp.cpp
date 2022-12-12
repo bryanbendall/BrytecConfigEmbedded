@@ -254,7 +254,7 @@ void EBrytecApp::sendBrytecCanData()
 
         EBrytecCan::PinStatusBroadcast bc;
         bc.moduleAddress = s_data.moduleAddress;
-        bc.nodeGroupIndex = i;
+        bc.nodeGroupIndex = nodeGroup.boardPinIndex;
         if (nodeGroup.enabled)
             bc.statusFlags = EBrytecCan::PinStatusBroadcast::StatusFlags::NORMAL;
         bc.value = nodeGroup.getFinalValue();
@@ -284,7 +284,7 @@ void EBrytecApp::updateNodeGroupNodes()
 {
     // Internal nodes to this module
     {
-        for (int i = 0; i < s_data.nodeVector.count(); i++) {
+        for (unsigned int i = 0; i < s_data.nodeVector.count(); i++) {
             ENode* node = s_data.nodeVector.at(i);
             if (node->NodeType() == NodeTypes::Node_Group) {
                 ENodeGroupNodeInternal* nodeGroupNode = (ENodeGroupNodeInternal*)node;
@@ -306,10 +306,13 @@ void EBrytecApp::updateNodeGroupNodes()
             EBrytecCan::PinStatusBroadcast* bc = s_data.statusQueue.at(i);
             if (!bc)
                 continue;
+
             ENodeGroupNodeInternal* nodeGroupNode = findNodeGroupNode(bc->moduleAddress, bc->nodeGroupIndex);
             if (nodeGroupNode)
                 nodeGroupNode->SetValue(0, bc->value);
         }
+
+        s_data.statusQueue.clear();
     }
 }
 

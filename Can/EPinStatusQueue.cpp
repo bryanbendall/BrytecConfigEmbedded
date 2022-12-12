@@ -3,14 +3,18 @@
 void EPinStatusQueue::add(const EBrytecCan::PinStatusBroadcast& bc)
 {
     // Update data if it is already in the queue
-    int8_t index = find(bc);
-    if (index > -1) {
-        m_broadcasts[index] = bc;
-        return;
-    }
+    // int8_t index = find(bc);
+    // if (index > -1) {
+    //     m_broadcasts[index] = bc;
+    //     return;
+    // }
 
-    m_broadcasts[m_size] = bc;
-    m_size++;
+    // if (m_size > CAN_BUS_BROADCAST_BUFFER)
+    //     return;
+
+    // m_broadcasts[m_size] = bc;
+    m_broadcasts[0] = bc;
+    m_size = 1;
 }
 
 EBrytecCan::PinStatusBroadcast* EPinStatusQueue::at(uint8_t index)

@@ -1,5 +1,6 @@
 #include "BrytecBoard.h"
 #include <Arduino.h>
+#include <CAN.h>
 
 void BrytecBoard::error(EBrytecErrors error)
 {
@@ -36,6 +37,16 @@ void BrytecBoard::error(EBrytecErrors error)
 
 void BrytecBoard::setupBrytecCan(uint8_t moduleAddress)
 {
+    CAN.setPins(PIN_SPI_SS, 42);
+
+    // start the CAN bus at 500 kbps
+    if (!CAN.begin(500E3)) {
+        Serial.println("Starting CAN failed!");
+        while (1)
+            ;
+    } else {
+        Serial.println("Starting can GOOD");
+    }
 }
 
 void BrytecBoard::setupPin(uint8_t index, IOTypes::Types type)
@@ -132,6 +143,9 @@ void BrytecBoard::setPinValue(uint8_t index, IOTypes::Types type, float value)
     }
 }
 
-void BrytecBoard::sendBrytecCan(const EBrytecCan::CanExtFrame& frame)
+void BrytecBoard::sendBrytecCan(EBrytecCan::CanExtFrame frame)
 {
+    CAN.beginExtendedPacket(frame.id);
+    CAN.write(frame.data, 8);
+    CAN.endPacket();
 }

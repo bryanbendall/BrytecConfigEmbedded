@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Boards/BrytecBoard.h"
-#include "BrytecConfigEmbedded/Can/EBrytecCan.h"
+#include "Can/EBrytecCan.h"
 #include "Deserializer/BinaryDeserializer.h"
 #include "Utils/ENodesVector.h"
 #include <stdint.h>
