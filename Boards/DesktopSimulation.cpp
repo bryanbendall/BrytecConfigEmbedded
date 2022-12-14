@@ -66,6 +66,6 @@ void BrytecBoard::setPinValue(uint8_t index, IOTypes::Types type, float value)
 {
 }
 
-void BrytecBoard::sendBrytecCan(const EBrytecCan::CanExtFrame& frame)
+void BrytecBoard::sendBrytecCan(EBrytecCan::CanExtFrame frame)
 {
 }
