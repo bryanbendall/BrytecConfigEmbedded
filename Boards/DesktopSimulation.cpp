@@ -29,8 +29,12 @@ void BrytecBoard::error(EBrytecErrors error)
     case EBrytecErrors::BadAlloc:
         std::cout << "Node group allocation failed" << std::endl;
         break;
+    case EBrytecErrors::CanBufferFull:
+        std::cout << "Can Buffer Full" << std::endl;
+        break;
 
     default:
+        std::cout << "Unknown Error" << std::endl;
         break;
     }
 }

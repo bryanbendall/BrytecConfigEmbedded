@@ -6,31 +6,34 @@ void BrytecBoard::error(EBrytecErrors error)
 {
     switch (error) {
     case EBrytecErrors::ModuleHeader:
-        Serial.println("Module header is wrong");
+        Serial.println(F("Module header is wrong"));
         break;
     case EBrytecErrors::NodeGroupHeader:
-        Serial.println("Node Group header is wrong");
+        Serial.println(F("Node Group header is wrong"));
         break;
     case EBrytecErrors::NotEnabled:
-        Serial.println("This module is not enabled");
+        Serial.println(F("This module is not enabled"));
         break;
     case EBrytecErrors::AddNodeFailed:
-        Serial.println("Failed to add node");
+        Serial.println(F("Failed to add node"));
         break;
     case EBrytecErrors::NodeVectorOutOfSpace:
-        Serial.println("Node Vector out of space");
+        Serial.println(F("Node Vector out of space"));
         break;
     case EBrytecErrors::FailedToCreateNode:
-        Serial.println("Failed to create node");
+        Serial.println(F("Failed to create node"));
         break;
     case EBrytecErrors::NodeIndexOutOfBounds:
-        Serial.println("Node index out of bounds");
+        Serial.println(F("Node index out of bounds"));
         break;
     case EBrytecErrors::BadAlloc:
-        Serial.println("Node group allocation failed");
+        Serial.println(F("Node group allocation failed"));
+        break;
+    case EBrytecErrors::CanBufferFull:
+        Serial.println(F("Can Buffer Full"));
         break;
     default:
-        Serial.println("Unknown error!");
+        Serial.println(F("Unknown error!"));
         break;
     }
 }

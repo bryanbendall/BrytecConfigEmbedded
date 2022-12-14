@@ -8,5 +8,6 @@ enum class EBrytecErrors {
     NodeVectorOutOfSpace,
     FailedToCreateNode,
     NodeIndexOutOfBounds,
-    BadAlloc
+    BadAlloc,
+    CanBufferFull
 };

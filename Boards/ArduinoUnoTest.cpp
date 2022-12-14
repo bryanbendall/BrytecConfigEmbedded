@@ -29,6 +29,9 @@ void BrytecBoard::error(EBrytecErrors error)
     case EBrytecErrors::BadAlloc:
         Serial.println(F("Node group allocation failed"));
         break;
+    case EBrytecErrors::CanBufferFull:
+        Serial.println(F("Can Buffer Full"));
+        break;
     default:
         Serial.println(F("Unknown error!"));
         break;
