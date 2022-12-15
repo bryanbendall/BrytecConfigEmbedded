@@ -59,8 +59,8 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         return EValueNode::CreateInPlace(spec, destination);
     case NodeTypes::Switch:
         return ESwitchNode::CreateInPlace(spec, destination);
-    case NodeTypes::CanBus:
-        // return new (ptr) ECanBusNode();
+    // case NodeTypes::CanBus:
+    // return new (ptr) ECanBusNode();
     case NodeTypes::PinCurrent:
         return EPinCurrentNode::CreateInPlace(spec, destination);
 

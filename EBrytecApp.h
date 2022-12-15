@@ -12,6 +12,7 @@ class EBrytecApp {
 
 public:
     static void deserializeModule(BinaryDeserializer& des);
+    static bool isDeserializeOk();
     static void setupModule();
     static void setupPins();
     static void update(float timestep);
@@ -19,8 +20,8 @@ public:
     static ENode* getInitialValueNode(int startIndex, int nodeCount);
     static ENode* getFinalValueNode(int startIndex, int nodeCount);
     static ENode* getPinCurrentNode(int startIndex, int nodeCount);
-    static void queueCanData(const EBrytecCan::PinStatusBroadcast& bc);
-    static void sendBrytecCanData();
+    static void brytecCanReceived(const EBrytecCan::CanExtFrame& frame);
+    static void sendBrytecCanBroadcasts();
 
 private:
     static ENodeGroupNodeInternal* findNodeGroupNode(uint8_t moduleAddress, uint16_t nodeGroupIndex);

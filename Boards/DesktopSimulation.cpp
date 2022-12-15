@@ -11,7 +11,7 @@ void BrytecBoard::error(EBrytecErrors error)
     case EBrytecErrors::NodeGroupHeader:
         std::cout << "Node Group header is wrong" << std::endl;
         break;
-    case EBrytecErrors::NotEnabled:
+    case EBrytecErrors::ModuleNotEnabled:
         std::cout << "This module is not enabled" << std::endl;
         break;
     case EBrytecErrors::AddNodeFailed:

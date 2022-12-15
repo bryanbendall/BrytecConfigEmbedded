@@ -9,6 +9,7 @@
 #include <stdlib.h>
 
 struct EBrytecAppData {
+    bool deserializeOk = false;
     uint8_t moduleAddress = 0;
     ENodesVector nodeVector = {};
     ENodeGroup* nodeGroups = nullptr;
@@ -19,6 +20,8 @@ static EBrytecAppData s_data;
 
 void EBrytecApp::deserializeModule(BinaryDeserializer& des)
 {
+    s_data.deserializeOk = false;
+
     // Delete old node groups because it is a static class
     if (s_data.nodeGroups) {
         s_data.nodeVector.reset();
@@ -31,8 +34,10 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
     des.readRaw<char>(&m); // M
     des.readRaw<char>(&d); // D
 
-    if (m != 'M' || d != 'D')
+    if (m != 'M' || d != 'D') {
         BrytecBoard::error(EBrytecErrors::ModuleHeader);
+        return;
+    }
 
     uint8_t major, minor;
     des.readRaw<uint8_t>(&major);
@@ -50,7 +55,7 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
     uint8_t moduleEnabled;
     des.readRaw<uint8_t>(&moduleEnabled);
     if (!moduleEnabled) {
-        BrytecBoard::error(EBrytecErrors::NotEnabled);
+        BrytecBoard::error(EBrytecErrors::ModuleNotEnabled);
         return;
     }
 
@@ -60,8 +65,10 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
 
     // Allocate space for node groups
     s_data.nodeGroups = (ENodeGroup*)malloc(sizeof(ENodeGroup) * s_data.nodeGroupsCount);
-    if (!s_data.nodeGroups)
+    if (!s_data.nodeGroups) {
         BrytecBoard::error(EBrytecErrors::BadAlloc);
+        return;
+    }
 
     // Physical Node Group Count
     uint16_t physicalNodeGroupCount;
@@ -84,8 +91,10 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
         char n, g;
         des.readRaw<char>(&n); // N
         des.readRaw<char>(&g); // G
-        if (n != 'N' || g != 'G')
+        if (n != 'N' || g != 'G') {
             BrytecBoard::error(EBrytecErrors::NodeGroupHeader);
+            return;
+        }
 
         uint8_t nodeGroupMajor, nodeGroupMinor;
         des.readRaw<uint8_t>(&nodeGroupMajor);
@@ -109,8 +118,6 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
         uint8_t enabled;
         des.readRaw<uint8_t>(&enabled);
         currentNodeGroup.enabled = enabled;
-        if (!currentNodeGroup.enabled)
-            BrytecBoard::error(EBrytecErrors::NotEnabled);
 
         // Create nodes in vector
         {
@@ -162,21 +169,37 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
             }
         }
     }
+
+    s_data.deserializeOk = true;
+}
+
+bool EBrytecApp::isDeserializeOk()
+{
+    return s_data.deserializeOk;
 }
 
 void EBrytecApp::setupModule()
 {
+    if (!s_data.deserializeOk)
+        return;
+
     BrytecBoard::setupBrytecCan(s_data.moduleAddress);
 }
 
 void EBrytecApp::setupPins()
 {
+    if (!s_data.deserializeOk)
+        return;
+
     for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++)
         s_data.nodeGroups[i].setupPin();
 }
 
 void EBrytecApp::update(float timestep)
 {
+    if (!s_data.deserializeOk)
+        return;
+
     // Update node group nodes
     updateNodeGroupNodes();
 
@@ -197,7 +220,7 @@ void EBrytecApp::update(float timestep)
     static float canDataTimer = 0.0f;
     canDataTimer += timestep;
     if (canDataTimer >= CAN_UPDATE_FREQUENCY) {
-        sendBrytecCanData();
+        sendBrytecCanBroadcasts();
         canDataTimer = 0.0f;
     }
 }
@@ -241,27 +264,31 @@ ENode* EBrytecApp::getNode(int index)
     return s_data.nodeVector.at(index);
 }
 
-void EBrytecApp::queueCanData(const EBrytecCan::PinStatusBroadcast& bc)
+void EBrytecApp::brytecCanReceived(const EBrytecCan::CanExtFrame& frame)
 {
-    s_data.statusQueue.add(bc);
+    if (frame.isBroadcast()) {
+        s_data.statusQueue.add(frame);
+    } else {
+        // TODO
+    }
 }
 
-void EBrytecApp::sendBrytecCanData()
+void EBrytecApp::sendBrytecCanBroadcasts()
 {
     for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
 
         ENodeGroup& nodeGroup = s_data.nodeGroups[i];
 
-        EBrytecCan::PinStatusBroadcast bc;
-        bc.moduleAddress = s_data.moduleAddress;
-        bc.nodeGroupIndex = nodeGroup.boardPinIndex;
+        EBrytecCan::PinStatusBroadcast pinStatus;
+        pinStatus.moduleAddress = s_data.moduleAddress;
+        pinStatus.nodeGroupIndex = nodeGroup.boardPinIndex;
         if (nodeGroup.enabled)
-            bc.statusFlags = EBrytecCan::PinStatusBroadcast::StatusFlags::NORMAL;
-        bc.value = nodeGroup.getFinalValue();
-        bc.voltage = BrytecBoard::getPinVoltage(nodeGroup.boardPinIndex);
-        bc.current = BrytecBoard::getPinCurrent(nodeGroup.boardPinIndex);
+            pinStatus.statusFlags = EBrytecCan::PinStatusBroadcast::StatusFlags::NORMAL;
+        pinStatus.value = nodeGroup.getFinalValue();
+        pinStatus.voltage = BrytecBoard::getPinVoltage(nodeGroup.boardPinIndex);
+        pinStatus.current = BrytecBoard::getPinCurrent(nodeGroup.boardPinIndex);
 
-        BrytecBoard::sendBrytecCan(bc.getFrame());
+        BrytecBoard::sendBrytecCan(pinStatus.getFrame());
     }
 }
 
@@ -303,13 +330,13 @@ void EBrytecApp::updateNodeGroupNodes()
     // External nodes from can messages
     {
         for (int i = 0; i < s_data.statusQueue.size(); i++) {
-            EBrytecCan::PinStatusBroadcast* bc = s_data.statusQueue.at(i);
-            if (!bc)
+            EBrytecCan::PinStatusBroadcast* pinStatus = s_data.statusQueue.at(i);
+            if (!pinStatus)
                 continue;
 
-            ENodeGroupNodeInternal* nodeGroupNode = findNodeGroupNode(bc->moduleAddress, bc->nodeGroupIndex);
+            ENodeGroupNodeInternal* nodeGroupNode = findNodeGroupNode(pinStatus->moduleAddress, pinStatus->nodeGroupIndex);
             if (nodeGroupNode)
-                nodeGroupNode->SetValue(0, bc->value);
+                nodeGroupNode->SetValue(0, pinStatus->value);
         }
 
         s_data.statusQueue.clear();

@@ -2,15 +2,15 @@
 
 namespace EBrytecCan {
 
-bool isBroadcast(const CanExtFrame& frame)
+bool CanExtFrame::isBroadcast() const
 {
-    return (frame.id & ((uint32_t)1 << 28));
+    return (id & ((uint32_t)1 << 28));
 }
 
 PinStatusBroadcast::PinStatusBroadcast(const CanExtFrame& frame)
 {
     // Not a broadcast
-    if (!isBroadcast(frame))
+    if (frame.isBroadcast())
         return;
 
     statusFlags = (StatusFlags)((frame.id >> 24) & 0b1111);

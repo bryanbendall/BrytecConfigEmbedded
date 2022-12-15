@@ -11,7 +11,7 @@ void BrytecBoard::error(EBrytecErrors error)
     case EBrytecErrors::NodeGroupHeader:
         Serial.println(F("Node Group header is wrong"));
         break;
-    case EBrytecErrors::NotEnabled:
+    case EBrytecErrors::ModuleNotEnabled:
         Serial.println(F("This module is not enabled"));
         break;
     case EBrytecErrors::AddNodeFailed:

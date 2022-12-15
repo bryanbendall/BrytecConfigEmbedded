@@ -3,7 +3,7 @@
 enum class EBrytecErrors {
     ModuleHeader,
     NodeGroupHeader,
-    NotEnabled,
+    ModuleNotEnabled,
     AddNodeFailed,
     NodeVectorOutOfSpace,
     FailedToCreateNode,
