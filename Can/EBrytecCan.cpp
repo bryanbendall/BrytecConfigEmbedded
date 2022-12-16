@@ -10,7 +10,7 @@ bool CanExtFrame::isBroadcast() const
 PinStatusBroadcast::PinStatusBroadcast(const CanExtFrame& frame)
 {
     // Not a broadcast
-    if (frame.isBroadcast())
+    if (!frame.isBroadcast())
         return;
 
     statusFlags = (StatusFlags)((frame.id >> 24) & 0b1111);
