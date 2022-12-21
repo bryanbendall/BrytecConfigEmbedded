@@ -96,6 +96,7 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
             return;
         }
 
+        // Version
         uint8_t nodeGroupMajor, nodeGroupMinor;
         des.readRaw<uint8_t>(&nodeGroupMajor);
         des.readRaw<uint8_t>(&nodeGroupMinor);
@@ -118,6 +119,17 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
         uint8_t enabled;
         des.readRaw<uint8_t>(&enabled);
         currentNodeGroup.enabled = enabled;
+
+        // Current limit
+        des.readRaw<uint8_t>(&currentNodeGroup.currentLimit);
+
+        uint8_t alwaysRetry;
+        des.readRaw<uint8_t>(&alwaysRetry);
+        currentNodeGroup.alwaysRetry = alwaysRetry;
+
+        des.readRaw<uint8_t>(&currentNodeGroup.maxRetries);
+
+        des.readRaw<float>(&currentNodeGroup.retryDelay);
 
         // Create nodes in vector
         {
@@ -199,6 +211,9 @@ void EBrytecApp::update(float timestep)
 {
     if (!s_data.deserializeOk)
         return;
+
+    // Update current and over current
+    updateCurrents(timestep);
 
     // Update node group nodes
     updateNodeGroupNodes();
@@ -284,6 +299,8 @@ void EBrytecApp::sendBrytecCanBroadcasts()
         pinStatus.nodeGroupIndex = nodeGroup.boardPinIndex;
         if (nodeGroup.enabled)
             pinStatus.statusFlags = EBrytecCan::PinStatusBroadcast::StatusFlags::NORMAL;
+        if (nodeGroup.tripped)
+            pinStatus.statusFlags = EBrytecCan::PinStatusBroadcast::StatusFlags::TRIPPED;
         pinStatus.value = nodeGroup.getFinalValue();
         pinStatus.voltage = BrytecBoard::getPinVoltage(nodeGroup.boardPinIndex);
         pinStatus.current = BrytecBoard::getPinCurrent(nodeGroup.boardPinIndex);
@@ -341,6 +358,12 @@ void EBrytecApp::updateNodeGroupNodes()
 
         s_data.statusQueue.clear();
     }
+}
+
+void EBrytecApp::updateCurrents(float timestep)
+{
+    for (int i = 0; i < s_data.nodeGroupsCount; i++)
+        s_data.nodeGroups[i].updatePinCurrent(timestep);
 }
 
 void EBrytecApp::evaulateJustNodes(float timestep)

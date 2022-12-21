@@ -26,6 +26,7 @@ public:
 private:
     static ENodeGroupNodeInternal* findNodeGroupNode(uint8_t moduleAddress, uint16_t nodeGroupIndex);
     static void updateNodeGroupNodes();
+    static void updateCurrents(float timestep);
     static void evaulateJustNodes(float timestep);
 
     friend class NodeGroup;

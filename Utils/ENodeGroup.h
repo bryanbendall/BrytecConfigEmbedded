@@ -3,16 +3,28 @@
 #include "IOTypes.h"
 #include <stdint.h>
 
+#define TrippedTime 0.1f
+
 struct ENodeGroup {
+    bool enabled;
+    uint16_t boardPinIndex;
+    IOTypes::Types type;
     uint32_t startNodeIndex;
     uint8_t nodeCount;
-    uint16_t boardPinIndex;
-    bool enabled;
-    IOTypes::Types type;
+    uint8_t currentLimit;
+    bool alwaysRetry;
+    uint8_t maxRetries;
+    float retryDelay;
+
+    bool tripped = false;
+    float trippedTimer = 0.0f;
+    float retryTimer = 0.0f;
+    uint8_t numberRetries = 0;
 
     void setupPin();
     void updateInitialValue();
     void updateFinalValue();
-    void updatePinCurrent();
+    void updatePinCurrent(float timestep);
+    void checkOverCurrent(float timestep, float current);
     float getFinalValue();
 };

@@ -29,6 +29,9 @@ void ENodeGroup::updateFinalValue()
     if (!enabled)
         return;
 
+    if (tripped)
+        return;
+
     ENode* node = EBrytecApp::getFinalValueNode(startNodeIndex, nodeCount);
     if (!node)
         return;
@@ -40,16 +43,47 @@ void ENodeGroup::updateFinalValue()
     BrytecBoard::setPinValue(boardPinIndex, type, *output);
 }
 
-void ENodeGroup::updatePinCurrent()
+void ENodeGroup::updatePinCurrent(float timestep)
 {
     if (!enabled)
         return;
 
-    ENode* node = EBrytecApp::getPinCurrentNode(startNodeIndex, nodeCount);
+    float current = BrytecBoard::getPinCurrent(boardPinIndex);
+    checkOverCurrent(timestep, current);
+
+    ENode* node
+        = EBrytecApp::getPinCurrentNode(startNodeIndex, nodeCount);
     if (!node)
         return;
 
-    node->SetValue(0, BrytecBoard::getPinCurrent(boardPinIndex));
+    node->SetValue(0, current);
+}
+
+void ENodeGroup::checkOverCurrent(float timestep, float current)
+{
+    if (tripped) {
+        if (numberRetries >= maxRetries) {
+            return;
+        }
+
+        retryTimer += timestep;
+
+        if (retryTimer >= retryDelay) {
+            tripped = false;
+            retryTimer = 0.0f;
+            numberRetries += 1;
+            return;
+        }
+    }
+
+    if (current >= currentLimit)
+        trippedTimer += timestep;
+
+    if (trippedTimer >= TrippedTime) {
+        BrytecBoard::setPinValue(boardPinIndex, type, 0.0f);
+        tripped = true;
+        trippedTimer = 0.0f;
+    }
 }
 
 float ENodeGroup::getFinalValue()
