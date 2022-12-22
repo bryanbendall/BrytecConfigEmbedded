@@ -121,7 +121,7 @@ float BrytecBoard::getPinCurrent(uint8_t index)
 
 void BrytecBoard::setPinValue(uint8_t index, IOTypes::Types type, float value)
 {
-    int pwmValue = (value * 2.55f);
+    int pwmValue = (value * 255.0f);
 
     if (pwmValue > 255)
         pwmValue = 255;

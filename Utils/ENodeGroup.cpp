@@ -40,6 +40,12 @@ void ENodeGroup::updateFinalValue()
     if (!output)
         return;
 
+    // Clamp to 0.0 - 1.0
+    if (*output > 1.0f)
+        *output = 1.0f;
+    if (*output < 0.0f)
+        *output = 0.0f;
+
     BrytecBoard::setPinValue(boardPinIndex, type, *output);
 }
 
