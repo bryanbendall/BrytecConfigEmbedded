@@ -26,6 +26,7 @@ enum class NodeTypes : uint8_t {
     CanBus,
     Convert,
     PinCurrent,
+    PID,
     Count
 };
 
