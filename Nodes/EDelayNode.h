@@ -62,7 +62,7 @@ public:
         if (in) {
             m_timerCounter += timestep;
             if (m_timerCounter >= delayTime) {
-                m_out = in;
+                m_out = m_in.getValue();
                 m_timerCounter = delayTime;
             }
         } else {
