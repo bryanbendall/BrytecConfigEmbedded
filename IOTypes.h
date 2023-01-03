@@ -3,18 +3,22 @@
 #include <stddef.h>
 
 struct IOTypes {
+
     enum class Types {
         Undefined,
-        Output_12V_Pwm,
-        Output_12V,
-        Output_12V_Low_Current,
+
+        Output_5V,
+        Output_Batt,
         Output_Ground,
-        Input_12V,
+
+        Input_Batt,
         Input_Ground,
         Input_5V,
         Input_5V_Variable,
-        Input_Can,
+        Input_20V_Variable,
+
         Internal,
+
         Count
     };
 

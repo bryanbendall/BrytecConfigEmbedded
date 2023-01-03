@@ -2,14 +2,16 @@
 
 const char* IOTypes::Strings[] = {
     "Undefined",
-    "12V High Current PWM Output",
-    "12V High Current Output",
-    "12V Low Current Output",
-    "Ground Output",
-    "12V Switched Input",
-    "Ground Input",
-    "5V Switched Input",
-    "5V Variable Input",
-    "Can Input",
+
+    "Output - 5V",
+    "Output - B+",
+    "Output - Ground",
+
+    "Input - B+ Switched",
+    "Input - Ground Switched",
+    "Input - 5V Switched",
+    "Input - 5V Variable",
+    "Input - 20V Variable",
+
     "Internal",
 };
