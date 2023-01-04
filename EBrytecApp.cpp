@@ -282,7 +282,14 @@ ENode* EBrytecApp::getNode(int index)
 void EBrytecApp::brytecCanReceived(const EBrytecCan::CanExtFrame& frame)
 {
     if (frame.isBroadcast()) {
-        s_data.statusQueue.add(frame);
+
+        EBrytecCan::PinStatusBroadcast pinStatus(frame);
+
+        // Only queue pin status if we have a node that uses it
+        ENodeGroupNodeInternal* nodeGroupNode = findNodeGroupNode(pinStatus.moduleAddress, pinStatus.nodeGroupIndex);
+        if (nodeGroupNode)
+            s_data.statusQueue.add(pinStatus);
+
     } else {
         // TODO
     }
