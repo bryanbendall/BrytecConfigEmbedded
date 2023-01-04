@@ -96,6 +96,9 @@ ENode* ECurveNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
             return new (destination) ECurveNodeInternal<CurveType::Breathing, float*, float*, float>();
         if (in == Pointer && repeat == Pointer && timeout == Pointer)
             return new (destination) ECurveNodeInternal<CurveType::Breathing, float*, float*, float*>();
+
+    default:
+        break;
     }
 
 #else
@@ -111,6 +114,9 @@ ENode* ECurveNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 
     case CurveType::Breathing:
         return new (destination) ECurveNodeInternal<CurveType::Breathing, float, float, float>();
+
+    default:
+        break;
     }
 
 #endif

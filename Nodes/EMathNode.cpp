@@ -51,6 +51,9 @@ ENode* EMathNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
             return new (destination) EMathNodeInternal<MathType::Divide, float*, float>();
         if (input0 == Pointer && input1 == Pointer)
             return new (destination) EMathNodeInternal<MathType::Divide, float*, float*>();
+
+    default:
+        break;
     }
 
 #else
@@ -66,6 +69,9 @@ ENode* EMathNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 
     case MathType::Divide:
         return new (destination) EMathNodeInternal<MathType::Divide, float, float>();
+
+    default:
+        break;
     }
 
 #endif

@@ -70,6 +70,9 @@ ENode* ECompareNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
             return new (destination) ECompareNodeInternal<CompareType::LessEqual, float*, float>();
         if (input0 == Pointer && input1 == Pointer)
             return new (destination) ECompareNodeInternal<CompareType::LessEqual, float*, float*>();
+
+    default:
+        break;
     }
 
 #else
@@ -91,6 +94,9 @@ ENode* ECompareNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 
     case CompareType::LessEqual:
         return new (destination) ECompareNodeInternal<CompareType::LessEqual, float, float>();
+
+    default:
+        break;
     }
 
 #endif

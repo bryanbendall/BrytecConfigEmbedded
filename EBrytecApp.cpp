@@ -369,7 +369,7 @@ void EBrytecApp::updateNodeGroupNodes()
 
 void EBrytecApp::updateCurrents(float timestep)
 {
-    for (int i = 0; i < s_data.nodeGroupsCount; i++)
+    for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++)
         s_data.nodeGroups[i].updatePinCurrent(timestep);
 }
 

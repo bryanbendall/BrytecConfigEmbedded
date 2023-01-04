@@ -6,7 +6,7 @@ namespace EBrytecCan {
 
 struct CanExtFrame {
     uint32_t id;
-    uint8_t dlc;
+    uint8_t dlc = 8;
     uint8_t data[8];
 
     bool isBroadcast() const;
