@@ -106,11 +106,11 @@ private:
     ValueOrPointer<Input4_t> m_I;
     ValueOrPointer<Input5_t> m_D;
 #else
-    ValueAndPointer m_in1;
-    ValueAndPointer m_in2;
-    ValueAndPointer m_in3;
-    ValueAndPointer m_in4;
-    ValueAndPointer m_in5;
+    ValueAndPointer m_input;
+    ValueAndPointer m_target;
+    ValueAndPointer m_P;
+    ValueAndPointer m_I;
+    ValueAndPointer m_D;
 #endif
     float m_previousError;
     float m_integral;
