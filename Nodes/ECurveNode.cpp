@@ -6,12 +6,14 @@ ENode* ECurveNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     if (spec.type != NodeTypes::Curve || spec.numInputs != 3 || spec.numValues != 2)
         return nullptr;
 
-    auto in = spec.connections[0];
-    auto repeat = spec.connections[1];
-    auto timeout = spec.connections[2];
     auto curveType = (CurveType)spec.values[0];
 
 #ifdef ENODE_FULL_TEMPLATE
+
+    auto in = spec.connections[0];
+    auto repeat = spec.connections[1];
+    auto timeout = spec.connections[2];
+
     switch (curveType) {
     case CurveType::Toggle:
         if (in == Float && repeat == Float && timeout == Float)

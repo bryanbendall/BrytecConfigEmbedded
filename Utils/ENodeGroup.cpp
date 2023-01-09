@@ -67,28 +67,43 @@ void ENodeGroup::updatePinCurrent(float timestep)
 
 void ENodeGroup::checkOverCurrent(float timestep, float current)
 {
+    // Skip if current limit not supported
+    if (currentLimit == 0)
+        return;
+
     if (tripped) {
-        if (numberRetries >= maxRetries) {
-            return;
+
+        if (!alwaysRetry) {
+            // No retry
+            if (maxRetries == 0)
+                return;
+
+            // Max retries reached
+            if (numberRetries >= maxRetries)
+                return;
         }
 
+        // Check retry timer
         retryTimer += timestep;
-
         if (retryTimer >= retryDelay) {
             tripped = false;
             retryTimer = 0.0f;
             numberRetries += 1;
             return;
         }
-    }
 
-    if (current >= currentLimit)
-        trippedTimer += timestep;
+    } else {
 
-    if (trippedTimer >= TrippedTime) {
-        BrytecBoard::setPinValue(boardPinIndex, type, 0.0f);
-        tripped = true;
-        trippedTimer = 0.0f;
+        // Slow blow current limit
+        if (current >= (float)currentLimit)
+            trippedTimer += timestep;
+
+        // Shut down pin
+        if (trippedTimer >= TrippedTime) {
+            BrytecBoard::setPinValue(boardPinIndex, type, 0.0f);
+            tripped = true;
+            trippedTimer = 0.0f;
+        }
     }
 }
 

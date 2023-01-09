@@ -6,11 +6,13 @@ ENode* EMathNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     if (spec.type != NodeTypes::Math || spec.numInputs != 2 || spec.numValues != 1)
         return nullptr;
 
-    auto input0 = spec.connections[0];
-    auto input1 = spec.connections[1];
     auto mathType = (MathType)spec.values[0];
 
 #ifdef ENODE_FULL_TEMPLATE
+
+    auto input0 = spec.connections[0];
+    auto input1 = spec.connections[1];
+
     switch (mathType) {
     case MathType::Add:
         if (input0 == Float && input1 == Float)

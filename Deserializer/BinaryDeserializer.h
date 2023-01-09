@@ -59,7 +59,7 @@ inline void BinaryDeserializer::readRaw<EmptyString>(EmptyString* data)
     uint32_t length;
     readRaw<uint32_t>(&length);
 
-    if (length <= 0)
+    if (length == 0)
         return;
 
     char c;

@@ -5,11 +5,13 @@ ENode* ECompareNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     if (spec.type != NodeTypes::Compare || spec.numInputs != 2 || spec.numValues != 1)
         return nullptr;
 
-    auto input0 = spec.connections[0];
-    auto input1 = spec.connections[1];
     auto compareType = (CompareType)spec.values[0];
 
 #ifdef ENODE_FULL_TEMPLATE
+
+    auto input0 = spec.connections[0];
+    auto input1 = spec.connections[1];
+
     switch (compareType) {
     case CompareType::Equal:
         if (input0 == Float && input1 == Float)
