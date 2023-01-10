@@ -83,9 +83,9 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
             des.readRaw<uint16_t>(&internalNodeGroupCount);
         }
 
-        ENodeGroup& currentNodeGroup = s_data.nodeGroups[nodeGroupIndex];
-        currentNodeGroup.startNodeIndex = s_data.nodeVector.count();
-        des.readRaw<uint16_t>(&currentNodeGroup.boardPinIndex);
+        ENodeGroup* currentNodeGroup = new (&s_data.nodeGroups[nodeGroupIndex]) ENodeGroup();
+        currentNodeGroup->startNodeIndex = s_data.nodeVector.count();
+        des.readRaw<uint16_t>(&currentNodeGroup->boardPinIndex);
 
         // Deserialize modules specs
         char n, g;
@@ -113,23 +113,23 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
         // Node Group type
         uint8_t type;
         des.readRaw<uint8_t>(&type);
-        currentNodeGroup.type = (IOTypes::Types)type;
+        currentNodeGroup->type = (IOTypes::Types)type;
 
         // Node Group enabled
         uint8_t enabled;
         des.readRaw<uint8_t>(&enabled);
-        currentNodeGroup.enabled = enabled;
+        currentNodeGroup->enabled = enabled;
 
         // Current limit
-        des.readRaw<uint8_t>(&currentNodeGroup.currentLimit);
+        des.readRaw<uint8_t>(&currentNodeGroup->currentLimit);
 
         uint8_t alwaysRetry;
         des.readRaw<uint8_t>(&alwaysRetry);
-        currentNodeGroup.alwaysRetry = alwaysRetry;
+        currentNodeGroup->alwaysRetry = alwaysRetry;
 
-        des.readRaw<uint8_t>(&currentNodeGroup.maxRetries);
+        des.readRaw<uint8_t>(&currentNodeGroup->maxRetries);
 
-        des.readRaw<float>(&currentNodeGroup.retryDelay);
+        des.readRaw<float>(&currentNodeGroup->retryDelay);
 
         // Create nodes in vector
         {
@@ -153,7 +153,7 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
                 }
             }
 
-            currentNodeGroup.nodeCount = nodeCount;
+            currentNodeGroup->nodeCount = nodeCount;
         }
 
         // connect nodes
@@ -169,10 +169,10 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
 
                     ENodeConnection connection = ENodeDeserializer::deserializeNodeConnection(des);
 
-                    ENode* thisNode = s_data.nodeVector.at(currentNodeGroup.startNodeIndex + nodeIndex);
+                    ENode* thisNode = s_data.nodeVector.at(currentNodeGroup->startNodeIndex + nodeIndex);
                     if (connection.connectionNodeIndex != -1 && connection.outputIndex != -1) {
                         // Valid connection
-                        ENode* connectedNode = s_data.nodeVector.at(currentNodeGroup.startNodeIndex + connection.connectionNodeIndex);
+                        ENode* connectedNode = s_data.nodeVector.at(currentNodeGroup->startNodeIndex + connection.connectionNodeIndex);
                         thisNode->SetInput(inputIndex, connectedNode->GetOutput(connection.outputIndex));
                     } else {
                         thisNode->SetValue(inputIndex, connection.defaultValue);
