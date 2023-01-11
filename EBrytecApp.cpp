@@ -163,13 +163,14 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
 
             for (uint16_t nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++) {
 
+                ENode* thisNode = s_data.nodeVector.at(currentNodeGroup->startNodeIndex + nodeIndex);
+
                 uint8_t inputCount;
                 des.readRaw<uint8_t>(&inputCount);
                 for (uint8_t inputIndex = 0; inputIndex < inputCount; inputIndex++) {
 
                     ENodeConnection connection = ENodeDeserializer::deserializeNodeConnection(des);
 
-                    ENode* thisNode = s_data.nodeVector.at(currentNodeGroup->startNodeIndex + nodeIndex);
                     if (connection.connectionNodeIndex != -1 && connection.outputIndex != -1) {
                         // Valid connection
                         ENode* connectedNode = s_data.nodeVector.at(currentNodeGroup->startNodeIndex + connection.connectionNodeIndex);

@@ -8,7 +8,7 @@
 enum class NodeTypes : uint8_t {
     Final_Value = 0,
     Initial_Value,
-    Node_Group, // TODO
+    Node_Group,
     And,
     Or,
     Two_Stage,
