@@ -46,7 +46,7 @@ inline void BinaryDeserializer::readRaw<std::string>(std::string* data)
     if (length <= 0)
         return;
 
-    data->resize(length + 1, '\0');
+    data->resize(length, ' ');
 
     for (int i = 0; i < length; i++)
         readRaw<char>(&data->data()[i]);
