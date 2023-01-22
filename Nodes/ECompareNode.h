@@ -1,12 +1,7 @@
 #pragma once
 
 #include "ENode.h"
-
-#ifdef ARDUINO
 #include <math.h>
-#else
-#include <cmath>
-#endif
 
 enum class CompareType : uint8_t {
     Equal,
