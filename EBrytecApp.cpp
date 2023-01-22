@@ -48,6 +48,12 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
     EmptyString empty;
     des.readRaw<EmptyString>(&empty);
 
+    // Manufacturer name
+    des.readRaw<EmptyString>(&empty);
+
+    // Board name
+    des.readRaw<EmptyString>(&empty);
+
     // Module address
     des.readRaw<uint8_t>(&s_data.moduleAddress);
 
