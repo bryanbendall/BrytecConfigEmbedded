@@ -6,7 +6,7 @@
 #include "Utils/ENodesVector.h"
 #include <stdint.h>
 
-class ENodeGroupNodeInternal;
+class ENodeGroupNode;
 
 class EBrytecApp {
 
@@ -24,7 +24,7 @@ public:
     static void sendBrytecCanBroadcasts();
 
 private:
-    static ENodeGroupNodeInternal* findNodeGroupNode(uint8_t moduleAddress, uint16_t nodeGroupIndex);
+    static ENodeGroupNode* findNodeGroupNode(uint8_t moduleAddress, uint16_t nodeGroupIndex);
     static void updateNodeGroupNodes();
     static void updateCurrents(float timestep);
     static void evaulateJustNodes(float timestep);

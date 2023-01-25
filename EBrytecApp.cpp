@@ -293,7 +293,7 @@ void EBrytecApp::brytecCanReceived(const EBrytecCan::CanExtFrame& frame)
         EBrytecCan::PinStatusBroadcast pinStatus(frame);
 
         // Only queue pin status if we have a node that uses it
-        ENodeGroupNodeInternal* nodeGroupNode = findNodeGroupNode(pinStatus.moduleAddress, pinStatus.nodeGroupIndex);
+        ENodeGroupNode* nodeGroupNode = findNodeGroupNode(pinStatus.moduleAddress, pinStatus.nodeGroupIndex);
         if (nodeGroupNode)
             s_data.statusQueue.add(pinStatus);
 
@@ -323,13 +323,13 @@ void EBrytecApp::sendBrytecCanBroadcasts()
     }
 }
 
-ENodeGroupNodeInternal* EBrytecApp::findNodeGroupNode(uint8_t moduleAddress, uint16_t nodeGroupIndex)
+ENodeGroupNode* EBrytecApp::findNodeGroupNode(uint8_t moduleAddress, uint16_t nodeGroupIndex)
 {
     for (uint32_t i = 0; i < s_data.nodeVector.count(); i++) {
 
         ENode* node = s_data.nodeVector.at(i);
         if (node->NodeType() == NodeTypes::Node_Group) {
-            ENodeGroupNodeInternal* nodeGroupNode = (ENodeGroupNodeInternal*)node;
+            ENodeGroupNode* nodeGroupNode = (ENodeGroupNode*)node;
             if (nodeGroupNode->getModuleAddress() == moduleAddress && nodeGroupNode->getNodeGroupIndex() == nodeGroupIndex)
                 return nodeGroupNode;
         }
@@ -345,13 +345,13 @@ void EBrytecApp::updateNodeGroupNodes()
         for (unsigned int i = 0; i < s_data.nodeVector.count(); i++) {
             ENode* node = s_data.nodeVector.at(i);
             if (node->NodeType() == NodeTypes::Node_Group) {
-                ENodeGroupNodeInternal* nodeGroupNode = (ENodeGroupNodeInternal*)node;
+                ENodeGroupNode* nodeGroupNode = (ENodeGroupNode*)node;
                 if (nodeGroupNode->getModuleAddress() == s_data.moduleAddress) {
 
                     // In this module
                     for (uint16_t j = 0; j < s_data.nodeGroupsCount; j++) {
                         if (s_data.nodeGroups[j].boardPinIndex == nodeGroupNode->getNodeGroupIndex())
-                            nodeGroupNode->SetValue(0, s_data.nodeGroups[j].getFinalValue());
+                            nodeGroupNode->SetValue(99, s_data.nodeGroups[j].getFinalValue());
                     }
                 }
             }
@@ -365,9 +365,9 @@ void EBrytecApp::updateNodeGroupNodes()
             if (!pinStatus)
                 continue;
 
-            ENodeGroupNodeInternal* nodeGroupNode = findNodeGroupNode(pinStatus->moduleAddress, pinStatus->nodeGroupIndex);
+            ENodeGroupNode* nodeGroupNode = findNodeGroupNode(pinStatus->moduleAddress, pinStatus->nodeGroupIndex);
             if (nodeGroupNode)
-                nodeGroupNode->SetValue(0, pinStatus->value);
+                nodeGroupNode->SetValue(99, pinStatus->value);
         }
 
         s_data.statusQueue.clear();
