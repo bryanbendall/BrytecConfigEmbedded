@@ -2,6 +2,7 @@
 
 #include "EBrytecConfig.h"
 #include "Utils/ENodeConnection.h"
+#include <math.h>
 #include <new>
 #include <stdint.h>
 

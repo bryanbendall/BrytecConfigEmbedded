@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ENode.h"
-#include <math.h>
 
 enum class CompareType : uint8_t {
     Equal,
