@@ -64,6 +64,8 @@ public:
 
     void Evaluate(float timestep) override
     {
+        m_out = 0.0f;
+
         if constexpr (type == CompareType::Equal) {
             if (fabs(m_input1.getValue() - m_input2.getValue()) <= m_epsilon)
                 m_out = 1.0f;
