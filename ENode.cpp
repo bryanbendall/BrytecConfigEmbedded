@@ -2,6 +2,7 @@
 #include "Nodes/EAndNode.h"
 #include "Nodes/ECanBusNode.h"
 #include "Nodes/ECompareNode.h"
+#include "Nodes/ECounterNode.h"
 #include "Nodes/ECurveNode.h"
 #include "Nodes/EDelayNode.h"
 #include "Nodes/EFinalValueNode.h"
@@ -66,6 +67,8 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         return EPinCurrentNode::CreateInPlace(spec, destination);
     case NodeTypes::PID:
         return EPIDNode::CreateInPlace(spec, destination);
+    case NodeTypes::Counter:
+        return ECounterNode::CreateInPlace(spec, destination);
 
     default:
         return nullptr;

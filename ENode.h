@@ -27,6 +27,7 @@ enum class NodeTypes : uint8_t {
     Convert,
     PinCurrent,
     PID,
+    Counter,
     Count
 };
 
@@ -55,6 +56,11 @@ inline bool ToBool(float f)
         return true;
     else
         return false;
+}
+
+inline bool isEqual(float a, float b)
+{
+    return fabs((a - b)) <= 0.0001f;
 }
 
 class ENode {
