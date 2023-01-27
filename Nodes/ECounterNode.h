@@ -83,15 +83,22 @@ public:
 
         if (ToBool(m_lastUp) != up) {
             m_lastUp = up;
-            if (up && !isEqual(m_out, m_max.getValue()))
+            if (up)
                 m_out++;
         }
 
         if (ToBool(m_lastDown) != down) {
             m_lastDown = down;
-            if (down && !isEqual(m_out, m_min.getValue()))
+            if (down)
                 m_out--;
         }
+
+        // Clamp
+        if (m_out >= m_max.getValue())
+            m_out = m_max.getValue();
+
+        if (m_out <= m_min.getValue())
+            m_out = m_min.getValue();
     }
 
     uint32_t Size() override { return sizeof(*this); }
