@@ -307,6 +307,8 @@ void EBrytecApp::sendBrytecCanBroadcasts()
     for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
 
         ENodeGroup& nodeGroup = s_data.nodeGroups[i];
+        if (!nodeGroup.enabled)
+            continue;
 
         EBrytecCan::PinStatusBroadcast pinStatus;
         pinStatus.moduleAddress = s_data.moduleAddress;
