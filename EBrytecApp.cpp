@@ -367,9 +367,15 @@ void EBrytecApp::updateNodeGroupNodes()
             if (!pinStatus)
                 continue;
 
-            ENodeGroupNode* nodeGroupNode = findNodeGroupNode(pinStatus->moduleAddress, pinStatus->nodeGroupIndex);
-            if (nodeGroupNode)
-                nodeGroupNode->SetValue(99, pinStatus->value);
+            // We need to go through all nodes beacuse we might match more then one
+            for (uint32_t i = 0; i < s_data.nodeVector.count(); i++) {
+                ENode* node = s_data.nodeVector.at(i);
+                if (node->NodeType() == NodeTypes::Node_Group) {
+                    ENodeGroupNode* nodeGroupNode = (ENodeGroupNode*)node;
+                    if (nodeGroupNode->getModuleAddress() == pinStatus->moduleAddress && nodeGroupNode->getNodeGroupIndex() == pinStatus->nodeGroupIndex)
+                        nodeGroupNode->SetValue(99, pinStatus->value);
+                }
+            }
         }
 
         s_data.statusQueue.clear();
