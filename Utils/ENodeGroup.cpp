@@ -41,12 +41,14 @@ void ENodeGroup::updateFinalValue()
         return;
 
     // Clamp to 0.0 - 1.0
-    if (*output > 1.0f)
-        *output = 1.0f;
-    if (*output < 0.0f)
-        *output = 0.0f;
+    // Copy value for setting physical pins so we don't change internal pin values
+    float pinOutput = *output;
+    if (pinOutput > 1.0f)
+        pinOutput = 1.0f;
+    if (pinOutput < 0.0f)
+        pinOutput = 0.0f;
 
-    BrytecBoard::setPinValue(boardPinIndex, type, *output);
+    BrytecBoard::setPinValue(boardPinIndex, type, pinOutput);
 }
 
 void ENodeGroup::updatePinCurrent(float timestep)
