@@ -6,6 +6,8 @@
 #include "Nodes/ENodeGroupNode.h"
 #include "Utils/ENodeDeserializer.h"
 #include "Utils/ENodeGroup.h"
+#include <bitset>
+#include <iostream>
 #include <stdlib.h>
 
 struct EBrytecAppData {
@@ -203,6 +205,14 @@ void EBrytecApp::setupModule()
         return;
 
     BrytecBoard::setupBrytecCan(s_data.moduleAddress);
+
+    // Mask and filter for node group nodes
+    uint32_t mask = 0;
+    uint32_t filter = 0;
+    calculateMaskAndFilter(&mask, &filter);
+    BrytecBoard::setCanMaskAndFilter(0, mask, filter);
+    // Mask and filter for command frames
+    BrytecBoard::setCanMaskAndFilter(1, ((uint32_t)1 << 28), 0);
 }
 
 void EBrytecApp::setupPins()
@@ -392,4 +402,36 @@ void EBrytecApp::evaulateJustNodes(float timestep)
 {
     // Calculate all nodes
     s_data.nodeVector.evaluateAll(timestep);
+}
+
+void EBrytecApp::calculateMaskAndFilter(uint32_t* mask, uint32_t* filter)
+{
+    // Start mask all enabled except status flags
+    *mask = 0b10000111111111111111111111111;
+
+    // Check all node group nodes
+    for (uint32_t i = 0; i < s_data.nodeVector.count(); i++) {
+        ENode* node = s_data.nodeVector.at(i);
+        if (node->NodeType() == NodeTypes::Node_Group) {
+            ENodeGroupNode* nodeGroupNode = (ENodeGroupNode*)node;
+
+            // Skip if it is this module
+            if (nodeGroupNode->getModuleAddress() == s_data.moduleAddress)
+                continue;
+
+            // Get can frame to get id
+            EBrytecCan::PinStatusBroadcast bc;
+            bc.moduleAddress = nodeGroupNode->getModuleAddress();
+            bc.nodeGroupIndex = nodeGroupNode->getNodeGroupIndex();
+            EBrytecCan::CanExtFrame frame = bc.getFrame();
+
+            if (*filter == 0) {
+                *filter = frame.id;
+            } else {
+                // calculate mask
+                uint32_t sameBits = (*filter & frame.id) | (~(*filter) & ~frame.id);
+                (*mask) &= sameBits;
+            }
+        }
+    }
 }

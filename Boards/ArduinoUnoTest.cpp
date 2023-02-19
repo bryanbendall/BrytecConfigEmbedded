@@ -52,6 +52,10 @@ void BrytecBoard::setupBrytecCan(uint8_t moduleAddress)
     }
 }
 
+void BrytecBoard::setCanMaskAndFilter(uint8_t index, uint32_t mask, uint32_t filter)
+{
+}
+
 void BrytecBoard::setupPin(uint8_t index, IOTypes::Types type)
 {
     switch (index) {

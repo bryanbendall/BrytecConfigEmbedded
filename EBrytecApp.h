@@ -28,6 +28,7 @@ private:
     static void updateNodeGroupNodes();
     static void updateCurrents(float timestep);
     static void evaulateJustNodes(float timestep);
+    static void calculateMaskAndFilter(uint32_t* mask, uint32_t* filter);
 
     friend class NodeGroup;
 };
