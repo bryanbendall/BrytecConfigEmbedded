@@ -38,7 +38,7 @@ void BrytecBoard::error(EBrytecErrors error)
     }
 }
 
-void BrytecBoard::setupBrytecCan(uint8_t moduleAddress)
+void BrytecBoard::setupBrytecCan(uint32_t mask, uint32_t filter)
 {
     CAN.setPins(PIN_SPI_SS, 42);
 
@@ -50,10 +50,6 @@ void BrytecBoard::setupBrytecCan(uint8_t moduleAddress)
     } else {
         Serial.println("Starting can GOOD");
     }
-}
-
-void BrytecBoard::setCanMaskAndFilter(uint8_t index, uint32_t mask, uint32_t filter)
-{
 }
 
 void BrytecBoard::setupPin(uint8_t index, IOTypes::Types type)

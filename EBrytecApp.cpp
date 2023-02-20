@@ -202,15 +202,12 @@ void EBrytecApp::setupModule()
     if (!s_data.deserializeOk)
         return;
 
-    BrytecBoard::setupBrytecCan(s_data.moduleAddress);
-
     // Mask and filter for node group nodes
     uint32_t mask = 0;
     uint32_t filter = 0;
     calculateMaskAndFilter(&mask, &filter);
-    BrytecBoard::setCanMaskAndFilter(0, mask, filter);
-    // Mask and filter for command frames
-    BrytecBoard::setCanMaskAndFilter(1, ((uint32_t)1 << 28), 0);
+
+    BrytecBoard::setupBrytecCan(mask, filter);
 }
 
 void EBrytecApp::setupPins()
@@ -301,9 +298,9 @@ void EBrytecApp::brytecCanReceived(const EBrytecCan::CanExtFrame& frame)
         EBrytecCan::PinStatusBroadcast pinStatus(frame);
 
         // Only queue pin status if we have a node that uses it
-        ENodeGroupNode* nodeGroupNode = findNodeGroupNode(pinStatus.moduleAddress, pinStatus.nodeGroupIndex);
-        if (nodeGroupNode)
-            s_data.statusQueue.add(pinStatus);
+        // ENodeGroupNode* nodeGroupNode = findNodeGroupNode(pinStatus.moduleAddress, pinStatus.nodeGroupIndex);
+        // if (nodeGroupNode)
+        s_data.statusQueue.add(pinStatus);
 
     } else {
         // TODO
@@ -370,8 +367,12 @@ void EBrytecApp::updateNodeGroupNodes()
 
     // External nodes from can messages
     {
-        for (int i = 0; i < s_data.statusQueue.size(); i++) {
-            EBrytecCan::PinStatusBroadcast* pinStatus = s_data.statusQueue.at(i);
+        // Copy queue in case we get new messages while we are updating
+        EPinStatusQueue tempQueue = s_data.statusQueue;
+        s_data.statusQueue.clear();
+
+        for (int i = 0; i < tempQueue.size(); i++) {
+            EBrytecCan::PinStatusBroadcast* pinStatus = tempQueue.at(i);
             if (!pinStatus)
                 continue;
 
@@ -385,8 +386,6 @@ void EBrytecApp::updateNodeGroupNodes()
                 }
             }
         }
-
-        s_data.statusQueue.clear();
     }
 }
 
