@@ -2,8 +2,8 @@
 
 #include "EBrytecConfig.h"
 #include "Utils/ENodeConnection.h"
+#include "Utils/PlacementNew.h"
 #include <math.h>
-#include <new>
 #include <stdint.h>
 
 enum class NodeTypes : uint8_t {
