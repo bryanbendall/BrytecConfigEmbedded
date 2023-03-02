@@ -7,6 +7,7 @@
 
 struct ENodeGroup {
     bool enabled;
+    bool usedOnBus;
     uint16_t boardPinIndex;
     IOTypes::Types type;
     uint32_t startNodeIndex;

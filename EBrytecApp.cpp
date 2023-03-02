@@ -93,7 +93,7 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
         currentNodeGroup->startNodeIndex = s_data.nodeVector.count();
         des.readRaw<uint16_t>(&currentNodeGroup->boardPinIndex);
 
-        // Deserialize modules specs
+        // Deserialize node group specs
         char n, g;
         des.readRaw<char>(&n); // N
         des.readRaw<char>(&g); // G
@@ -125,6 +125,11 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
         uint8_t enabled;
         des.readRaw<uint8_t>(&enabled);
         currentNodeGroup->enabled = enabled;
+
+        // Node Group used on bus
+        uint8_t usedOnBus;
+        des.readRaw<uint8_t>(&usedOnBus);
+        currentNodeGroup->usedOnBus = usedOnBus;
 
         // Current limit
         des.readRaw<uint8_t>(&currentNodeGroup->currentLimit);
@@ -312,7 +317,7 @@ void EBrytecApp::sendBrytecCanBroadcasts()
     for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
 
         ENodeGroup& nodeGroup = s_data.nodeGroups[i];
-        if (!nodeGroup.enabled)
+        if (!nodeGroup.enabled || !nodeGroup.usedOnBus)
             continue;
 
         EBrytecCan::PinStatusBroadcast pinStatus;
