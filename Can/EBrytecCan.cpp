@@ -20,7 +20,7 @@ PinStatusBroadcast::PinStatusBroadcast(const CanExtFrame& frame)
     uint64_t* data = (uint64_t*)frame.data;
     uint16_t tempCurrent = ((*data) >> 48);
     current = (float)tempCurrent / 100.0f;
-    uint16_t tempVoltage = ((*data) >> 32);
+    uint16_t tempVoltage = (uint16_t)((*data) >> 32);
     voltage = (float)tempVoltage / 100.0f;
     value = *((float*)data);
 }
@@ -38,10 +38,10 @@ CanExtFrame PinStatusBroadcast::getFrame()
     uint64_t* data = (uint64_t*)frame.data;
     *data = 0;
 
-    uint16_t tempCurrent = current * 100.0f;
+    uint16_t tempCurrent = (uint16_t)(current * 100.0f);
     *data |= (uint64_t)tempCurrent << 48;
 
-    uint16_t tempVoltage = voltage * 100.0f;
+    uint16_t tempVoltage = (uint16_t)(voltage * 100.0f);
     *data |= (uint64_t)tempVoltage << 32;
 
     uint32_t* tempValue = (uint32_t*)&value;

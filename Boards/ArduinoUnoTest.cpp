@@ -52,7 +52,7 @@ void BrytecBoard::setupBrytecCan(uint32_t mask, uint32_t filter)
     }
 }
 
-void BrytecBoard::setupPin(uint8_t index, IOTypes::Types type)
+void BrytecBoard::setupPin(uint16_t index, IOTypes::Types type)
 {
     switch (index) {
         // case 0:
@@ -73,7 +73,7 @@ void BrytecBoard::setupPin(uint8_t index, IOTypes::Types type)
     }
 }
 
-float BrytecBoard::getPinValue(uint8_t index)
+float BrytecBoard::getPinValue(uint16_t index)
 {
     switch (index) {
     case 6:
@@ -86,17 +86,17 @@ float BrytecBoard::getPinValue(uint8_t index)
     return 0.0f;
 }
 
-float BrytecBoard::getPinVoltage(uint8_t index)
+float BrytecBoard::getPinVoltage(uint16_t index)
 {
     return 0.0f;
 }
 
-float BrytecBoard::getPinCurrent(uint8_t index)
+float BrytecBoard::getPinCurrent(uint16_t index)
 {
     return 0.0f;
 }
 
-void BrytecBoard::setPinValue(uint8_t index, IOTypes::Types type, float value)
+void BrytecBoard::setPinValue(uint16_t index, IOTypes::Types type, float value)
 {
     int pwmValue = (value * 255.0f);
 

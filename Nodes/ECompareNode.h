@@ -110,5 +110,5 @@ private:
 #endif
     float m_out;
 
-    static constexpr float m_epsilon = 0.0001;
+    static constexpr float m_epsilon = 0.0001f;
 };
