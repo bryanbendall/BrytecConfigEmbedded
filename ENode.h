@@ -33,7 +33,7 @@ enum class NodeTypes : uint8_t {
 };
 
 struct ENodeConnection {
-    int8_t connectionNodeIndex = -1;
+    int16_t connectionNodeIndex = -1;
     int8_t outputIndex = -1;
     float defaultValue = 0.0f;
 };
@@ -48,7 +48,7 @@ struct ENodeSpec {
     float values[8];
 
     uint8_t moduleAddress = 0;
-    uint8_t pinIndex = 0;
+    uint16_t pinIndex = 0;
 };
 
 inline bool ToBool(float f)

@@ -42,7 +42,7 @@ ENodeSpec ENodeDeserializer::deserializeNodeSpec(BinaryDeserializer& des)
         uint64_t uuid;
         des.readRaw<uint64_t>(&uuid); // uuid
         des.readRaw<uint8_t>(&spec.moduleAddress); // Module Address
-        des.readRaw<uint8_t>(&spec.pinIndex); // Pin Index
+        des.readRaw<uint16_t>(&spec.pinIndex); // Pin Index
     }
 
     return spec;
@@ -52,7 +52,7 @@ ENodeConnection ENodeDeserializer::deserializeNodeConnection(BinaryDeserializer&
 {
     ENodeConnection connection;
 
-    des.readRaw<int8_t>(&connection.connectionNodeIndex);
+    des.readRaw<int16_t>(&connection.connectionNodeIndex);
     des.readRaw<int8_t>(&connection.outputIndex);
     des.readRaw<float>(&connection.defaultValue);
 
