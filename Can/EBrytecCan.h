@@ -5,7 +5,7 @@
 namespace EBrytecCan {
 
 struct CanExtFrame {
-    uint32_t id;
+    uint32_t id = 0;
     uint8_t dlc = 8;
     uint8_t data[8];
 
