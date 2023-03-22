@@ -99,6 +99,12 @@ void ENodeGroup::checkOverCurrent(float timestep, float current)
         // Slow blow current limit
         if (current >= (float)currentLimit)
             trippedTimer += timestep;
+        else
+            trippedTimer -= timestep;
+
+        // Clamp timer to min of 0
+        if (trippedTimer < 0.0f)
+            trippedTimer = 0.0f;
 
         // Shut down pin
         if (trippedTimer >= TrippedTime) {
