@@ -2,6 +2,8 @@
 
 #include "ENode.h"
 
+namespace Brytec {
+
 class EConvertNode : public ENode {
 
 public:
@@ -21,3 +23,5 @@ private:
 
     friend class ConvertNode;
 };
+
+}

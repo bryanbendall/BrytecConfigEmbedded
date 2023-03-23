@@ -2,6 +2,8 @@
 #include <Arduino.h>
 #include <CAN.h>
 
+namespace Brytec {
+
 void BrytecBoard::error(EBrytecErrors error)
 {
     switch (error) {
@@ -115,9 +117,11 @@ void BrytecBoard::setPinValue(uint16_t index, IOTypes::Types type, float value)
     // }
 }
 
-void BrytecBoard::sendBrytecCan(EBrytecCan::CanExtFrame frame)
+void BrytecBoard::sendBrytecCan(CanExtFrame frame)
 {
     CAN.beginExtendedPacket(frame.id);
     CAN.write(frame.data, 8);
     CAN.endPacket();
+}
+
 }

@@ -1,5 +1,7 @@
 #include "ECanBusNode.h"
 
+namespace Brytec {
+
 void ECanBusNode::SetInput(uint8_t index, float* output)
 {
 }
@@ -15,4 +17,6 @@ float* ECanBusNode::GetOutput(uint8_t index)
 
 void ECanBusNode::Evaluate(float timestep)
 {
+}
+
 }

@@ -3,6 +3,8 @@
 #include "ENode.h"
 #include <math.h>
 
+namespace Brytec {
+
 enum class CurveType : uint8_t {
     Toggle,
     Linear,
@@ -136,3 +138,5 @@ private:
     float m_timerCounter;
     float m_out;
 };
+
+}

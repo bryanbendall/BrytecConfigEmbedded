@@ -2,6 +2,8 @@
 
 #include "ENode.h"
 
+namespace Brytec {
+
 class ETwoStageNode : public ENode {
 
 public:
@@ -93,3 +95,5 @@ private:
 #endif
     float m_out;
 };
+
+}

@@ -2,6 +2,8 @@
 
 #include "ENode.h"
 
+namespace Brytec {
+
 class EOnOffNode : public ENode {
 
 public:
@@ -75,3 +77,5 @@ private:
 #endif
     float m_out;
 };
+
+}

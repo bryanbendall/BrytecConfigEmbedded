@@ -2,6 +2,8 @@
 
 #include <stdint.h>
 
+namespace Brytec {
+
 enum ConnectionType : uint8_t {
     Float,
     Pointer
@@ -92,3 +94,5 @@ public:
 private:
     T* m_value = nullptr;
 };
+
+}

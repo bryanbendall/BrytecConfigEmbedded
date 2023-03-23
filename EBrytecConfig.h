@@ -1,5 +1,7 @@
 #pragma once
 
+namespace Brytec {
+
 // #define BRYTEC_EMBEDDED
 
 // Nodes will use more ram but the program size will be a lot less
@@ -12,3 +14,5 @@
 #define CAN_BUS_BROADCAST_BUFFER 2
 
 #define CAN_UPDATE_FREQUENCY 0.1f
+
+}

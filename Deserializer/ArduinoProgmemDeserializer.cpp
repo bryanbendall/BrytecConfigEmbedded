@@ -3,6 +3,8 @@
 #include "EBrytecConfig.h"
 #include <Arduino.h>
 
+namespace Brytec {
+
 #include "Deserializer/Program.h"
 
 BinaryDeserializer::~BinaryDeserializer()
@@ -17,3 +19,5 @@ bool BinaryDeserializer::readInternal(uint8_t* data, uint32_t dataSize)
 }
 
 void setData(uint8_t* data) { }
+
+}

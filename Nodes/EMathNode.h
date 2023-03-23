@@ -2,6 +2,8 @@
 
 #include "ENode.h"
 
+namespace Brytec {
+
 enum class MathType : uint8_t {
     Add,
     Subtract,
@@ -88,3 +90,5 @@ private:
 #endif
     float m_out;
 };
+
+}

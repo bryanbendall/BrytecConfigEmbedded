@@ -2,6 +2,8 @@
 
 #include "ENode.h"
 
+namespace Brytec {
+
 class ENodeGroupNode : public ENode {
 
 public:
@@ -100,3 +102,5 @@ private:
     float m_timeSinceLastUpdate = 0.0f;
     float m_out;
 };
+
+}

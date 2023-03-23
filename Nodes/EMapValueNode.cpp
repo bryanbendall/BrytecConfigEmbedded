@@ -1,5 +1,7 @@
 #include "EMapValueNode.h"
 
+namespace Brytec {
+
 ENode* EMapValueNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
     if (spec.type != NodeTypes::Map_Value || spec.numInputs != 5 || spec.numValues != 0)
@@ -99,4 +101,6 @@ ENode* EMapValueNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 #endif
 
     return nullptr;
+}
+
 }

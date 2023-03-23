@@ -1,5 +1,7 @@
 #include "ECounterNode.h"
 
+namespace Brytec {
+
 ENode* ECounterNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
     if (spec.type != NodeTypes::Counter || spec.numInputs != 4 || spec.numValues != 3)
@@ -58,4 +60,6 @@ ENode* ECounterNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 #endif
 
     return nullptr;
+}
+
 }

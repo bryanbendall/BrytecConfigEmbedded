@@ -2,6 +2,8 @@
 
 #include "ENode.h"
 
+namespace Brytec {
+
 class EInitialValueNode : public ENode {
 
 public:
@@ -47,3 +49,5 @@ public:
 private:
     float m_out;
 };
+
+}

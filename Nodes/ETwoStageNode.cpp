@@ -1,5 +1,7 @@
 #include "ETwoStageNode.h"
 
+namespace Brytec {
+
 ENode* ETwoStageNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
     if (spec.type != NodeTypes::Two_Stage || spec.numInputs != 4 || spec.numValues != 0)
@@ -58,4 +60,6 @@ ENode* ETwoStageNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 #endif
 
     return nullptr;
+}
+
 }

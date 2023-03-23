@@ -6,6 +6,8 @@
 #include "Utils/EBrytecErrors.h"
 #include <stddef.h>
 
+namespace Brytec {
+
 class ENodesVector {
 
 public:
@@ -84,3 +86,5 @@ private:
     uint32_t m_count = 0;
     uint32_t m_dataNextIndex = 0;
 };
+
+}

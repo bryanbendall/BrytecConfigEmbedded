@@ -4,6 +4,8 @@
 #include <cstring>
 #include <fstream>
 
+namespace Brytec {
+
 BinaryDeserializer::~BinaryDeserializer()
 {
     if (m_ownData)
@@ -41,4 +43,6 @@ void BinaryDeserializer::setDataFromPath(std::filesystem::path path)
 
         m_ownData = true;
     }
+}
+
 }

@@ -8,6 +8,8 @@
 #include "Utils/ENodeGroup.h"
 #include <stdlib.h>
 
+namespace Brytec {
+
 struct EBrytecAppData {
     bool deserializeOk = false;
     uint8_t moduleAddress = 0;
@@ -296,11 +298,11 @@ ENode* EBrytecApp::getNode(int index)
     return s_data.nodeVector.at(index);
 }
 
-void EBrytecApp::brytecCanReceived(const EBrytecCan::CanExtFrame& frame)
+void EBrytecApp::brytecCanReceived(const CanExtFrame& frame)
 {
     if (frame.isBroadcast()) {
 
-        EBrytecCan::PinStatusBroadcast pinStatus(frame);
+        PinStatusBroadcast pinStatus(frame);
 
         // Only queue pin status if we have a node that uses it
         // ENodeGroupNode* nodeGroupNode = findNodeGroupNode(pinStatus.moduleAddress, pinStatus.nodeGroupIndex);
@@ -320,13 +322,13 @@ void EBrytecApp::sendBrytecCanBroadcasts()
         if (!nodeGroup.enabled || !nodeGroup.usedOnBus)
             continue;
 
-        EBrytecCan::PinStatusBroadcast pinStatus;
+        PinStatusBroadcast pinStatus;
         pinStatus.moduleAddress = s_data.moduleAddress;
         pinStatus.nodeGroupIndex = nodeGroup.boardPinIndex;
         if (nodeGroup.enabled)
-            pinStatus.statusFlags = EBrytecCan::PinStatusBroadcast::StatusFlags::NORMAL;
+            pinStatus.statusFlags = PinStatusBroadcast::StatusFlags::NORMAL;
         if (nodeGroup.tripped)
-            pinStatus.statusFlags = EBrytecCan::PinStatusBroadcast::StatusFlags::TRIPPED;
+            pinStatus.statusFlags = PinStatusBroadcast::StatusFlags::TRIPPED;
         pinStatus.value = nodeGroup.getFinalValue();
         pinStatus.voltage = BrytecBoard::getPinVoltage(nodeGroup.boardPinIndex);
         pinStatus.current = BrytecBoard::getPinCurrent(nodeGroup.boardPinIndex);
@@ -377,7 +379,7 @@ void EBrytecApp::updateNodeGroupNodes()
         s_data.statusQueue.clear();
 
         for (int i = 0; i < tempQueue.size(); i++) {
-            EBrytecCan::PinStatusBroadcast* pinStatus = tempQueue.at(i);
+            PinStatusBroadcast* pinStatus = tempQueue.at(i);
             if (!pinStatus)
                 continue;
 
@@ -422,10 +424,10 @@ void EBrytecApp::calculateMaskAndFilter(uint32_t* mask, uint32_t* filter)
                 continue;
 
             // Get can frame to get id
-            EBrytecCan::PinStatusBroadcast bc;
+            PinStatusBroadcast bc;
             bc.moduleAddress = nodeGroupNode->getModuleAddress();
             bc.nodeGroupIndex = nodeGroupNode->getNodeGroupIndex();
-            EBrytecCan::CanExtFrame frame = bc.getFrame();
+            CanExtFrame frame = bc.getFrame();
 
             if (*filter == 0) {
                 *filter = frame.id;
@@ -436,4 +438,6 @@ void EBrytecApp::calculateMaskAndFilter(uint32_t* mask, uint32_t* filter)
             }
         }
     }
+}
+
 }

@@ -1,5 +1,7 @@
 #include "ECurveNode.h"
 
+namespace Brytec {
+
 ENode* ECurveNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
 
@@ -124,4 +126,6 @@ ENode* ECurveNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 #endif
 
     return nullptr;
+}
+
 }

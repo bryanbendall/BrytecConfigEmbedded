@@ -1,5 +1,7 @@
 #include "EDelayNode.h"
 
+namespace Brytec {
+
 ENode* EDelayNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
 
@@ -26,4 +28,6 @@ ENode* EDelayNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 #endif
 
     return nullptr;
+}
+
 }

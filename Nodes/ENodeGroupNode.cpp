@@ -1,5 +1,7 @@
 #include "ENodeGroupNode.h"
 
+namespace Brytec {
+
 ENode* ENodeGroupNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
     if (spec.type != NodeTypes::Node_Group || spec.numInputs != 2 || spec.numValues != 1)
@@ -26,4 +28,6 @@ ENode* ENodeGroupNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination
 #endif
 
     return nullptr;
+}
+
 }

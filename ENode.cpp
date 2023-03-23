@@ -21,6 +21,8 @@
 #include "Nodes/ETwoStageNode.h"
 #include "Nodes/EValueNode.h"
 
+namespace Brytec {
+
 ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
     if (!destination)
@@ -73,4 +75,6 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     default:
         return nullptr;
     }
+}
+
 }

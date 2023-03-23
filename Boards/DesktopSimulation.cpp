@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+namespace Brytec {
+
 void BrytecBoard::error(EBrytecErrors error)
 {
     switch (error) {
@@ -66,6 +68,8 @@ void BrytecBoard::setPinValue(uint16_t index, IOTypes::Types type, float value)
 {
 }
 
-void BrytecBoard::sendBrytecCan(EBrytecCan::CanExtFrame frame)
+void BrytecBoard::sendBrytecCan(CanExtFrame frame)
 {
+}
+
 }

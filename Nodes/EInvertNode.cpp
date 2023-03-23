@@ -1,5 +1,7 @@
 #include "EInvertNode.h"
 
+namespace Brytec {
+
 ENode* EInvertNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
 
@@ -21,4 +23,6 @@ ENode* EInvertNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 #endif
 
     return nullptr;
+}
+
 }

@@ -2,6 +2,8 @@
 
 #include "ENode.h"
 
+namespace Brytec {
+
 class ECanBusNode : public ENode {
 
 public:
@@ -29,3 +31,5 @@ private:
 
     friend class CanBusNode;
 };
+
+}

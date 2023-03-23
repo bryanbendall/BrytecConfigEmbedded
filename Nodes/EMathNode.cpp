@@ -1,5 +1,7 @@
 #include "EMathNode.h"
 
+namespace Brytec {
+
 ENode* EMathNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
 
@@ -79,4 +81,6 @@ ENode* EMathNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 #endif
 
     return nullptr;
+}
+
 }

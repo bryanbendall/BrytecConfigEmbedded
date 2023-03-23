@@ -1,5 +1,7 @@
 #include "ESwitchNode.h"
 
+namespace Brytec {
+
 ENode* ESwitchNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
 
@@ -38,4 +40,6 @@ ENode* ESwitchNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 #endif
 
     return nullptr;
+}
+
 }

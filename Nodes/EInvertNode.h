@@ -2,6 +2,8 @@
 
 #include "ENode.h"
 
+namespace Brytec {
+
 class EInvertNode : public ENode {
 
 public:
@@ -63,3 +65,5 @@ private:
 #endif
     float m_out;
 };
+
+}

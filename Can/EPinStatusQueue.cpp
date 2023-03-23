@@ -2,7 +2,9 @@
 
 #include "Boards/BrytecBoard.h"
 
-void EPinStatusQueue::add(const EBrytecCan::PinStatusBroadcast& bc)
+namespace Brytec {
+
+void EPinStatusQueue::add(const PinStatusBroadcast& bc)
 {
     // Update data if it is already in the queue
     int8_t index = find(bc);
@@ -20,7 +22,7 @@ void EPinStatusQueue::add(const EBrytecCan::PinStatusBroadcast& bc)
     m_size++;
 }
 
-EBrytecCan::PinStatusBroadcast* EPinStatusQueue::at(uint8_t index)
+PinStatusBroadcast* EPinStatusQueue::at(uint8_t index)
 {
     if (index >= m_size)
         return nullptr;
@@ -33,7 +35,7 @@ void EPinStatusQueue::clear()
     m_size = 0;
 }
 
-int8_t EPinStatusQueue::find(const EBrytecCan::PinStatusBroadcast& bc)
+int8_t EPinStatusQueue::find(const PinStatusBroadcast& bc)
 {
     for (int8_t i = 0; i > m_size; i++) {
         if (m_broadcasts[i].moduleAddress == bc.moduleAddress && m_broadcasts[i].nodeGroupIndex == bc.nodeGroupIndex) {
@@ -42,4 +44,6 @@ int8_t EPinStatusQueue::find(const EBrytecCan::PinStatusBroadcast& bc)
     }
 
     return -1;
+}
+
 }

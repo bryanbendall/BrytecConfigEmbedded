@@ -2,6 +2,8 @@
 
 #include "ENode.h"
 
+namespace Brytec {
+
 class EDelayNode : public ENode {
 
 public:
@@ -86,3 +88,5 @@ private:
     float m_timerCounter;
     float m_out;
 };
+
+}

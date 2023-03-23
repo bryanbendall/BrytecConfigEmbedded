@@ -1,5 +1,7 @@
 #include "EValueNode.h"
 
+namespace Brytec {
+
 ENode* EValueNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
 
@@ -7,4 +9,6 @@ ENode* EValueNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         return nullptr;
 
     return new (destination) EValueNodeInternal();
+}
+
 }

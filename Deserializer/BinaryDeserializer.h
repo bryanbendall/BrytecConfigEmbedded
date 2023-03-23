@@ -8,6 +8,8 @@
 #include <string>
 #endif
 
+namespace Brytec {
+
 struct EmptyString { };
 
 class BinaryDeserializer {
@@ -65,4 +67,6 @@ inline void BinaryDeserializer::readRaw<EmptyString>(EmptyString* data)
     char c;
     for (uint32_t i = 0; i < length; i++)
         readRaw<char>(&c);
+}
+
 }

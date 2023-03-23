@@ -2,6 +2,8 @@
 
 #include "ENode.h"
 
+namespace Brytec {
+
 class EPushButtonNode : public ENode {
 
 public:
@@ -137,3 +139,5 @@ private:
     float m_ignitionOut;
     float m_starterOut;
 };
+
+}

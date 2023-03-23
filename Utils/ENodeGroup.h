@@ -3,6 +3,8 @@
 #include "IOTypes.h"
 #include <stdint.h>
 
+namespace Brytec {
+
 #define TrippedTime 0.1f
 
 struct ENodeGroup {
@@ -29,3 +31,5 @@ struct ENodeGroup {
     void checkOverCurrent(float timestep, float current);
     float getFinalValue();
 };
+
+}

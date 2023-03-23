@@ -1,5 +1,7 @@
 #include "EAndNode.h"
 
+namespace Brytec {
+
 ENode* EAndNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
     if (spec.type != NodeTypes::And || spec.numInputs != 5 || spec.numValues != 0)
@@ -98,4 +100,6 @@ ENode* EAndNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 #endif
 
     return nullptr;
+}
+
 }

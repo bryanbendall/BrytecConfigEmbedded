@@ -2,6 +2,8 @@
 
 #include "ENode.h"
 
+namespace Brytec {
+
 class EToggleNode : public ENode {
 
 public:
@@ -89,3 +91,5 @@ private:
     float m_lastOut;
     float m_out;
 };
+
+}

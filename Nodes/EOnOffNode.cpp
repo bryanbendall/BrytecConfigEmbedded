@@ -1,5 +1,7 @@
 #include "EOnOffNode.h"
 
+namespace Brytec {
+
 ENode* EOnOffNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
 
@@ -26,4 +28,6 @@ ENode* EOnOffNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 #endif
 
     return nullptr;
+}
+
 }

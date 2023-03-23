@@ -2,6 +2,8 @@
 
 #include "ENode.h"
 
+namespace Brytec {
+
 class ECounterNode : public ENode {
 
 public:
@@ -121,3 +123,5 @@ private:
     float m_lastDown;
     float m_out;
 };
+
+}

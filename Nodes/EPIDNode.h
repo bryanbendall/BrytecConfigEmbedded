@@ -2,6 +2,8 @@
 
 #include "ENode.h"
 
+namespace Brytec {
+
 class EPIDNode : public ENode {
 
 public:
@@ -116,3 +118,5 @@ private:
     float m_integral;
     float m_out;
 };
+
+}

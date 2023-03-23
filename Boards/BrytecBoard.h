@@ -5,6 +5,8 @@
 #include "Utils/EBrytecErrors.h"
 #include <stdint.h>
 
+namespace Brytec {
+
 class BrytecBoard {
 
 public:
@@ -15,5 +17,7 @@ public:
     static float getPinVoltage(uint16_t index);
     static float getPinCurrent(uint16_t index);
     static void setPinValue(uint16_t index, IOTypes::Types type, float value);
-    static void sendBrytecCan(EBrytecCan::CanExtFrame frame);
+    static void sendBrytecCan(CanExtFrame frame);
 };
+
+}

@@ -6,6 +6,8 @@
 #include <math.h>
 #include <stdint.h>
 
+namespace Brytec {
+
 enum class NodeTypes : uint8_t {
     Final_Value = 0,
     Initial_Value,
@@ -77,3 +79,5 @@ public:
     virtual uint32_t Size() = 0;
     virtual NodeTypes NodeType() = 0;
 };
+
+}

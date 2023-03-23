@@ -2,6 +2,8 @@
 
 #include "ENode.h"
 
+namespace Brytec {
+
 enum class CompareType : uint8_t {
     Equal,
     NotEqual,
@@ -112,3 +114,5 @@ private:
 
     static constexpr float m_epsilon = 0.0001f;
 };
+
+}

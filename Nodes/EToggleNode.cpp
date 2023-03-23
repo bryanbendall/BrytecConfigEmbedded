@@ -1,5 +1,7 @@
 #include "EToggleNode.h"
 
+namespace Brytec {
+
 ENode* EToggleNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
 
@@ -20,4 +22,6 @@ ENode* EToggleNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 #endif
 
     return nullptr;
+}
+
 }

@@ -1,5 +1,7 @@
 #include "EPushButtonNode.h"
 
+namespace Brytec {
+
 ENode* EPushButtonNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
 
@@ -38,4 +40,6 @@ ENode* EPushButtonNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destinatio
 #endif
 
     return nullptr;
+}
+
 }

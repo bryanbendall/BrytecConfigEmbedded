@@ -2,6 +2,8 @@
 
 #include "ENode.h"
 
+namespace Brytec {
+
 class EMapValueNode : public ENode {
 
 public:
@@ -99,3 +101,5 @@ private:
 #endif
     float m_out;
 };
+
+}

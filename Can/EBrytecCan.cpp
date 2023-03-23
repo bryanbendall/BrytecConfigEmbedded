@@ -1,6 +1,6 @@
 #include "EBrytecCan.h"
 
-namespace EBrytecCan {
+namespace Brytec {
 
 bool CanExtFrame::isBroadcast() const
 {

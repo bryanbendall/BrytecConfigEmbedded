@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-namespace EBrytecCan {
+namespace Brytec {
 
 struct CanExtFrame {
     uint32_t id = 0;
@@ -31,4 +31,5 @@ struct PinStatusBroadcast {
     PinStatusBroadcast(const CanExtFrame& frame);
     CanExtFrame getFrame();
 };
-};
+
+}

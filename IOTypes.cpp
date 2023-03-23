@@ -1,5 +1,7 @@
 #include "IOTypes.h"
 
+namespace Brytec {
+
 const char* IOTypes::Strings[] = {
     "Undefined",
 
@@ -15,3 +17,5 @@ const char* IOTypes::Strings[] = {
 
     "Internal",
 };
+
+}

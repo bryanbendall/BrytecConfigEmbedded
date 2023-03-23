@@ -1,5 +1,7 @@
 #include "ENodeDeserializer.h"
 
+namespace Brytec {
+
 ENodeSpec ENodeDeserializer::deserializeNodeSpec(BinaryDeserializer& des)
 {
     ENodeSpec spec;
@@ -57,4 +59,6 @@ ENodeConnection ENodeDeserializer::deserializeNodeConnection(BinaryDeserializer&
     des.readRaw<float>(&connection.defaultValue);
 
     return connection;
+}
+
 }

@@ -1,5 +1,7 @@
 #include "EPIDNode.h"
 
+namespace Brytec {
+
 ENode* EPIDNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
     if (spec.type != NodeTypes::PID || spec.numInputs != 5 || spec.numValues != 2)
@@ -98,4 +100,6 @@ ENode* EPIDNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 #endif
 
     return nullptr;
+}
+
 }

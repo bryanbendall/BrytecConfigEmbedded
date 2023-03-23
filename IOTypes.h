@@ -2,6 +2,8 @@
 
 #include <stddef.h>
 
+namespace Brytec {
+
 struct IOTypes {
 
     enum class Types {
@@ -26,3 +28,5 @@ struct IOTypes {
 
     static const char* getString(Types type) { return Strings[(int)type]; }
 };
+
+}

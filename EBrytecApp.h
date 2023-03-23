@@ -6,7 +6,10 @@
 #include "Utils/ENodesVector.h"
 #include <stdint.h>
 
+namespace Brytec{
+
 class ENodeGroupNode;
+class NodeGroup;
 
 class EBrytecApp {
 
@@ -20,7 +23,7 @@ public:
     static ENode* getInitialValueNode(int startIndex, int nodeCount);
     static ENode* getFinalValueNode(int startIndex, int nodeCount);
     static ENode* getPinCurrentNode(int startIndex, int nodeCount);
-    static void brytecCanReceived(const EBrytecCan::CanExtFrame& frame);
+    static void brytecCanReceived(const CanExtFrame& frame);
     static void sendBrytecCanBroadcasts();
 
 private:
@@ -32,3 +35,5 @@ private:
 
     friend class NodeGroup;
 };
+
+}

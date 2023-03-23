@@ -1,5 +1,7 @@
 #pragma once
 
+namespace Brytec {
+
 enum class EBrytecErrors {
     ModuleHeader,
     NodeGroupHeader,
@@ -11,3 +13,5 @@ enum class EBrytecErrors {
     BadAlloc,
     CanBufferFull
 };
+
+}

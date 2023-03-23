@@ -1,5 +1,7 @@
 #include "EConvertNode.h"
 
+namespace Brytec {
+
 void EConvertNode::SetInput(uint8_t index, float* output)
 {
 }
@@ -15,4 +17,6 @@ float* EConvertNode::GetOutput(uint8_t index)
 
 void EConvertNode::Evaluate(float timestep)
 {
+}
+
 }

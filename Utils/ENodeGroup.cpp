@@ -4,6 +4,8 @@
 #include "EBrytecApp.h"
 #include "ENode.h"
 
+namespace Brytec {
+
 void ENodeGroup::setupPin()
 {
     if (!enabled)
@@ -129,4 +131,6 @@ float ENodeGroup::getFinalValue()
         return 0.0f;
 
     return *output;
+}
+
 }
