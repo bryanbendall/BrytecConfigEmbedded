@@ -34,6 +34,7 @@ public:
 
 private:
     uint8_t* m_data;
+    uint32_t m_dataLength = 0;
     uint32_t m_currentOffset = 0;
     bool m_ownData = false;
 };
