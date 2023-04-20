@@ -1,8 +1,10 @@
 #include "BinaryDeserializer.h"
 
 #include "EBrytecConfig.h"
-#include <cstring>
+#include <string.h>
+#ifndef BRYTEC_EMBEDDED
 #include <fstream>
+#endif
 
 namespace Brytec {
 
@@ -26,12 +28,13 @@ bool BinaryDeserializer::readInternal(uint8_t* data, uint32_t dataSize)
     }
 }
 
-void BinaryDeserializer::setData(uint8_t* data, uint32_t length)
+void BinaryDeserializer::setData(const uint8_t* data, uint32_t length)
 {
     m_data = data;
     m_dataLength = length;
 }
 
+#ifndef BRYTEC_EMBEDDED
 void BinaryDeserializer::setDataFromPath(std::filesystem::path path)
 {
     std::ifstream is(path, std::ifstream::binary);
@@ -48,5 +51,5 @@ void BinaryDeserializer::setDataFromPath(std::filesystem::path path)
         m_ownData = true;
     }
 }
-
+#endif
 }

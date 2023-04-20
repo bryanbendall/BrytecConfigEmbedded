@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cstring>
 #include <stdint.h>
+#include <string.h>
 
 namespace Brytec {
 

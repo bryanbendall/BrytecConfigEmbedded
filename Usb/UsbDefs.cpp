@@ -1,8 +1,8 @@
 #include "UsbDefs.h"
 
-#include "BrytecConfigEmbedded/Can/EBrytecCan.h"
-#include "BrytecConfigEmbedded/Deserializer/BinaryBufferSerializer.h"
-#include "BrytecConfigEmbedded/Deserializer/BinaryDeserializer.h"
+#include "Can/EBrytecCan.h"
+#include "Deserializer/BinaryBufferSerializer.h"
+#include "Deserializer/BinaryDeserializer.h"
 
 namespace Brytec {
 

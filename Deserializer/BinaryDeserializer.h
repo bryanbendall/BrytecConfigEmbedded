@@ -18,7 +18,7 @@ public:
     BinaryDeserializer() = default;
     ~BinaryDeserializer();
 
-    void setData(uint8_t* data, uint32_t length);
+    void setData(const uint8_t* data, uint32_t length);
 
 #ifndef BRYTEC_EMBEDDED
     void setDataFromPath(std::filesystem::path path);
@@ -33,7 +33,7 @@ public:
     bool readInternal(uint8_t* data, uint32_t dataSize);
 
 private:
-    uint8_t* m_data;
+    const uint8_t* m_data;
     uint32_t m_dataLength = 0;
     uint32_t m_currentOffset = 0;
     bool m_ownData = false;
