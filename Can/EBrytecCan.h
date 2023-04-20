@@ -10,6 +10,7 @@ struct CanExtFrame {
     uint8_t data[8];
 
     bool isBroadcast() const;
+    explicit operator bool() const { return id > 0; }
 };
 
 struct PinStatusBroadcast {
