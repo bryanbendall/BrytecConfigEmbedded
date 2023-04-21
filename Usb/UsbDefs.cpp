@@ -8,8 +8,7 @@ namespace Brytec {
 
 UsbPacketType UsbPacket::getType()
 {
-    Brytec::BinaryDeserializer des;
-    des.setData(data, length);
+    Brytec::BinaryDeserializer des(data, length);
 
     UsbPacketType type;
     des.readRaw<uint8_t>((uint8_t*)&type);
@@ -41,8 +40,7 @@ CanExtFrame UsbPacket::as()
 {
     CanExtFrame frame;
 
-    Brytec::BinaryDeserializer des;
-    des.setData(data, length);
+    Brytec::BinaryDeserializer des(data, length);
 
     UsbPacketType type;
     des.readRaw<uint8_t>((uint8_t*)&type);

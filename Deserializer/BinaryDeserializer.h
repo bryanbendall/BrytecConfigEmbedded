@@ -15,14 +15,11 @@ struct EmptyString { };
 class BinaryDeserializer {
 
 public:
-    BinaryDeserializer() = default;
-    ~BinaryDeserializer();
-
-    void setData(const uint8_t* data, uint32_t length);
-
+    BinaryDeserializer(const uint8_t* data, uint32_t length);
 #ifndef BRYTEC_EMBEDDED
-    void setDataFromPath(std::filesystem::path path);
+    BinaryDeserializer(std::filesystem::path path);
 #endif
+    ~BinaryDeserializer();
 
     template <typename T>
     void readRaw(T* data)
