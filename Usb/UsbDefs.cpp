@@ -58,6 +58,8 @@ CanExtFrame UsbPacket::as()
     des.readRaw<uint8_t>(&frame.data[6]);
     des.readRaw<uint8_t>(&frame.data[7]);
 
+    length = des.getCurrentOffset();
+
     return frame;
 }
 }

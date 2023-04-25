@@ -29,6 +29,8 @@ public:
 
     bool readInternal(uint8_t* data, uint32_t dataSize);
 
+    uint32_t getCurrentOffset() { return m_currentOffset; }
+
 private:
     const uint8_t* m_data;
     uint32_t m_dataLength = 0;
