@@ -7,7 +7,7 @@ namespace Brytec {
 struct CanExtFrame {
     uint32_t id = 0;
     uint8_t dlc = 8;
-    uint8_t data[8];
+    uint8_t data[8] = {};
 
     bool isBroadcast() const;
     explicit operator bool() const { return id > 0; }

@@ -9,7 +9,7 @@ class BinaryBufferSerializer {
 
 public:
     BinaryBufferSerializer(uint8_t* buffer, uint32_t bufferLength);
-    uint32_t getWroteLenth() { return m_currentOffset + 1; }
+    uint32_t getWroteLenth() { return m_currentOffset; }
 
     template <typename T>
     bool writeRaw(T data)
