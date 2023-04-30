@@ -2,8 +2,8 @@
 
 #if __has_include(<filesystem>)
 
+#include <cstring>
 #include <fstream>
-#include <string>
 
 namespace Brytec {
 
