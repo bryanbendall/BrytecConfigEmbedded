@@ -1,20 +1,12 @@
-#include "BinaryDeserializer.h"
+#include "BinaryPathDeserializer.h"
 
-#include "EBrytecConfig.h"
-#include <string.h>
-#ifndef BRYTEC_EMBEDDED
+#if __has_include(<filesystem>)
+
 #include <fstream>
-#endif
+#include <string>
 
 namespace Brytec {
 
-BinaryDeserializer::BinaryDeserializer(const uint8_t* data, uint32_t length)
-    : m_data(data)
-    , m_dataLength(length)
-{
-}
-
-#ifndef BRYTEC_EMBEDDED
 BinaryDeserializer::BinaryDeserializer(std::filesystem::path path)
 {
     std::ifstream is(path, std::ifstream::binary);
@@ -31,15 +23,13 @@ BinaryDeserializer::BinaryDeserializer(std::filesystem::path path)
         m_ownData = true;
     }
 }
-#endif
 
-BinaryDeserializer::~BinaryDeserializer()
+BinaryPathDeserializer ::~BinaryPathDeserializer()
 {
-    if (m_ownData)
-        delete[] m_data;
+    delete[] m_data;
 }
 
-bool BinaryDeserializer::readInternal(uint8_t* data, uint32_t dataSize)
+bool BinaryPathDeserializer::readInternal(uint8_t* data, uint32_t dataSize)
 {
     if (m_currentOffset + dataSize > m_dataLength)
         return false;
@@ -53,3 +43,4 @@ bool BinaryDeserializer::readInternal(uint8_t* data, uint32_t dataSize)
     }
 }
 }
+#endif

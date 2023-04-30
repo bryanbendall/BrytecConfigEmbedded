@@ -1,8 +1,8 @@
 #include "UsbDefs.h"
 
 #include "Can/EBrytecCan.h"
+#include "Deserializer/BinaryArrayDeserializer.h"
 #include "Deserializer/BinaryBufferSerializer.h"
-#include "Deserializer/BinaryDeserializer.h"
 
 namespace Brytec {
 
@@ -36,7 +36,7 @@ CanExtFrame UsbPacket::as()
 {
     CanExtFrame frame;
 
-    Brytec::BinaryDeserializer des(data, length);
+    Brytec::BinaryArrayDeserializer des(data, length);
 
     UsbPacketType type;
     des.readRaw<uint8_t>((uint8_t*)&type);
