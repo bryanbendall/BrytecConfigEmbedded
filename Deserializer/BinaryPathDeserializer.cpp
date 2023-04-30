@@ -7,7 +7,7 @@
 
 namespace Brytec {
 
-BinaryDeserializer::BinaryDeserializer(std::filesystem::path path)
+BinaryPathDeserializer::BinaryPathDeserializer(std::filesystem::path path)
 {
     std::ifstream is(path, std::ifstream::binary);
     if (is) {
@@ -19,8 +19,6 @@ BinaryDeserializer::BinaryDeserializer(std::filesystem::path path)
         is.read((char*)m_data, m_dataLength);
 
         is.close();
-
-        m_ownData = true;
     }
 }
 

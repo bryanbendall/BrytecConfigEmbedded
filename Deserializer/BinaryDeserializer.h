@@ -3,6 +3,10 @@
 #include "EBrytecConfig.h"
 #include <stdint.h>
 
+#if __has_include(<string>)
+#include <string>
+#endif
+
 namespace Brytec {
 
 struct EmptyString { };
