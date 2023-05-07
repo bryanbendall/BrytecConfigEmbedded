@@ -1,5 +1,7 @@
 #include "EBrytecCan.h"
 
+#include <string.h>
+
 namespace Brytec {
 
 bool CanExtFrame::isBroadcast() const
@@ -46,6 +48,34 @@ CanExtFrame PinStatusBroadcast::getFrame()
 
     uint32_t* tempValue = (uint32_t*)&value;
     *data |= *tempValue;
+
+    return frame;
+}
+
+CanCommands::CanCommands(const CanExtFrame& frame)
+{
+    // Is a broadcast
+    if (frame.isBroadcast())
+        return;
+
+    command = (Command)((frame.id >> 24) & 0b1111);
+    moduleAddress = (frame.id >> 16);
+    nodeGroupIndex = frame.id;
+
+    memcpy(data, frame.data, 8);
+}
+
+CanExtFrame CanCommands::getFrame()
+{
+    CanExtFrame frame;
+
+    frame.id = 0;
+    // Broadcast Flag 0
+    frame.id |= ((uint32_t)(command & 0b1111) << 24);
+    frame.id |= ((uint32_t)moduleAddress << 16);
+    frame.id |= nodeGroupIndex;
+
+    memcpy(frame.data, data, 8);
 
     return frame;
 }

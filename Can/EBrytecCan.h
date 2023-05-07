@@ -33,4 +33,30 @@ struct PinStatusBroadcast {
     CanExtFrame getFrame();
 };
 
+struct CanCommands {
+
+    static constexpr uint8_t AllModules = 0xFF;
+    static constexpr uint16_t NoNodeGroup = 0xFFFF;
+
+    enum Command : uint8_t {
+        Nak,
+        Ack,
+        ChangeMode,
+        ReloadConfig,
+        RequestStatus,
+        SendStatus,
+        WriteConfigData,
+        ReadConfigRequest,
+        ReadConfigData
+    };
+
+    Command command;
+    uint8_t moduleAddress = AllModules;
+    uint16_t nodeGroupIndex = NoNodeGroup;
+    uint8_t data[8] = {};
+
+    CanCommands() = default;
+    CanCommands(const CanExtFrame& frame);
+    CanExtFrame getFrame();
+};
 }

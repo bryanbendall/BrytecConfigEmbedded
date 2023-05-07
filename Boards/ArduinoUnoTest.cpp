@@ -75,6 +75,10 @@ void BrytecBoard::setupPin(uint16_t index, IOTypes::Types type)
     }
 }
 
+void BrytecBoard::shutdownAllPins()
+{
+}
+
 float BrytecBoard::getPinValue(uint16_t index)
 {
     switch (index) {

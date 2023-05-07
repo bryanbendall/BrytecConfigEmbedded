@@ -1,8 +1,18 @@
 #include "BrytecBoard.h"
 #include <Arduino.h>
 #include <CAN.h>
+#include <avr/pgmspace.h>
+
+#include "Program.h"
 
 namespace Brytec {
+
+Brytec::BinaryProgmemDeserializer des(progmem_data, sizeof(progmem_data));
+
+BinaryDeserializer* BrytecBoard::getDeserializer()
+{
+    return &des;
+}
 
 void BrytecBoard::error(EBrytecErrors error)
 {
@@ -93,6 +103,12 @@ void BrytecBoard::setupPin(uint16_t index, IOTypes::Types type)
     }
 }
 
+void BrytecBoard::shutdownAllPins()
+{
+    for (int i = 0; i < 12; i++)
+        setPinValue(i, IOTypes::Types::Undefined, 0.0f);
+}
+
 float BrytecBoard::getPinValue(uint16_t index)
 {
     switch (index) {
@@ -155,4 +171,8 @@ void BrytecBoard::sendBrytecCan(CanExtFrame frame)
     CAN.endPacket();
 }
 
+void BrytecBoard::updateConfig(uint8_t* data, uint32_t size, uint32_t offset)
+{
+    // Not supported with progmem
+}
 }

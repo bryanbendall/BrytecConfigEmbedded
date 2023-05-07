@@ -1,5 +1,6 @@
 #include "EBrytecApp.h"
 
+#include "Can/ECanCommandQueue.h"
 #include "Can/EPinStatusQueue.h"
 #include "Nodes/EFinalValueNode.h"
 #include "Nodes/EInitialValueNode.h"
@@ -11,18 +12,24 @@
 namespace Brytec {
 
 struct EBrytecAppData {
+    EBrytecApp::Mode mode = EBrytecApp::Mode::Stopped;
     bool deserializeOk = false;
     uint8_t moduleAddress = 0;
     ENodesVector nodeVector = {};
     ENodeGroup* nodeGroups = nullptr;
     uint16_t nodeGroupsCount = 0;
     EPinStatusQueue statusQueue;
+    ECanCommandQueue canCommandQueue;
 };
 static EBrytecAppData s_data;
 
-void EBrytecApp::deserializeModule(BinaryDeserializer& des)
+void EBrytecApp::deserializeModule()
 {
     s_data.deserializeOk = false;
+
+    BinaryDeserializer* des = BrytecBoard::getDeserializer();
+    if (!des)
+        return;
 
     // Delete old node groups because it is a static class
     if (s_data.nodeGroups) {
@@ -33,8 +40,8 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
 
     // deserialize modules specs
     char m, d;
-    des.readRaw<char>(&m); // M
-    des.readRaw<char>(&d); // D
+    des->readRaw<char>(&m); // M
+    des->readRaw<char>(&d); // D
 
     if (m != 'M' || d != 'D') {
         BrytecBoard::error(EBrytecErrors::ModuleHeader);
@@ -42,26 +49,26 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
     }
 
     uint8_t major, minor;
-    des.readRaw<uint8_t>(&major);
-    des.readRaw<uint8_t>(&minor);
+    des->readRaw<uint8_t>(&major);
+    des->readRaw<uint8_t>(&minor);
     // TODO check version
 
     // Module name
     EmptyString empty;
-    des.readRaw<EmptyString>(&empty);
+    des->readRaw<EmptyString>(&empty);
 
     // Manufacturer name
-    des.readRaw<EmptyString>(&empty);
+    des->readRaw<EmptyString>(&empty);
 
     // Board name
-    des.readRaw<EmptyString>(&empty);
+    des->readRaw<EmptyString>(&empty);
 
     // Module address
-    des.readRaw<uint8_t>(&s_data.moduleAddress);
+    des->readRaw<uint8_t>(&s_data.moduleAddress);
 
     // Module enabled
     uint8_t moduleEnabled;
-    des.readRaw<uint8_t>(&moduleEnabled);
+    des->readRaw<uint8_t>(&moduleEnabled);
     if (!moduleEnabled) {
         BrytecBoard::error(EBrytecErrors::ModuleNotEnabled);
         return;
@@ -69,7 +76,7 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
 
     // Deserialize node groups
     // Total Node Groups
-    des.readRaw<uint16_t>(&s_data.nodeGroupsCount);
+    des->readRaw<uint16_t>(&s_data.nodeGroupsCount);
 
     // Allocate space for node groups
     s_data.nodeGroups = (ENodeGroup*)malloc(sizeof(ENodeGroup) * s_data.nodeGroupsCount);
@@ -80,7 +87,7 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
 
     // Physical Node Group Count
     uint16_t physicalNodeGroupCount;
-    des.readRaw<uint16_t>(&physicalNodeGroupCount);
+    des->readRaw<uint16_t>(&physicalNodeGroupCount);
 
     // Node Group Loop
     for (uint16_t nodeGroupIndex = 0; nodeGroupIndex < s_data.nodeGroupsCount; nodeGroupIndex++) {
@@ -88,17 +95,17 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
         // Internal Node Group Count
         if (nodeGroupIndex == physicalNodeGroupCount) {
             uint16_t internalNodeGroupCount;
-            des.readRaw<uint16_t>(&internalNodeGroupCount);
+            des->readRaw<uint16_t>(&internalNodeGroupCount);
         }
 
         ENodeGroup* currentNodeGroup = new (&s_data.nodeGroups[nodeGroupIndex]) ENodeGroup();
         currentNodeGroup->startNodeIndex = s_data.nodeVector.count();
-        des.readRaw<uint16_t>(&currentNodeGroup->boardPinIndex);
+        des->readRaw<uint16_t>(&currentNodeGroup->boardPinIndex);
 
         // Deserialize node group specs
         char n, g;
-        des.readRaw<char>(&n); // N
-        des.readRaw<char>(&g); // G
+        des->readRaw<char>(&n); // N
+        des->readRaw<char>(&g); // G
         if (n != 'N' || g != 'G') {
             BrytecBoard::error(EBrytecErrors::NodeGroupHeader);
             return;
@@ -106,53 +113,53 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
 
         // Version
         uint8_t nodeGroupMajor, nodeGroupMinor;
-        des.readRaw<uint8_t>(&nodeGroupMajor);
-        des.readRaw<uint8_t>(&nodeGroupMinor);
+        des->readRaw<uint8_t>(&nodeGroupMajor);
+        des->readRaw<uint8_t>(&nodeGroupMinor);
         // TODO check version
 
         // Node Group name
         EmptyString empty;
-        des.readRaw<EmptyString>(&empty);
+        des->readRaw<EmptyString>(&empty);
 
         // Node Group uuid
         uint64_t uuid;
-        des.readRaw<uint64_t>(&uuid);
+        des->readRaw<uint64_t>(&uuid);
 
         // Node Group type
         uint8_t type;
-        des.readRaw<uint8_t>(&type);
+        des->readRaw<uint8_t>(&type);
         currentNodeGroup->type = (IOTypes::Types)type;
 
         // Node Group enabled
         uint8_t enabled;
-        des.readRaw<uint8_t>(&enabled);
+        des->readRaw<uint8_t>(&enabled);
         currentNodeGroup->enabled = enabled;
 
         // Node Group used on bus
         uint8_t usedOnBus;
-        des.readRaw<uint8_t>(&usedOnBus);
+        des->readRaw<uint8_t>(&usedOnBus);
         currentNodeGroup->usedOnBus = usedOnBus;
 
         // Current limit
-        des.readRaw<uint8_t>(&currentNodeGroup->currentLimit);
+        des->readRaw<uint8_t>(&currentNodeGroup->currentLimit);
 
         uint8_t alwaysRetry;
-        des.readRaw<uint8_t>(&alwaysRetry);
+        des->readRaw<uint8_t>(&alwaysRetry);
         currentNodeGroup->alwaysRetry = alwaysRetry;
 
-        des.readRaw<uint8_t>(&currentNodeGroup->maxRetries);
+        des->readRaw<uint8_t>(&currentNodeGroup->maxRetries);
 
-        des.readRaw<float>(&currentNodeGroup->retryDelay);
+        des->readRaw<float>(&currentNodeGroup->retryDelay);
 
         // Create nodes in vector
         {
             uint16_t nodeCount;
-            des.readRaw<uint16_t>(&nodeCount);
+            des->readRaw<uint16_t>(&nodeCount);
 
             for (uint16_t i = 0; i < nodeCount; i++) {
 
                 // Create Node
-                ENodeSpec spec = ENodeDeserializer::deserializeNodeSpec(des);
+                ENodeSpec spec = ENodeDeserializer::deserializeNodeSpec(*des);
 
                 ENode* node = s_data.nodeVector.add(spec);
                 if (!node) {
@@ -172,17 +179,17 @@ void EBrytecApp::deserializeModule(BinaryDeserializer& des)
         // connect nodes
         {
             uint16_t nodeCount;
-            des.readRaw<uint16_t>(&nodeCount);
+            des->readRaw<uint16_t>(&nodeCount);
 
             for (uint16_t nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++) {
 
                 ENode* thisNode = s_data.nodeVector.at(currentNodeGroup->startNodeIndex + nodeIndex);
 
                 uint8_t inputCount;
-                des.readRaw<uint8_t>(&inputCount);
+                des->readRaw<uint8_t>(&inputCount);
                 for (uint8_t inputIndex = 0; inputIndex < inputCount; inputIndex++) {
 
-                    ENodeConnection connection = ENodeDeserializer::deserializeNodeConnection(des);
+                    ENodeConnection connection = ENodeDeserializer::deserializeNodeConnection(*des);
 
                     if (connection.connectionNodeIndex != -1 && connection.outputIndex != -1) {
                         // Valid connection
@@ -228,6 +235,12 @@ void EBrytecApp::setupPins()
 
 void EBrytecApp::update(float timestep)
 {
+    processCanCommands();
+
+    // Only update in normal mode
+    if (s_data.mode != EBrytecApp::Mode::Normal)
+        return;
+
     if (!s_data.deserializeOk)
         return;
 
@@ -301,16 +314,11 @@ ENode* EBrytecApp::getNode(int index)
 void EBrytecApp::brytecCanReceived(const CanExtFrame& frame)
 {
     if (frame.isBroadcast()) {
-
         PinStatusBroadcast pinStatus(frame);
-
-        // Only queue pin status if we have a node that uses it
-        // ENodeGroupNode* nodeGroupNode = findNodeGroupNode(pinStatus.moduleAddress, pinStatus.nodeGroupIndex);
-        // if (nodeGroupNode)
         s_data.statusQueue.add(pinStatus);
-
     } else {
-        // TODO
+        CanCommands canCommand(frame);
+        s_data.canCommandQueue.add(canCommand);
     }
 }
 
@@ -440,4 +448,94 @@ void EBrytecApp::calculateMaskAndFilter(uint32_t* mask, uint32_t* filter)
     }
 }
 
+void EBrytecApp::processCanCommands()
+{
+    // Copy queue in case we get new messages while we are updating
+    ECanCommandQueue tempQueue = s_data.canCommandQueue;
+    s_data.canCommandQueue.clear();
+
+    for (uint8_t i = 0; i < tempQueue.size(); i++) {
+        CanCommands* canCommand = tempQueue.at(i);
+
+        // Not for this module or all modules
+        if (canCommand->moduleAddress != s_data.moduleAddress && canCommand->moduleAddress != CanCommands::AllModules)
+            continue;
+
+        switch (canCommand->command) {
+        case CanCommands::Command::ChangeMode:
+            setMode((EBrytecApp::Mode)canCommand->data[0]);
+            sendCanAck();
+            break;
+        case CanCommands::Command::ReloadConfig:
+            if (s_data.mode != EBrytecApp::Mode::Stopped)
+                sendCanNak();
+            else {
+                deserializeModule();
+                sendCanAck();
+            }
+            break;
+        case CanCommands::Command::RequestStatus:
+            sendCanModuleStatus();
+            break;
+        case CanCommands::Command::WriteConfigData:
+            if (s_data.mode != EBrytecApp::Mode::Programming) {
+                uint16_t offset = canCommand->nodeGroupIndex;
+                BrytecBoard::updateConfig(canCommand->data, 8, offset);
+                sendCanAck();
+            } else
+                sendCanNak();
+            break;
+        case CanCommands::Command::ReadConfigRequest:
+            // TODO
+            sendCanNak();
+            break;
+        default:
+            sendCanNak();
+            break;
+        }
+    }
+}
+
+void EBrytecApp::setMode(Mode mode)
+{
+    switch (mode) {
+    case Mode::Normal:
+        setupModule();
+        setupPins();
+        break;
+    case Mode::Stopped:
+        BrytecBoard::shutdownAllPins();
+        break;
+    case Mode::Programming:
+        break;
+    }
+
+    s_data.mode = mode;
+}
+
+void EBrytecApp::sendCanNak()
+{
+    CanCommands command;
+    command.command = CanCommands::Command::Nak;
+    command.moduleAddress = s_data.moduleAddress;
+    BrytecBoard::sendBrytecCan(command.getFrame());
+}
+
+void EBrytecApp::sendCanAck()
+{
+    CanCommands command;
+    command.command = CanCommands::Command::Ack;
+    command.moduleAddress = s_data.moduleAddress;
+    BrytecBoard::sendBrytecCan(command.getFrame());
+}
+
+void EBrytecApp::sendCanModuleStatus()
+{
+    CanCommands statusCommand;
+    statusCommand.command = CanCommands::Command::SendStatus;
+    statusCommand.moduleAddress = s_data.moduleAddress;
+    statusCommand.data[0] = s_data.mode;
+    statusCommand.data[1] = s_data.deserializeOk;
+    BrytecBoard::sendBrytecCan(statusCommand.getFrame());
+}
 }

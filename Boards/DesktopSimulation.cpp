@@ -1,8 +1,20 @@
 #include "BrytecBoard.h"
 
+#include "Deserializer/BinaryArrayDeserializer.h"
 #include <iostream>
+#include <vector>
 
 namespace Brytec {
+
+std::vector<uint8_t> config;
+BinaryArrayDeserializer deserializer(nullptr, 0);
+
+BinaryDeserializer* BrytecBoard::getDeserializer()
+{
+    BinaryArrayDeserializer des(config.data(), config.size());
+    deserializer = des;
+    return &deserializer;
+}
 
 void BrytecBoard::error(EBrytecErrors error)
 {
@@ -49,6 +61,10 @@ void BrytecBoard::setupPin(uint16_t index, IOTypes::Types type)
 {
 }
 
+void BrytecBoard::shutdownAllPins()
+{
+}
+
 float BrytecBoard::getPinValue(uint16_t index)
 {
     return 0.0f;
@@ -72,4 +88,12 @@ void BrytecBoard::sendBrytecCan(CanExtFrame frame)
 {
 }
 
+void BrytecBoard::updateConfig(uint8_t* data, uint32_t size, uint32_t offset)
+{
+    if (config.size() < size + offset) {
+        config.reserve(size + offset);
+    }
+
+    config.insert(config.begin(), data, data + size);
+}
 }
