@@ -88,12 +88,15 @@ void BrytecBoard::sendBrytecCan(CanExtFrame frame)
 {
 }
 
+void BrytecBoard::ReserveConfigSize(uint16_t size)
+{
+    if (config.size() < size)
+        config.reserve(size);
+}
+
 void BrytecBoard::updateConfig(uint8_t* data, uint32_t size, uint32_t offset)
 {
-    if (config.size() < size + offset) {
-        config.reserve(size + offset);
-    }
-
-    config.insert(config.begin(), data, data + size);
+    ReserveConfigSize(size + offset);
+    config.insert(config.begin() + offset, data, data + size);
 }
 }

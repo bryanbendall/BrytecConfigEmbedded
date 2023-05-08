@@ -477,6 +477,9 @@ void EBrytecApp::processCanCommands()
         case CanCommands::Command::RequestStatus:
             sendCanModuleStatus();
             break;
+        case CanCommands::Command::ReserveConfigSize:
+            BrytecBoard::ReserveConfigSize(canCommand->nodeGroupIndex);
+            break;
         case CanCommands::Command::WriteConfigData:
             if (s_data.mode != EBrytecApp::Mode::Programming) {
                 uint16_t offset = canCommand->nodeGroupIndex;

@@ -45,6 +45,7 @@ struct CanCommands {
         ReloadConfig,
         RequestStatus,
         SendStatus,
+        ReserveConfigSize,
         WriteConfigData,
         ReadConfigRequest,
         ReadConfigData

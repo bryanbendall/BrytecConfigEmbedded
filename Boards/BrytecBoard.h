@@ -21,6 +21,7 @@ public:
     static float getPinCurrent(uint16_t index);
     static void setPinValue(uint16_t index, IOTypes::Types type, float value);
     static void sendBrytecCan(CanExtFrame frame);
+    static void ReserveConfigSize(uint16_t size);
     static void updateConfig(uint8_t* data, uint32_t size, uint32_t offset);
 };
 
