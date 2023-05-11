@@ -479,6 +479,7 @@ void EBrytecApp::processCanCommands()
             break;
         case CanCommands::Command::ReserveConfigSize:
             BrytecBoard::ReserveConfigSize(canCommand->nodeGroupIndex);
+            sendCanAck();
             break;
         case CanCommands::Command::WriteConfigData:
             if (s_data.mode != EBrytecApp::Mode::Programming) {

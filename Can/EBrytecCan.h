@@ -39,6 +39,7 @@ struct CanCommands {
     static constexpr uint16_t NoNodeGroup = 0xFFFF;
 
     enum Command : uint8_t {
+        None,
         Nak,
         Ack,
         ChangeMode,
@@ -51,7 +52,7 @@ struct CanCommands {
         ReadConfigData
     };
 
-    Command command;
+    Command command = Command::None;
     uint8_t moduleAddress = AllModules;
     uint16_t nodeGroupIndex = NoNodeGroup;
     uint8_t data[8] = {};
