@@ -482,7 +482,7 @@ void EBrytecApp::processCanCommands()
             sendCanAck();
             break;
         case CanCommands::Command::WriteConfigData:
-            if (s_data.mode != EBrytecApp::Mode::Programming) {
+            if (s_data.mode == EBrytecApp::Mode::Programming) {
                 uint16_t offset = canCommand->nodeGroupIndex;
                 BrytecBoard::updateConfig(canCommand->data, 8, offset);
                 sendCanAck();
