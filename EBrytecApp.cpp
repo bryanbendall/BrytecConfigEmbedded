@@ -484,9 +484,14 @@ void EBrytecApp::processCanCommands()
                 sendCanModuleStatus();
             else {
                 for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
-                    if (s_data.nodeGroups[i].index == canCommand->nodeGroupIndex)
+                    if (s_data.nodeGroups[i].index == canCommand->nodeGroupIndex) {
+                        sendCanAck();
                         sendBrytecCanPinStatus(s_data.nodeGroups[i]);
+                        return;
+                    }
                 }
+                // If there is not a node group found
+                sendCanNak();
             }
             break;
         case CanCommands::Command::ReserveConfigSize:
