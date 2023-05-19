@@ -10,7 +10,7 @@ namespace Brytec {
 struct ENodeGroup {
     bool enabled;
     bool usedOnBus;
-    uint16_t boardPinIndex;
+    uint16_t index;
     IOTypes::Types type;
     uint32_t startNodeIndex;
     uint8_t nodeCount;

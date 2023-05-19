@@ -3,6 +3,7 @@
 #include "Boards/BrytecBoard.h"
 #include "Can/EBrytecCan.h"
 #include "Deserializer/BinaryDeserializer.h"
+#include "Utils/ENodeGroup.h"
 #include "Utils/ENodesVector.h"
 #include <stdint.h>
 
@@ -35,6 +36,7 @@ private:
     static ENode* getFinalValueNode(int startIndex, int nodeCount);
     static ENode* getPinCurrentNode(int startIndex, int nodeCount);
     static void sendBrytecCanBroadcasts();
+    static void sendBrytecCanPinStatus(ENodeGroup& nodeGroup);
     static ENodeGroupNode* findNodeGroupNode(uint8_t moduleAddress, uint16_t nodeGroupIndex);
     static void updateNodeGroupNodes();
     static void updateCurrents(float timestep);

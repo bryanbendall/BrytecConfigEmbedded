@@ -11,7 +11,7 @@ void ENodeGroup::setupPin()
     if (!enabled)
         return;
 
-    BrytecBoard::setupPin(boardPinIndex, type);
+    BrytecBoard::setupPin(index, type);
 }
 
 void ENodeGroup::updateInitialValue()
@@ -23,7 +23,7 @@ void ENodeGroup::updateInitialValue()
     if (!node)
         return;
 
-    node->SetValue(0, BrytecBoard::getPinValue(boardPinIndex));
+    node->SetValue(0, BrytecBoard::getPinValue(index));
 }
 
 void ENodeGroup::updateFinalValue()
@@ -50,7 +50,7 @@ void ENodeGroup::updateFinalValue()
     if (pinOutput < 0.0f)
         pinOutput = 0.0f;
 
-    BrytecBoard::setPinValue(boardPinIndex, type, pinOutput);
+    BrytecBoard::setPinValue(index, type, pinOutput);
 }
 
 void ENodeGroup::updatePinCurrent(float timestep)
@@ -58,7 +58,7 @@ void ENodeGroup::updatePinCurrent(float timestep)
     if (!enabled)
         return;
 
-    float current = BrytecBoard::getPinCurrent(boardPinIndex);
+    float current = BrytecBoard::getPinCurrent(index);
     checkOverCurrent(timestep, current);
 
     ENode* node
@@ -110,7 +110,7 @@ void ENodeGroup::checkOverCurrent(float timestep, float current)
 
         // Shut down pin
         if (trippedTimer >= TrippedTime) {
-            BrytecBoard::setPinValue(boardPinIndex, type, 0.0f);
+            BrytecBoard::setPinValue(index, type, 0.0f);
             tripped = true;
             trippedTimer = 0.0f;
         }

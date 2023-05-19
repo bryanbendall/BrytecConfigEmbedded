@@ -100,7 +100,7 @@ void EBrytecApp::deserializeModule()
 
         ENodeGroup* currentNodeGroup = new (&s_data.nodeGroups[nodeGroupIndex]) ENodeGroup();
         currentNodeGroup->startNodeIndex = s_data.nodeVector.count();
-        des->readRaw<uint16_t>(&currentNodeGroup->boardPinIndex);
+        des->readRaw<uint16_t>(&currentNodeGroup->index);
 
         // Deserialize node group specs
         char n, g;
@@ -330,19 +330,24 @@ void EBrytecApp::sendBrytecCanBroadcasts()
         if (!nodeGroup.enabled || !nodeGroup.usedOnBus)
             continue;
 
-        PinStatusBroadcast pinStatus;
-        pinStatus.moduleAddress = s_data.moduleAddress;
-        pinStatus.nodeGroupIndex = nodeGroup.boardPinIndex;
-        if (nodeGroup.enabled)
-            pinStatus.statusFlags = PinStatusBroadcast::StatusFlags::NORMAL;
-        if (nodeGroup.tripped)
-            pinStatus.statusFlags = PinStatusBroadcast::StatusFlags::TRIPPED;
-        pinStatus.value = nodeGroup.getFinalValue();
-        pinStatus.voltage = BrytecBoard::getPinVoltage(nodeGroup.boardPinIndex);
-        pinStatus.current = BrytecBoard::getPinCurrent(nodeGroup.boardPinIndex);
-
-        BrytecBoard::sendBrytecCan(pinStatus.getFrame());
+        sendBrytecCanPinStatus(nodeGroup);
     }
+}
+
+void EBrytecApp::sendBrytecCanPinStatus(ENodeGroup& nodeGroup)
+{
+    PinStatusBroadcast pinStatus;
+    pinStatus.moduleAddress = s_data.moduleAddress;
+    pinStatus.nodeGroupIndex = nodeGroup.index;
+    if (nodeGroup.enabled)
+        pinStatus.statusFlags = PinStatusBroadcast::StatusFlags::NORMAL;
+    if (nodeGroup.tripped)
+        pinStatus.statusFlags = PinStatusBroadcast::StatusFlags::TRIPPED;
+    pinStatus.value = nodeGroup.getFinalValue();
+    pinStatus.voltage = BrytecBoard::getPinVoltage(nodeGroup.index);
+    pinStatus.current = BrytecBoard::getPinCurrent(nodeGroup.index);
+
+    BrytecBoard::sendBrytecCan(pinStatus.getFrame());
 }
 
 ENodeGroupNode* EBrytecApp::findNodeGroupNode(uint8_t moduleAddress, uint16_t nodeGroupIndex)
@@ -372,7 +377,7 @@ void EBrytecApp::updateNodeGroupNodes()
 
                     // In this module
                     for (uint16_t j = 0; j < s_data.nodeGroupsCount; j++) {
-                        if (s_data.nodeGroups[j].boardPinIndex == nodeGroupNode->getNodeGroupIndex())
+                        if (s_data.nodeGroups[j].index == nodeGroupNode->getNodeGroupIndex())
                             nodeGroupNode->SetValue(99, s_data.nodeGroups[j].getFinalValue());
                     }
                 }
@@ -475,7 +480,14 @@ void EBrytecApp::processCanCommands()
             }
             break;
         case CanCommands::Command::RequestStatus:
-            sendCanModuleStatus();
+            if (canCommand->nodeGroupIndex == CanCommands::NoNodeGroup)
+                sendCanModuleStatus();
+            else {
+                for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
+                    if (s_data.nodeGroups[i].index == canCommand->nodeGroupIndex)
+                        sendBrytecCanPinStatus(s_data.nodeGroups[i]);
+                }
+            }
             break;
         case CanCommands::Command::ReserveConfigSize:
             BrytecBoard::ReserveConfigSize(canCommand->nodeGroupIndex);
