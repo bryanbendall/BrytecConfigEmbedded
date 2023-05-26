@@ -9,10 +9,48 @@ bool CanExtFrame::isBroadcast() const
     return (id & ((uint32_t)1 << 28));
 }
 
+bool CanExtFrame::isPinBroadcast() const
+{
+    return isBroadcast() && ((id & 0xFFFF) != CanCommands::NoNodeGroup);
+}
+
+bool CanExtFrame::isModuleBroadcast() const
+{
+    return isBroadcast() && ((id & 0xFFFF) == CanCommands::NoNodeGroup);
+}
+
+CanCommands::CanCommands(const CanExtFrame& frame)
+{
+    // Is a broadcast
+    if (frame.isBroadcast())
+        return;
+
+    command = (Command)((frame.id >> 24) & 0b1111);
+    moduleAddress = (frame.id >> 16);
+    nodeGroupIndex = frame.id;
+
+    memcpy(data, frame.data, 8);
+}
+
+CanExtFrame CanCommands::getFrame()
+{
+    CanExtFrame frame;
+
+    frame.id = 0;
+    // Broadcast Flag 0
+    frame.id |= ((uint32_t)(command & 0b1111) << 24);
+    frame.id |= ((uint32_t)moduleAddress << 16);
+    frame.id |= nodeGroupIndex;
+
+    memcpy(frame.data, data, 8);
+
+    return frame;
+}
+
 PinStatusBroadcast::PinStatusBroadcast(const CanExtFrame& frame)
 {
-    // Not a broadcast
-    if (!frame.isBroadcast())
+    // Not a pin broadcast
+    if (!frame.isPinBroadcast())
         return;
 
     statusFlags = (StatusFlags)((frame.id >> 24) & 0b1111);
@@ -52,30 +90,33 @@ CanExtFrame PinStatusBroadcast::getFrame()
     return frame;
 }
 
-CanCommands::CanCommands(const CanExtFrame& frame)
+ModuleStatusBroadcast::ModuleStatusBroadcast(const CanExtFrame& frame)
 {
-    // Is a broadcast
-    if (frame.isBroadcast())
+    // Not a module broadcast
+    if (!frame.isModuleBroadcast())
         return;
 
-    command = (Command)((frame.id >> 24) & 0b1111);
     moduleAddress = (frame.id >> 16);
     nodeGroupIndex = frame.id;
 
-    memcpy(data, frame.data, 8);
+    mode = frame.data[0];
+    deserializeOk = frame.data[1];
 }
 
-CanExtFrame CanCommands::getFrame()
+CanExtFrame ModuleStatusBroadcast::getFrame()
 {
     CanExtFrame frame;
 
     frame.id = 0;
-    // Broadcast Flag 0
-    frame.id |= ((uint32_t)(command & 0b1111) << 24);
+    frame.id |= ((uint32_t)1 << 28); // Broadcast Flag
     frame.id |= ((uint32_t)moduleAddress << 16);
     frame.id |= nodeGroupIndex;
 
-    memcpy(frame.data, data, 8);
+    uint64_t* data = (uint64_t*)frame.data;
+    *data = 0;
+
+    data[0] = (uint8_t)mode;
+    data[1] = deserializeOk;
 
     return frame;
 }

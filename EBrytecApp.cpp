@@ -470,6 +470,7 @@ void EBrytecApp::processCanCommands()
         case CanCommands::Command::ChangeMode:
             setMode((EBrytecApp::Mode)canCommand->data[0]);
             sendCanAck();
+            sendCanModuleStatus();
             break;
         case CanCommands::Command::ReloadConfig:
             if (s_data.mode != EBrytecApp::Mode::Stopped)
@@ -477,12 +478,14 @@ void EBrytecApp::processCanCommands()
             else {
                 deserializeModule();
                 sendCanAck();
+                sendCanModuleStatus();
             }
             break;
         case CanCommands::Command::RequestStatus:
-            if (canCommand->nodeGroupIndex == CanCommands::NoNodeGroup)
+            if (canCommand->nodeGroupIndex == CanCommands::NoNodeGroup) {
+                sendCanAck();
                 sendCanModuleStatus();
-            else {
+            } else {
                 for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
                     if (s_data.nodeGroups[i].index == canCommand->nodeGroupIndex) {
                         sendCanAck();
@@ -532,6 +535,7 @@ void EBrytecApp::setMode(Mode mode)
     }
 
     s_data.mode = mode;
+    sendCanModuleStatus();
 }
 
 void EBrytecApp::sendCanNak()
@@ -552,11 +556,10 @@ void EBrytecApp::sendCanAck()
 
 void EBrytecApp::sendCanModuleStatus()
 {
-    CanCommands statusCommand;
-    statusCommand.command = CanCommands::Command::SendStatus;
-    statusCommand.moduleAddress = s_data.moduleAddress;
-    statusCommand.data[0] = s_data.mode;
-    statusCommand.data[1] = s_data.deserializeOk;
-    BrytecBoard::sendBrytecCan(statusCommand.getFrame());
+    ModuleStatusBroadcast bc;
+    bc.moduleAddress = s_data.moduleAddress;
+    bc.mode = (uint8_t)s_data.mode;
+    bc.deserializeOk = s_data.deserializeOk;
+    BrytecBoard::sendBrytecCan(bc.getFrame());
 }
 }
