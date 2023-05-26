@@ -112,11 +112,8 @@ CanExtFrame ModuleStatusBroadcast::getFrame()
     frame.id |= ((uint32_t)moduleAddress << 16);
     frame.id |= nodeGroupIndex;
 
-    uint64_t* data = (uint64_t*)frame.data;
-    *data = 0;
-
-    data[0] = (uint8_t)mode;
-    data[1] = deserializeOk;
+    frame.data[0] = (uint8_t)mode;
+    frame.data[1] = deserializeOk;
 
     return frame;
 }
