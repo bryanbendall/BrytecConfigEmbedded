@@ -472,6 +472,15 @@ void EBrytecApp::processCanCommands()
             sendCanAck();
             sendCanModuleStatus();
             break;
+        case CanCommands::Command::ChangeAddress:
+            if (s_data.mode != EBrytecApp::Mode::Stopped)
+                sendCanNak();
+            else {
+                sendCanAck();
+                s_data.moduleAddress = canCommand->data[0];
+                sendCanModuleStatus();
+            }
+            break;
         case CanCommands::Command::ReloadConfig:
             if (s_data.mode != EBrytecApp::Mode::Stopped)
                 sendCanNak();
@@ -531,6 +540,7 @@ void EBrytecApp::setMode(Mode mode)
         BrytecBoard::shutdownAllPins();
         break;
     case Mode::Programming:
+        s_data.deserializeOk = false;
         break;
     }
 
