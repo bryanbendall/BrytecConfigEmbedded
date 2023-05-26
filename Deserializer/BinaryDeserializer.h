@@ -2,6 +2,7 @@
 
 #include "EBrytecConfig.h"
 #include <stdint.h>
+#include <string.h>
 
 #if __has_include(<string>)
 #include <string>
@@ -17,7 +18,10 @@ public:
     template <typename T>
     void readRaw(T* data)
     {
-        readInternal((uint8_t*)data, sizeof(T));
+        if (!readInternal((uint8_t*)data, sizeof(T))) {
+            // Set to 0 if it doesn't rear correctly
+            memset(data, 0, sizeof(T));
+        }
     }
 
     virtual bool readInternal(uint8_t* data, uint32_t dataSize) = 0;
