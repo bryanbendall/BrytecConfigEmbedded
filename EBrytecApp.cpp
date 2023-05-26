@@ -489,7 +489,7 @@ void EBrytecApp::processCanCommands()
                 for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
                     if (s_data.nodeGroups[i].index == canCommand->nodeGroupIndex) {
                         sendCanAck();
-                        sendBrytecCanPinStatus(s_data.nodeGroups[i]);
+                        s_data.nodeGroups[i].usedOnBus = true;
                         return;
                     }
                 }
@@ -535,7 +535,6 @@ void EBrytecApp::setMode(Mode mode)
     }
 
     s_data.mode = mode;
-    sendCanModuleStatus();
 }
 
 void EBrytecApp::sendCanNak()
