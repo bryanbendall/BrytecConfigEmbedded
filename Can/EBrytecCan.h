@@ -28,6 +28,8 @@ struct CanCommands {
         ChangeAddress,
         ReloadConfig,
         RequestStatus,
+        RequestTemplateSize,
+        RequestTemplateData,
         ReserveConfigSize,
         WriteConfigData,
         ReadConfigRequest,

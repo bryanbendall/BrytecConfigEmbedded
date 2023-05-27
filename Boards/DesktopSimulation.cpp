@@ -99,4 +99,13 @@ void BrytecBoard::updateConfig(uint8_t* data, uint32_t size, uint32_t offset)
     ReserveConfigSize(size + offset);
     config.insert(config.begin() + offset, data, data + size);
 }
+
+uint32_t BrytecBoard::getTemplateSize()
+{
+    return 0;
+}
+
+void BrytecBoard::getTemplateData(uint8_t* dest, uint32_t offset, uint32_t length)
+{
+}
 }

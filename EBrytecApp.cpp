@@ -506,6 +506,13 @@ void EBrytecApp::processCanCommands()
                 sendCanNak();
             }
             break;
+        case CanCommands::Command::RequestTemplateSize:
+            sendTemplateSize();
+        case CanCommands::Command::RequestTemplateData: {
+            uint32_t offset = *canCommand->data;
+            sendTemplateData(offset);
+            break;
+        }
         case CanCommands::Command::ReserveConfigSize:
             BrytecBoard::ReserveConfigSize(canCommand->nodeGroupIndex);
             sendCanAck();
@@ -570,5 +577,24 @@ void EBrytecApp::sendCanModuleStatus()
     bc.mode = (uint8_t)s_data.mode;
     bc.deserializeOk = s_data.deserializeOk;
     BrytecBoard::sendBrytecCan(bc.getFrame());
+}
+
+void EBrytecApp::sendTemplateSize()
+{
+    CanCommands command;
+    command.command = CanCommands::Command::RequestTemplateSize;
+    command.moduleAddress = s_data.moduleAddress;
+    uint32_t size = BrytecBoard::getTemplateSize();
+    *command.data = size;
+    BrytecBoard::sendBrytecCan(command.getFrame());
+}
+
+void EBrytecApp::sendTemplateData(uint32_t offset)
+{
+    CanCommands command;
+    command.command = CanCommands::Command::RequestTemplateData;
+    command.moduleAddress = s_data.moduleAddress;
+    BrytecBoard::getTemplateData(command.data, offset, 8);
+    BrytecBoard::sendBrytecCan(command.getFrame());
 }
 }

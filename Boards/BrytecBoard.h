@@ -23,6 +23,8 @@ public:
     static void sendBrytecCan(CanExtFrame frame);
     static void ReserveConfigSize(uint16_t size);
     static void updateConfig(uint8_t* data, uint32_t size, uint32_t offset);
+    static uint32_t getTemplateSize();
+    static void getTemplateData(uint8_t* dest, uint32_t offset, uint32_t length);
 };
 
 }
