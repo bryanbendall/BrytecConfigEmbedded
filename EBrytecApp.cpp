@@ -506,11 +506,14 @@ void EBrytecApp::processCanCommands()
                 sendCanNak();
             }
             break;
-        case CanCommands::Command::RequestTemplateSize:
-            sendTemplateSize();
-        case CanCommands::Command::RequestTemplateData: {
+        case CanCommands::Command::RequestDataSize: {
+            bool fullConfig = canCommand->data[7];
+            sendDataSize(fullConfig);
+        }
+        case CanCommands::Command::RequestData: {
+            bool fullConfig = canCommand->data[7];
             uint32_t offset = *canCommand->data;
-            sendTemplateData(offset);
+            sendData(offset, fullConfig);
             break;
         }
         case CanCommands::Command::ReserveConfigSize:
@@ -524,10 +527,6 @@ void EBrytecApp::processCanCommands()
                 sendCanAck();
             } else
                 sendCanNak();
-            break;
-        case CanCommands::Command::ReadConfigRequest:
-            // TODO
-            sendCanNak();
             break;
         default:
             sendCanNak();
@@ -579,22 +578,31 @@ void EBrytecApp::sendCanModuleStatus()
     BrytecBoard::sendBrytecCan(bc.getFrame());
 }
 
-void EBrytecApp::sendTemplateSize()
+void EBrytecApp::sendDataSize(bool fullConfig)
 {
     CanCommands command;
-    command.command = CanCommands::Command::RequestTemplateSize;
+    command.command = CanCommands::Command::RequestDataSize;
     command.moduleAddress = s_data.moduleAddress;
-    uint32_t size = BrytecBoard::getTemplateSize();
+    uint32_t size = 0;
+    if (fullConfig)
+        size = BrytecBoard::getConfigSize();
+    else
+        size = BrytecBoard::getTemplateSize();
+
     *command.data = size;
     BrytecBoard::sendBrytecCan(command.getFrame());
 }
 
-void EBrytecApp::sendTemplateData(uint32_t offset)
+void EBrytecApp::sendData(uint32_t offset, bool fullConfig)
 {
     CanCommands command;
-    command.command = CanCommands::Command::RequestTemplateData;
+    command.command = CanCommands::Command::RequestData;
     command.moduleAddress = s_data.moduleAddress;
-    BrytecBoard::getTemplateData(command.data, offset, 8);
+    if (fullConfig)
+        BrytecBoard::getConfigData(command.data, offset, 8);
+    else
+        BrytecBoard::getTemplateData(command.data, offset, 8);
+
     BrytecBoard::sendBrytecCan(command.getFrame());
 }
 }

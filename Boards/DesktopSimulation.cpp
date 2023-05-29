@@ -108,4 +108,13 @@ uint32_t BrytecBoard::getTemplateSize()
 void BrytecBoard::getTemplateData(uint8_t* dest, uint32_t offset, uint32_t length)
 {
 }
+
+uint32_t BrytecBoard::getConfigSize()
+{
+    return 0;
+}
+
+void BrytecBoard::getConfigData(uint8_t* dest, uint32_t offset, uint32_t length)
+{
+}
 }

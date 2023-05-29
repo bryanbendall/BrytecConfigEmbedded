@@ -28,12 +28,10 @@ struct CanCommands {
         ChangeAddress,
         ReloadConfig,
         RequestStatus,
-        RequestTemplateSize,
-        RequestTemplateData,
+        RequestDataSize,
+        RequestData,
         ReserveConfigSize,
-        WriteConfigData,
-        ReadConfigRequest,
-        ReadConfigData
+        WriteConfigData
     };
 
     Command command = Command::None;

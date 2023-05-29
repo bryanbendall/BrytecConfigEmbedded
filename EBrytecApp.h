@@ -47,8 +47,8 @@ private:
     static void sendCanNak();
     static void sendCanAck();
     static void sendCanModuleStatus();
-    static void sendTemplateSize();
-    static void sendTemplateData(uint32_t offset);
+    static void sendDataSize(bool fullConfig);
+    static void sendData(uint32_t offset, bool fullConfig);
 
     friend class NodeGroup;
     friend class ENodeGroup;
