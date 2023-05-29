@@ -509,6 +509,7 @@ void EBrytecApp::processCanCommands()
         case CanCommands::Command::RequestDataSize: {
             bool fullConfig = canCommand->data[7];
             sendDataSize(fullConfig);
+            break;
         }
         case CanCommands::Command::RequestData: {
             bool fullConfig = canCommand->data[7];
@@ -583,6 +584,7 @@ void EBrytecApp::sendDataSize(bool fullConfig)
     CanCommands command;
     command.command = CanCommands::Command::RequestDataSize;
     command.moduleAddress = s_data.moduleAddress;
+    command.data[7] = fullConfig;
     uint32_t size = 0;
     if (fullConfig)
         size = BrytecBoard::getConfigSize();
@@ -598,6 +600,7 @@ void EBrytecApp::sendData(uint32_t offset, bool fullConfig)
     CanCommands command;
     command.command = CanCommands::Command::RequestData;
     command.moduleAddress = s_data.moduleAddress;
+    command.data[7] = fullConfig;
     if (fullConfig)
         BrytecBoard::getConfigData(command.data, offset, 8);
     else
