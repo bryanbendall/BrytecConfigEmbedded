@@ -591,7 +591,7 @@ void EBrytecApp::sendDataSize(bool fullConfig)
     else
         size = BrytecBoard::getTemplateSize();
 
-    *command.data = size;
+    memcpy(command.data, &size, 4);
     BrytecBoard::sendBrytecCan(command.getFrame());
 }
 
