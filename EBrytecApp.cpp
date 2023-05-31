@@ -601,6 +601,7 @@ void EBrytecApp::sendDataSize(bool fullConfig)
 
     BinaryBufferSerializer ser(command.data, 8);
     ser.writeRaw<uint32_t>(size);
+    ser.writeRaw<bool>(fullConfig);
 
     BrytecBoard::sendBrytecCan(command.getFrame());
 }
