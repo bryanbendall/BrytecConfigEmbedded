@@ -2,6 +2,8 @@
 
 #include "Can/ECanCommandQueue.h"
 #include "Can/EPinStatusQueue.h"
+#include "Deserializer/BinaryArrayDeserializer.h"
+#include "Deserializer/BinaryBufferSerializer.h"
 #include "Nodes/EFinalValueNode.h"
 #include "Nodes/EInitialValueNode.h"
 #include "Nodes/ENodeGroupNode.h"
@@ -507,13 +509,20 @@ void EBrytecApp::processCanCommands()
             }
             break;
         case CanCommands::Command::RequestDataSize: {
-            bool fullConfig = canCommand->data[7];
+            BinaryArrayDeserializer des(canCommand->data, 8);
+            bool fullConfig = false;
+            des.readRaw<bool>(&fullConfig);
+
             sendDataSize(fullConfig);
             break;
         }
         case CanCommands::Command::RequestData: {
-            bool fullConfig = canCommand->data[7];
-            uint32_t offset = *canCommand->data;
+            BinaryArrayDeserializer des(canCommand->data, 8);
+            uint32_t offset = 0;
+            des.readRaw<uint32_t>(&offset);
+            bool fullConfig = false;
+            des.readRaw<bool>(&fullConfig);
+
             sendData(offset, fullConfig);
             break;
         }
@@ -584,14 +593,15 @@ void EBrytecApp::sendDataSize(bool fullConfig)
     CanCommands command;
     command.command = CanCommands::Command::RequestDataSize;
     command.moduleAddress = s_data.moduleAddress;
-    command.data[7] = fullConfig;
     uint32_t size = 0;
     if (fullConfig)
         size = BrytecBoard::getConfigSize();
     else
         size = BrytecBoard::getTemplateSize();
 
-    memcpy(command.data, &size, 4);
+    BinaryBufferSerializer ser(command.data, 8);
+    ser.writeRaw<uint32_t>(size);
+
     BrytecBoard::sendBrytecCan(command.getFrame());
 }
 
@@ -600,7 +610,6 @@ void EBrytecApp::sendData(uint32_t offset, bool fullConfig)
     CanCommands command;
     command.command = CanCommands::Command::RequestData;
     command.moduleAddress = s_data.moduleAddress;
-    command.data[7] = fullConfig;
     if (fullConfig)
         BrytecBoard::getConfigData(command.data, offset, 8);
     else
