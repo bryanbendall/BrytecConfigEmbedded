@@ -316,6 +316,8 @@ ENode* EBrytecApp::getNode(int index)
 void EBrytecApp::brytecCanReceived(const CanExtFrame& frame)
 {
     if (frame.isBroadcast()) {
+        if (s_data.mode != Mode::Normal)
+            return;
         PinStatusBroadcast pinStatus(frame);
         s_data.statusQueue.add(pinStatus);
     } else {
