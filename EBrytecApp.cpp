@@ -25,6 +25,16 @@ struct EBrytecAppData {
 };
 static EBrytecAppData s_data;
 
+void EBrytecApp::initalize()
+{
+    deserializeModule();
+    if (s_data.deserializeOk)
+        setMode(Mode::Normal);
+    else
+        // Setup can with default address so it can be programmed
+        BrytecBoard::setupBrytecCan(0, 0);
+}
+
 void EBrytecApp::deserializeModule()
 {
     s_data.deserializeOk = false;
@@ -215,17 +225,15 @@ bool EBrytecApp::isDeserializeOk()
 
 void EBrytecApp::setupModule()
 {
-    if (s_data.deserializeOk) {
-        // Mask and filter for node group nodes
-        uint32_t mask = 0;
-        uint32_t filter = 0;
-        calculateMaskAndFilter(&mask, &filter);
+    if (!s_data.deserializeOk)
+        return;
 
-        BrytecBoard::setupBrytecCan(mask, filter);
-    } else {
-        // Setup default can so it can be reprogrammed
-        BrytecBoard::setupBrytecCan(0, 0);
-    }
+    // Mask and filter for node group nodes
+    uint32_t mask = 0;
+    uint32_t filter = 0;
+    calculateMaskAndFilter(&mask, &filter);
+
+    BrytecBoard::setupBrytecCan(mask, filter);
 }
 
 void EBrytecApp::setupPins()
@@ -568,8 +576,6 @@ void EBrytecApp::setMode(Mode mode)
         s_data.mode = mode;
         break;
     }
-
-    
 }
 
 void EBrytecApp::sendCanNak()

@@ -22,13 +22,14 @@ public:
     };
 
 public:
-    static void deserializeModule();
+    static void initalize();
     static bool isDeserializeOk();
-    static void setMode(Mode mode);
     static void update(float timestep);
     static void brytecCanReceived(const CanExtFrame& frame);
 
 private:
+    static void setMode(Mode mode);
+    static void deserializeModule();
     static void setupModule();
     static void setupPins();
     static ENode* getNode(int index);
