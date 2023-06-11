@@ -16,7 +16,7 @@ namespace Brytec {
 struct EBrytecAppData {
     EBrytecApp::Mode mode = EBrytecApp::Mode::Stopped;
     bool deserializeOk = false;
-    uint8_t moduleAddress = 0;
+    uint8_t moduleAddress = 254;
     ENodesVector nodeVector = {};
     ENodeGroup* nodeGroups = nullptr;
     uint16_t nodeGroupsCount = 0;
@@ -215,15 +215,17 @@ bool EBrytecApp::isDeserializeOk()
 
 void EBrytecApp::setupModule()
 {
-    if (!s_data.deserializeOk)
-        return;
+    if (s_data.deserializeOk) {
+        // Mask and filter for node group nodes
+        uint32_t mask = 0;
+        uint32_t filter = 0;
+        calculateMaskAndFilter(&mask, &filter);
 
-    // Mask and filter for node group nodes
-    uint32_t mask = 0;
-    uint32_t filter = 0;
-    calculateMaskAndFilter(&mask, &filter);
-
-    BrytecBoard::setupBrytecCan(mask, filter);
+        BrytecBoard::setupBrytecCan(mask, filter);
+    } else {
+        // Setup default can so it can be reprogrammed
+        BrytecBoard::setupBrytecCan(0, 0);
+    }
 }
 
 void EBrytecApp::setupPins()
@@ -553,16 +555,21 @@ void EBrytecApp::setMode(Mode mode)
     case Mode::Normal:
         setupModule();
         setupPins();
+        // Normal mode only if deserialize is ok
+        if(s_data.deserializeOk)
+            s_data.mode = mode;
         break;
     case Mode::Stopped:
         BrytecBoard::shutdownAllPins();
+        s_data.mode = mode;
         break;
     case Mode::Programming:
         s_data.deserializeOk = false;
+        s_data.mode = mode;
         break;
     }
 
-    s_data.mode = mode;
+    
 }
 
 void EBrytecApp::sendCanNak()
