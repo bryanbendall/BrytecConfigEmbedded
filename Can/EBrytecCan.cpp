@@ -97,7 +97,7 @@ ModuleStatusBroadcast::ModuleStatusBroadcast(const CanExtFrame& frame)
         return;
 
     moduleAddress = (frame.id >> 16);
-    nodeGroupIndex = frame.id;
+    nodeArraySize = frame.id;
 
     mode = frame.data[0];
     deserializeOk = frame.data[1];
@@ -110,7 +110,7 @@ CanExtFrame ModuleStatusBroadcast::getFrame()
     frame.id = 0;
     frame.id |= ((uint32_t)1 << 28); // Broadcast Flag
     frame.id |= ((uint32_t)moduleAddress << 16);
-    frame.id |= nodeGroupIndex;
+    frame.id |= nodeArraySize;
 
     frame.data[0] = (uint8_t)mode;
     frame.data[1] = deserializeOk;

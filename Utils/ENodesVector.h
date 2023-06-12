@@ -78,6 +78,8 @@ public:
 
     uint32_t count() { return m_count; }
 
+    uint32_t getSize() { return m_dataNextIndex; }
+
 private:
     // Data
     uint8_t m_nodeData[NODES_VECTOR_SIZE_BYTES] = {};

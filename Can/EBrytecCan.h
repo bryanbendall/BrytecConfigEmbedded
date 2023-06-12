@@ -69,12 +69,10 @@ struct ModuleStatusBroadcast {
     uint8_t moduleAddress = 0;
     bool deserializeOk = false;
     uint8_t mode = 0;
+    uint16_t nodeArraySize = 0;
 
     ModuleStatusBroadcast() = default;
     ModuleStatusBroadcast(const CanExtFrame& frame);
     CanExtFrame getFrame();
-
-private:
-    uint16_t nodeGroupIndex = CanCommands::NoNodeGroup;
 };
 }
