@@ -1,5 +1,7 @@
 #include "EBrytecCan.h"
 
+#include "Deserializer/BinaryArrayDeserializer.h"
+#include "Deserializer/BinaryBufferSerializer.h"
 #include <string.h>
 
 namespace Brytec {
@@ -97,10 +99,14 @@ ModuleStatusBroadcast::ModuleStatusBroadcast(const CanExtFrame& frame)
         return;
 
     moduleAddress = (frame.id >> 16);
-    nodeArraySize = frame.id;
 
     mode = frame.data[0];
     deserializeOk = frame.data[1];
+
+    BinaryArrayDeserializer des(frame.data, 8);
+    des.readRaw<uint8_t>(&mode);
+    des.readRaw<bool>(&deserializeOk);
+    des.readRaw<uint16_t>(&nodeArraySize);
 }
 
 CanExtFrame ModuleStatusBroadcast::getFrame()
@@ -110,10 +116,12 @@ CanExtFrame ModuleStatusBroadcast::getFrame()
     frame.id = 0;
     frame.id |= ((uint32_t)1 << 28); // Broadcast Flag
     frame.id |= ((uint32_t)moduleAddress << 16);
-    frame.id |= nodeArraySize;
+    frame.id |= nodeGroupIndex;
 
-    frame.data[0] = (uint8_t)mode;
-    frame.data[1] = deserializeOk;
+    BinaryBufferSerializer ser(frame.data, 8);
+    ser.writeRaw<uint8_t>((uint8_t)mode);
+    ser.writeRaw<bool>(deserializeOk);
+    ser.writeRaw<uint16_t>(nodeArraySize);
 
     return frame;
 }

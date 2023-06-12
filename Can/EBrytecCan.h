@@ -74,5 +74,8 @@ struct ModuleStatusBroadcast {
     ModuleStatusBroadcast() = default;
     ModuleStatusBroadcast(const CanExtFrame& frame);
     CanExtFrame getFrame();
+
+private:
+    static constexpr uint16_t nodeGroupIndex = CanCommands::NoNodeGroup;
 };
 }
