@@ -31,8 +31,8 @@ void EBrytecApp::initalize()
     if (s_data.deserializeOk)
         setMode(Mode::Normal);
     else
-        // Setup can with default address so it can be programmed
         BrytecBoard::setupBrytecCan(0, 0);
+    // Setup can with default address so it can be programmed
 }
 
 void EBrytecApp::deserializeModule()

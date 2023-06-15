@@ -100,9 +100,6 @@ ModuleStatusBroadcast::ModuleStatusBroadcast(const CanExtFrame& frame)
 
     moduleAddress = (frame.id >> 16);
 
-    mode = frame.data[0];
-    deserializeOk = frame.data[1];
-
     BinaryArrayDeserializer des(frame.data, 8);
     des.readRaw<uint8_t>(&mode);
     des.readRaw<bool>(&deserializeOk);
