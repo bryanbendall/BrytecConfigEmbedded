@@ -1,5 +1,7 @@
 #include "BinaryAvrEepromDeserializer.h"
 
+#if __has_include(<avr/eeprom.h>)
+
 #include <string.h>
 #include <avr/eeprom.h>
 
@@ -31,3 +33,5 @@ bool BinaryAvrEepromDeserializer::readInternal(uint8_t* data, uint32_t dataSize)
     }
 }
 }
+
+#endif

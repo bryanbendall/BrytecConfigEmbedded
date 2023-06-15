@@ -2,6 +2,8 @@
 
 #include "Deserializer/BinaryDeserializer.h"
 
+#if __has_include(<avr/eeprom.h>)
+
 namespace Brytec {
 
 class BinaryAvrEepromDeserializer : public BinaryDeserializer {
@@ -16,3 +18,5 @@ protected:
 
 };
 }
+
+#endif
