@@ -469,6 +469,9 @@ void EBrytecApp::calculateMaskAndFilter(uint32_t* mask, uint32_t* filter)
 
 void EBrytecApp::processCanCommands()
 {
+    if (s_data.canCommandQueue.size() == 0)
+        return;
+
     // Copy queue in case we get new messages while we are updating
     ECanCommandQueue tempQueue = s_data.canCommandQueue;
     s_data.canCommandQueue.clear();
