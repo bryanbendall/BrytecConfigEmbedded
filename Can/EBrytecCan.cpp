@@ -59,12 +59,14 @@ PinStatusBroadcast::PinStatusBroadcast(const CanExtFrame& frame)
     moduleAddress = (frame.id >> 16);
     nodeGroupIndex = frame.id;
 
-    uint64_t* data = (uint64_t*)frame.data;
-    uint16_t tempCurrent = ((*data) >> 48);
-    current = (float)tempCurrent / 100.0f;
-    uint16_t tempVoltage = (uint16_t)((*data) >> 32);
+    uint16_t tempVoltage = 0;
+    uint16_t tempCurrent = 0;
+    BinaryArrayDeserializer des(frame.data, 8);
+    des.readRaw<uint16_t>(&tempVoltage);
+    des.readRaw<uint16_t>(&tempCurrent);
+    des.readRaw<float>(&value);
     voltage = (float)tempVoltage / 100.0f;
-    value = *((float*)data);
+    current = (float)tempCurrent / 100.0f;
 }
 
 CanExtFrame PinStatusBroadcast::getFrame()
@@ -77,17 +79,10 @@ CanExtFrame PinStatusBroadcast::getFrame()
     frame.id |= ((uint32_t)moduleAddress << 16);
     frame.id |= nodeGroupIndex;
 
-    uint64_t* data = (uint64_t*)frame.data;
-    *data = 0;
-
-    uint16_t tempCurrent = (uint16_t)(current * 100.0f);
-    *data |= (uint64_t)tempCurrent << 48;
-
-    uint16_t tempVoltage = (uint16_t)(voltage * 100.0f);
-    *data |= (uint64_t)tempVoltage << 32;
-
-    uint32_t* tempValue = (uint32_t*)&value;
-    *data |= *tempValue;
+    BinaryBufferSerializer ser(frame.data, 8);
+    ser.writeRaw<uint16_t>((uint16_t)(voltage * 100.0f));
+    ser.writeRaw<uint16_t>((uint16_t)(current * 100.0f));
+    ser.writeRaw<float>(value);
 
     return frame;
 }
