@@ -515,7 +515,7 @@ void EBrytecApp::processCanCommands()
                 for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
                     if (s_data.nodeGroups[i].index == canCommand->nodeGroupIndex) {
                         sendCanAck();
-                        s_data.nodeGroups[i].usedOnBus = true;
+                        s_data.nodeGroups[i].usedOnBus = canCommand->data[0];
                         return;
                     }
                 }
