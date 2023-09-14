@@ -31,6 +31,7 @@ enum class NodeTypes : uint8_t {
     PinCurrent,
     PID,
     Counter,
+    Color,
     Count
 };
 

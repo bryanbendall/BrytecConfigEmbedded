@@ -16,6 +16,6 @@ const char* IOTypes::Strings[] = {
     "Input - 20V Variable",
 
     "Internal",
+    "Color",
 };
-
 }

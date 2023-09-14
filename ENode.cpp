@@ -1,6 +1,7 @@
 #include "ENode.h"
 #include "Nodes/EAndNode.h"
 #include "Nodes/ECanBusNode.h"
+#include "Nodes/EColorNode.h"
 #include "Nodes/ECompareNode.h"
 #include "Nodes/ECounterNode.h"
 #include "Nodes/ECurveNode.h"
@@ -71,6 +72,8 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         return EPIDNode::CreateInPlace(spec, destination);
     case NodeTypes::Counter:
         return ECounterNode::CreateInPlace(spec, destination);
+    case NodeTypes::Color:
+        return EColorNode::CreateInPlace(spec, destination);
 
     default:
         return nullptr;

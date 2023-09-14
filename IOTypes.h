@@ -20,6 +20,7 @@ struct IOTypes {
         Input_20V_Variable,
 
         Internal,
+        Color,
 
         Count
     };
