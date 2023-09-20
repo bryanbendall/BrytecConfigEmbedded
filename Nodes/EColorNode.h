@@ -59,10 +59,29 @@ public:
 
     void Evaluate(float timestep) override
     {
+        // Clamp color channels
+        float red = m_red.getValue();
+        if (red < 0.0f)
+            red = 0.0f;
+        if (red > 1.0f)
+            red = 1.0f;
+
+        float green = m_green.getValue();
+        if (green < 0.0f)
+            green = 0.0f;
+        if (green > 1.0f)
+            green = 1.0f;
+
+        float blue = m_blue.getValue();
+        if (blue < 0.0f)
+            blue = 0.0f;
+        if (blue > 1.0f)
+            blue = 1.0f;
+
         uint32_t outputColor = 0;
-        outputColor |= (uint32_t)(m_red.getValue() * 255.0f + 0.5f) << 0;
-        outputColor |= (uint32_t)(m_green.getValue() * 255.0f + 0.5f) << 8;
-        outputColor |= (uint32_t)(m_blue.getValue() * 255.0f + 0.5f) << 16;
+        outputColor |= (uint32_t)(red * 255.0f + 0.5f) << 0;
+        outputColor |= (uint32_t)(green * 255.0f + 0.5f) << 8;
+        outputColor |= (uint32_t)(blue * 255.0f + 0.5f) << 16;
 
         m_out = outputColor;
     }
