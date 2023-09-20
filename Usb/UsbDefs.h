@@ -10,7 +10,8 @@ enum class UsbPacketType : uint8_t {
     Unknown = 0,
     Command,
     Can,
-    Status
+    Status,
+    DebugPrint
 };
 
 struct UsbPacket {
