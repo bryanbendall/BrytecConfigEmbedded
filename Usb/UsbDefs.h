@@ -15,10 +15,9 @@ enum class UsbPacketType : uint8_t {
 };
 
 struct UsbPacket {
-private:
+public:
     static constexpr uint8_t bufferSize = 62;
 
-public:
     uint8_t length = 0;
     uint8_t data[bufferSize] = {};
 
