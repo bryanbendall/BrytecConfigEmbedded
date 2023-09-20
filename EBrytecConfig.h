@@ -13,4 +13,5 @@ namespace Brytec {
 
 #define CAN_UPDATE_FREQUENCY 0.1f
 
+#define USB_BUFFER_SIZE 100
 }
