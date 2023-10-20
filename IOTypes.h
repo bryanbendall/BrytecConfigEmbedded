@@ -22,6 +22,8 @@ struct IOTypes {
         Internal,
         Color,
 
+        Resistance,
+
         Count
     };
 

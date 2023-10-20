@@ -17,5 +17,7 @@ const char* IOTypes::Strings[] = {
 
     "Internal",
     "Color",
+
+    "Resistance"
 };
 }
