@@ -23,7 +23,7 @@ void ENodeGroup::updateInitialValue()
     if (!node)
         return;
 
-    node->SetValue(0, BrytecBoard::getPinValue(index));
+    node->SetValue(0, BrytecBoard::getPinValue(index, type));
 }
 
 void ENodeGroup::updateFinalValue()

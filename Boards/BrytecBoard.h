@@ -16,7 +16,7 @@ public:
     static void setupBrytecCan(uint32_t mask, uint32_t filter);
     static void setupPin(uint16_t index, IOTypes::Types type);
     static void shutdownAllPins();
-    static float getPinValue(uint16_t index);
+    static float getPinValue(uint16_t index, IOTypes::Types type);
     static float getPinVoltage(uint16_t index);
     static float getPinCurrent(uint16_t index);
     static void setPinValue(uint16_t index, IOTypes::Types type, float value);
