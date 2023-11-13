@@ -14,10 +14,10 @@ const char* IOTypes::Strings[] = {
     "Input - 5V Switched",
     "Input - 5V Variable",
     "Input - 20V Variable",
+    "Input - Resistance",
 
-    "Internal",
     "Color",
 
-    "Resistance"
+    "Internal"
 };
 }

@@ -18,11 +18,11 @@ struct IOTypes {
         Input_5V,
         Input_5V_Variable,
         Input_20V_Variable,
+        Input_Resistance,
 
-        Internal,
         Color,
 
-        Resistance,
+        Internal,
 
         Count
     };
