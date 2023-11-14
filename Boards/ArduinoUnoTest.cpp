@@ -121,11 +121,14 @@ void BrytecBoard::setPinValue(uint16_t index, IOTypes::Types type, float value)
     // }
 }
 
-void BrytecBoard::sendBrytecCan(CanExtFrame frame)
+void BrytecBoard::sendBrytecCan(const CanExtFrame& frame)
 {
     CAN.beginExtendedPacket(frame.id);
     CAN.write(frame.data, 8);
     CAN.endPacket();
 }
 
+void BrytecBoard::sendBrytecCanUsb(const CanExtFrame& frame)
+{
+}
 }

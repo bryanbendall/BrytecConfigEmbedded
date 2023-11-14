@@ -26,10 +26,10 @@ public:
     UsbPacketType getType();
 
     template <typename T>
-    void set(T& t);
+    void set(const T& t);
 
     template <typename T>
-    T as();
+    T as() const;
 };
 
 }
