@@ -28,6 +28,7 @@ public:
     static void update(float timestep);
     static void brytecCanReceived(const CanExtFrame& frame);
     static void brytecUsbReceived(const Brytec::UsbPacket& packet);
+    static void processCanCommands();
 
 private:
     static void setMode(Mode mode);
@@ -46,8 +47,6 @@ private:
     static void updateCurrents(float timestep);
     static void evaulateJustNodes(float timestep);
     static void calculateMaskAndFilter(uint32_t* mask, uint32_t* filter);
-
-    static void processCanCommands();
     static void sendCanNak();
     static void sendCanAck();
     static void sendCanModuleStatus();

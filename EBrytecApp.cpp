@@ -35,6 +35,179 @@ void EBrytecApp::initalize()
     // Setup can with default address so it can be programmed
 }
 
+bool EBrytecApp::isDeserializeOk()
+{
+    return s_data.deserializeOk;
+}
+
+void EBrytecApp::update(float timestep)
+{
+    processCanCommands();
+
+    // Only update in normal mode
+    if (s_data.mode != EBrytecApp::Mode::Normal)
+        return;
+
+    if (!s_data.deserializeOk)
+        return;
+
+    // Update current and over current
+    updateCurrents(timestep);
+
+    // Update node group nodes
+    updateNodeGroupNodes();
+
+    // Get inputs
+    for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
+        s_data.nodeGroups[i].updateInitialValue();
+    }
+
+    // Calculate all nodes
+    s_data.nodeVector.evaluateAll(timestep);
+
+    // Set outputs
+    for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
+        s_data.nodeGroups[i].updateFinalValue();
+    }
+
+    // Send can data
+    static float canDataTimer = 0.0f;
+    canDataTimer += timestep;
+    if (canDataTimer >= CAN_UPDATE_FREQUENCY) {
+        sendBrytecCanBroadcasts();
+        canDataTimer = 0.0f;
+    }
+}
+
+void EBrytecApp::brytecCanReceived(const CanExtFrame& frame)
+{
+    queueBrytecCanMessage(frame);
+    BrytecBoard::sendBrytecCanUsb(frame);
+}
+
+void EBrytecApp::brytecUsbReceived(const Brytec::UsbPacket& packet)
+{
+    Brytec::CanExtFrame frame = packet.as<Brytec::CanExtFrame>();
+    if (frame) {
+        queueBrytecCanMessage(frame);
+        BrytecBoard::sendBrytecCan(frame);
+    }
+}
+
+void EBrytecApp::processCanCommands()
+{
+    if (s_data.canCommandQueue.size() == 0)
+        return;
+
+    // Copy queue in case we get new messages while we are updating
+    ECanCommandQueue tempQueue = s_data.canCommandQueue;
+    s_data.canCommandQueue.clear();
+
+    for (uint8_t i = 0; i < tempQueue.size(); i++) {
+        CanCommands* canCommand = tempQueue.at(i);
+
+        // Not for this module or all modules
+        if (canCommand->moduleAddress != s_data.moduleAddress && canCommand->moduleAddress != CanCommands::AllModules)
+            continue;
+
+        switch (canCommand->command) {
+        case CanCommands::Command::ChangeMode:
+            setMode((EBrytecApp::Mode)canCommand->data[0]);
+            sendCanAck();
+            sendCanModuleStatus();
+            break;
+        case CanCommands::Command::ChangeAddress:
+            if (s_data.mode != EBrytecApp::Mode::Stopped)
+                sendCanNak();
+            else {
+                sendCanAck();
+                s_data.moduleAddress = canCommand->data[0];
+                sendCanModuleStatus();
+            }
+            break;
+        case CanCommands::Command::ReloadConfig:
+            if (s_data.mode != EBrytecApp::Mode::Stopped)
+                sendCanNak();
+            else {
+                deserializeModule();
+                sendCanAck();
+                sendCanModuleStatus();
+            }
+            break;
+        case CanCommands::Command::RequestStatus:
+            if (canCommand->nodeGroupIndex == CanCommands::NoNodeGroup) {
+                sendCanAck();
+                sendCanModuleStatus();
+            } else {
+                for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
+                    if (s_data.nodeGroups[i].index == canCommand->nodeGroupIndex) {
+                        sendCanAck();
+                        s_data.nodeGroups[i].usedOnBus = canCommand->data[0];
+                        return;
+                    }
+                }
+                // If there is not a node group found
+                sendCanNak();
+            }
+            break;
+        case CanCommands::Command::RequestDataSize: {
+            BinaryArrayDeserializer des(canCommand->data, 8);
+            bool fullConfig = false;
+            des.readRaw<bool>(&fullConfig);
+
+            sendDataSize(fullConfig);
+            break;
+        }
+        case CanCommands::Command::RequestData: {
+            BinaryArrayDeserializer des(canCommand->data, 8);
+            uint32_t offset = 0;
+            des.readRaw<uint32_t>(&offset);
+            bool fullConfig = false;
+            des.readRaw<bool>(&fullConfig);
+
+            sendData(offset, fullConfig);
+            break;
+        }
+        case CanCommands::Command::ReserveConfigSize:
+            BrytecBoard::ReserveConfigSize(canCommand->nodeGroupIndex);
+            sendCanAck();
+            break;
+        case CanCommands::Command::WriteConfigData:
+            if (s_data.mode == EBrytecApp::Mode::Programming) {
+                uint16_t offset = canCommand->nodeGroupIndex;
+                BrytecBoard::updateConfig(canCommand->data, 8, offset);
+                sendCanAck();
+            } else
+                sendCanNak();
+            break;
+        default:
+            sendCanNak();
+            break;
+        }
+    }
+}
+
+void EBrytecApp::setMode(Mode mode)
+{
+    switch (mode) {
+    case Mode::Normal:
+        setupModule();
+        setupPins();
+        // Normal mode only if deserialize is ok
+        if (s_data.deserializeOk)
+            s_data.mode = mode;
+        break;
+    case Mode::Stopped:
+        BrytecBoard::shutdownAllPins();
+        s_data.mode = mode;
+        break;
+    case Mode::Programming:
+        s_data.deserializeOk = false;
+        s_data.mode = mode;
+        break;
+    }
+}
+
 void EBrytecApp::deserializeModule()
 {
     s_data.deserializeOk = false;
@@ -218,11 +391,6 @@ void EBrytecApp::deserializeModule()
     s_data.deserializeOk = true;
 }
 
-bool EBrytecApp::isDeserializeOk()
-{
-    return s_data.deserializeOk;
-}
-
 void EBrytecApp::setupModule()
 {
     if (!s_data.deserializeOk)
@@ -245,43 +413,9 @@ void EBrytecApp::setupPins()
         s_data.nodeGroups[i].setupPin();
 }
 
-void EBrytecApp::update(float timestep)
+ENode* EBrytecApp::getNode(int index)
 {
-    processCanCommands();
-
-    // Only update in normal mode
-    if (s_data.mode != EBrytecApp::Mode::Normal)
-        return;
-
-    if (!s_data.deserializeOk)
-        return;
-
-    // Update current and over current
-    updateCurrents(timestep);
-
-    // Update node group nodes
-    updateNodeGroupNodes();
-
-    // Get inputs
-    for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
-        s_data.nodeGroups[i].updateInitialValue();
-    }
-
-    // Calculate all nodes
-    s_data.nodeVector.evaluateAll(timestep);
-
-    // Set outputs
-    for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
-        s_data.nodeGroups[i].updateFinalValue();
-    }
-
-    // Send can data
-    static float canDataTimer = 0.0f;
-    canDataTimer += timestep;
-    if (canDataTimer >= CAN_UPDATE_FREQUENCY) {
-        sendBrytecCanBroadcasts();
-        canDataTimer = 0.0f;
-    }
+    return s_data.nodeVector.at(index);
 }
 
 ENode* EBrytecApp::getInitialValueNode(int startIndex, int nodeCount)
@@ -316,26 +450,6 @@ ENode* EBrytecApp::getPinCurrentNode(int startIndex, int nodeCount)
     }
 
     return nullptr;
-}
-
-ENode* EBrytecApp::getNode(int index)
-{
-    return s_data.nodeVector.at(index);
-}
-
-void EBrytecApp::brytecCanReceived(const CanExtFrame& frame)
-{
-    queueBrytecCanMessage(frame);
-    BrytecBoard::sendBrytecCanUsb(frame);
-}
-
-void EBrytecApp::brytecUsbReceived(const Brytec::UsbPacket& packet)
-{
-    Brytec::CanExtFrame frame = packet.as<Brytec::CanExtFrame>();
-    if (frame) {
-        queueBrytecCanMessage(frame);
-        BrytecBoard::sendBrytecCan(frame);
-    }
 }
 
 void EBrytecApp::sendBrytecCanBroadcasts()
@@ -481,120 +595,6 @@ void EBrytecApp::calculateMaskAndFilter(uint32_t* mask, uint32_t* filter)
                 (*mask) &= sameBits;
             }
         }
-    }
-}
-
-void EBrytecApp::processCanCommands()
-{
-    if (s_data.canCommandQueue.size() == 0)
-        return;
-
-    // Copy queue in case we get new messages while we are updating
-    ECanCommandQueue tempQueue = s_data.canCommandQueue;
-    s_data.canCommandQueue.clear();
-
-    for (uint8_t i = 0; i < tempQueue.size(); i++) {
-        CanCommands* canCommand = tempQueue.at(i);
-
-        // Not for this module or all modules
-        if (canCommand->moduleAddress != s_data.moduleAddress && canCommand->moduleAddress != CanCommands::AllModules)
-            continue;
-
-        switch (canCommand->command) {
-        case CanCommands::Command::ChangeMode:
-            setMode((EBrytecApp::Mode)canCommand->data[0]);
-            sendCanAck();
-            sendCanModuleStatus();
-            break;
-        case CanCommands::Command::ChangeAddress:
-            if (s_data.mode != EBrytecApp::Mode::Stopped)
-                sendCanNak();
-            else {
-                sendCanAck();
-                s_data.moduleAddress = canCommand->data[0];
-                sendCanModuleStatus();
-            }
-            break;
-        case CanCommands::Command::ReloadConfig:
-            if (s_data.mode != EBrytecApp::Mode::Stopped)
-                sendCanNak();
-            else {
-                deserializeModule();
-                sendCanAck();
-                sendCanModuleStatus();
-            }
-            break;
-        case CanCommands::Command::RequestStatus:
-            if (canCommand->nodeGroupIndex == CanCommands::NoNodeGroup) {
-                sendCanAck();
-                sendCanModuleStatus();
-            } else {
-                for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
-                    if (s_data.nodeGroups[i].index == canCommand->nodeGroupIndex) {
-                        sendCanAck();
-                        s_data.nodeGroups[i].usedOnBus = canCommand->data[0];
-                        return;
-                    }
-                }
-                // If there is not a node group found
-                sendCanNak();
-            }
-            break;
-        case CanCommands::Command::RequestDataSize: {
-            BinaryArrayDeserializer des(canCommand->data, 8);
-            bool fullConfig = false;
-            des.readRaw<bool>(&fullConfig);
-
-            sendDataSize(fullConfig);
-            break;
-        }
-        case CanCommands::Command::RequestData: {
-            BinaryArrayDeserializer des(canCommand->data, 8);
-            uint32_t offset = 0;
-            des.readRaw<uint32_t>(&offset);
-            bool fullConfig = false;
-            des.readRaw<bool>(&fullConfig);
-
-            sendData(offset, fullConfig);
-            break;
-        }
-        case CanCommands::Command::ReserveConfigSize:
-            BrytecBoard::ReserveConfigSize(canCommand->nodeGroupIndex);
-            sendCanAck();
-            break;
-        case CanCommands::Command::WriteConfigData:
-            if (s_data.mode == EBrytecApp::Mode::Programming) {
-                uint16_t offset = canCommand->nodeGroupIndex;
-                BrytecBoard::updateConfig(canCommand->data, 8, offset);
-                sendCanAck();
-            } else
-                sendCanNak();
-            break;
-        default:
-            sendCanNak();
-            break;
-        }
-    }
-}
-
-void EBrytecApp::setMode(Mode mode)
-{
-    switch (mode) {
-    case Mode::Normal:
-        setupModule();
-        setupPins();
-        // Normal mode only if deserialize is ok
-        if(s_data.deserializeOk)
-            s_data.mode = mode;
-        break;
-    case Mode::Stopped:
-        BrytecBoard::shutdownAllPins();
-        s_data.mode = mode;
-        break;
-    case Mode::Programming:
-        s_data.deserializeOk = false;
-        s_data.mode = mode;
-        break;
     }
 }
 
