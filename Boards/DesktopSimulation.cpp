@@ -53,7 +53,7 @@ void BrytecBoard::error(EBrytecErrors error)
     }
 }
 
-void BrytecBoard::setupBrytecCan(uint32_t mask, uint32_t filter)
+void BrytecBoard::setupCan(uint8_t index, CanSpeed::Types speed)
 {
 }
 
@@ -84,7 +84,7 @@ void BrytecBoard::setPinValue(uint16_t index, IOTypes::Types type, float value)
 {
 }
 
-void BrytecBoard::sendBrytecCan(const CanExtFrame& frame)
+void BrytecBoard::sendCan(uint8_t index, const CanExtFrame& frame)
 {
 }
 

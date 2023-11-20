@@ -1,5 +1,6 @@
 #include "EBrytecApp.h"
 
+#include "Can/ECanBus.h"
 #include "Can/ECanCommandQueue.h"
 #include "Can/EPinStatusQueue.h"
 #include "Deserializer/BinaryArrayDeserializer.h"
@@ -22,6 +23,7 @@ struct EBrytecAppData {
     uint16_t nodeGroupsCount = 0;
     EPinStatusQueue statusQueue;
     ECanCommandQueue canCommandQueue;
+    ECanBus canBuses[MAX_CAN_BUSES] = {};
 };
 static EBrytecAppData s_data;
 
@@ -31,8 +33,8 @@ void EBrytecApp::initalize()
     if (s_data.deserializeOk)
         setMode(Mode::Normal);
     else
-        BrytecBoard::setupBrytecCan(0, 0);
-    // Setup can with default address so it can be programmed
+        BrytecBoard::setupCan(0, DEFAULT_BRYTEC_CAN_SPEED);
+    // Setup first can with default address so it can be programmed
 }
 
 bool EBrytecApp::isDeserializeOk()
@@ -79,10 +81,20 @@ void EBrytecApp::update(float timestep)
     }
 }
 
-void EBrytecApp::brytecCanReceived(const CanExtFrame& frame)
+void EBrytecApp::canReceived(uint8_t canIndex, const CanExtFrame& frame)
 {
-    queueBrytecCanMessage(frame);
-    BrytecBoard::sendBrytecCanUsb(frame);
+    if (canIndex >= MAX_CAN_BUSES)
+        return;
+
+    switch (s_data.canBuses[canIndex].type) {
+    case CanTypes::Types::Brytec:
+        queueBrytecCanMessage(frame);
+        BrytecBoard::sendBrytecCanUsb(frame);
+        break;
+
+    default:
+        break;
+    }
 }
 
 void EBrytecApp::brytecUsbReceived(const Brytec::UsbPacket& packet)
@@ -90,7 +102,7 @@ void EBrytecApp::brytecUsbReceived(const Brytec::UsbPacket& packet)
     Brytec::CanExtFrame frame = packet.as<Brytec::CanExtFrame>();
     if (frame) {
         queueBrytecCanMessage(frame);
-        BrytecBoard::sendBrytecCan(frame);
+        sendBrytecCan(frame);
     }
 }
 
@@ -259,6 +271,22 @@ void EBrytecApp::deserializeModule()
         return;
     }
 
+    // Can Bus
+    uint8_t canCount;
+    des->readRaw<uint8_t>(&canCount);
+    for (int c = 0; c < canCount; c++) {
+        uint8_t type;
+        des->readRaw<uint8_t>(&type);
+
+        uint8_t speed;
+        des->readRaw<uint8_t>(&speed);
+
+        if (c < MAX_CAN_BUSES) {
+            s_data.canBuses[c].type = (CanTypes::Types)type;
+            s_data.canBuses[c].speed = (CanSpeed::Types)speed;
+        }
+    }
+
     // Deserialize node groups
     // Total Node Groups
     des->readRaw<uint16_t>(&s_data.nodeGroupsCount);
@@ -396,12 +424,10 @@ void EBrytecApp::setupModule()
     if (!s_data.deserializeOk)
         return;
 
-    // Mask and filter for node group nodes
-    uint32_t mask = 0;
-    uint32_t filter = 0;
-    calculateMaskAndFilter(&mask, &filter);
-
-    BrytecBoard::setupBrytecCan(mask, filter);
+    for (int i = 0; i < MAX_CAN_BUSES; i++) {
+        if (s_data.canBuses[i].type != CanTypes::Types::Disabled)
+            BrytecBoard::setupCan(i, s_data.canBuses[i].speed);
+    }
 }
 
 void EBrytecApp::setupPins()
@@ -452,6 +478,14 @@ ENode* EBrytecApp::getPinCurrentNode(int startIndex, int nodeCount)
     return nullptr;
 }
 
+void EBrytecApp::sendBrytecCan(const CanExtFrame& frame)
+{
+    for (int i = 0; i < MAX_CAN_BUSES; i++) {
+        if (s_data.canBuses[i].type == CanTypes::Types::Brytec)
+            BrytecBoard::sendCan(i, frame);
+    }
+}
+
 void EBrytecApp::sendBrytecCanBroadcasts()
 {
     for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
@@ -478,7 +512,7 @@ void EBrytecApp::sendBrytecCanPinStatus(ENodeGroup& nodeGroup)
     pinStatus.current = BrytecBoard::getPinCurrent(nodeGroup.index);
 
     CanExtFrame frame = pinStatus.getFrame();
-    BrytecBoard::sendBrytecCan(frame);
+    sendBrytecCan(frame);
     BrytecBoard::sendBrytecCanUsb(frame);
 }
 
@@ -566,38 +600,6 @@ void EBrytecApp::evaulateJustNodes(float timestep)
     s_data.nodeVector.evaluateAll(timestep);
 }
 
-void EBrytecApp::calculateMaskAndFilter(uint32_t* mask, uint32_t* filter)
-{
-    // Start mask all enabled except status flags
-    *mask = 0b10000111111111111111111111111;
-
-    // Check all node group nodes
-    for (uint32_t i = 0; i < s_data.nodeVector.count(); i++) {
-        ENode* node = s_data.nodeVector.at(i);
-        if (node->NodeType() == NodeTypes::Node_Group) {
-            ENodeGroupNode* nodeGroupNode = (ENodeGroupNode*)node;
-
-            // Skip if it is this module
-            if (nodeGroupNode->getModuleAddress() == s_data.moduleAddress)
-                continue;
-
-            // Get can frame to get id
-            PinStatusBroadcast bc;
-            bc.moduleAddress = nodeGroupNode->getModuleAddress();
-            bc.nodeGroupIndex = nodeGroupNode->getNodeGroupIndex();
-            CanExtFrame frame = bc.getFrame();
-
-            if (*filter == 0) {
-                *filter = frame.id;
-            } else {
-                // calculate mask
-                uint32_t sameBits = (*filter & frame.id) | (~(*filter) & ~frame.id);
-                (*mask) &= sameBits;
-            }
-        }
-    }
-}
-
 void EBrytecApp::sendCanNak()
 {
     CanCommands command;
@@ -605,7 +607,7 @@ void EBrytecApp::sendCanNak()
     command.moduleAddress = s_data.moduleAddress;
 
     CanExtFrame frame = command.getFrame();
-    BrytecBoard::sendBrytecCan(frame);
+    sendBrytecCan(frame);
     BrytecBoard::sendBrytecCanUsb(frame);
 }
 
@@ -616,7 +618,7 @@ void EBrytecApp::sendCanAck()
     command.moduleAddress = s_data.moduleAddress;
 
     CanExtFrame frame = command.getFrame();
-    BrytecBoard::sendBrytecCan(frame);
+    sendBrytecCan(frame);
     BrytecBoard::sendBrytecCanUsb(frame);
 }
 
@@ -629,7 +631,7 @@ void EBrytecApp::sendCanModuleStatus()
     bc.nodeArraySize = s_data.nodeVector.getSize();
 
     CanExtFrame frame = bc.getFrame();
-    BrytecBoard::sendBrytecCan(frame);
+    sendBrytecCan(frame);
     BrytecBoard::sendBrytecCanUsb(frame);
 }
 
@@ -649,7 +651,7 @@ void EBrytecApp::sendDataSize(bool fullConfig)
     ser.writeRaw<bool>(fullConfig);
 
     CanExtFrame frame = command.getFrame();
-    BrytecBoard::sendBrytecCan(frame);
+    sendBrytecCan(frame);
     BrytecBoard::sendBrytecCanUsb(frame);
 }
 
@@ -664,7 +666,7 @@ void EBrytecApp::sendData(uint32_t offset, bool fullConfig)
         BrytecBoard::getTemplateData(command.data, offset, 8);
 
     CanExtFrame frame = command.getFrame();
-    BrytecBoard::sendBrytecCan(frame);
+    sendBrytecCan(frame);
     BrytecBoard::sendBrytecCanUsb(frame);
 }
 }
