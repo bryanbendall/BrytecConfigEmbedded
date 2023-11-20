@@ -9,7 +9,7 @@ namespace Brytec {
 
 #define MAX_NODE_SIZE 64
 
-#define CAN_BUS_BROADCAST_BUFFER 10
+#define CAN_BUS_BROADCAST_BUFFER 100
 
 #define CAN_UPDATE_FREQUENCY 0.1f
 
