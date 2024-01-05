@@ -8,6 +8,7 @@
 #include "Nodes/EFinalValueNode.h"
 #include "Nodes/EInitialValueNode.h"
 #include "Nodes/ENodeGroupNode.h"
+#include "Nodes/ERacepakSwitchPanelNode.h"
 #include "Utils/ENodeDeserializer.h"
 #include "Utils/ENodeGroup.h"
 #include <stdlib.h>
@@ -79,6 +80,8 @@ void EBrytecApp::update(float timestep)
         sendBrytecCanBroadcasts();
         canDataTimer = 0.0f;
     }
+
+    sendRacepakCan(timestep);
 }
 
 void EBrytecApp::canReceived(uint8_t canIndex, const CanExtFrame& frame)
@@ -514,6 +517,45 @@ void EBrytecApp::sendBrytecCanPinStatus(ENodeGroup& nodeGroup)
     CanExtFrame frame = pinStatus.getFrame();
     sendBrytecCan(frame);
     BrytecBoard::sendBrytecCanUsb(frame);
+}
+
+void EBrytecApp::sendRacepakCan(float timestep)
+{
+    static float racepakTimer = 0.0f;
+    racepakTimer += timestep;
+
+    // Early out if not time to send
+    if (racepakTimer < 0.1f)
+        return;
+
+    racepakTimer = 0.0f;
+
+    for (uint8_t canIndex = 0; canIndex < MAX_CAN_BUSES; canIndex++) {
+        if (s_data.canBuses[canIndex].type == CanTypes::Types::Racepak) {
+
+            for (uint32_t i = 0; i < s_data.nodeVector.count(); i++) {
+
+                ENode* node = s_data.nodeVector.at(i);
+                if (node->NodeType() == NodeTypes::Racepak_Switch_Panel) {
+                    ERacepakSwitchPanelNode* racepakNode = (ERacepakSwitchPanelNode*)node;
+
+                    // Read all switch values
+                    uint8_t switches = 0;
+                    for (uint8_t j = 0; j < 8; j++) {
+                        if (racepakNode->GetValue(j) > 0.001f)
+                            switches |= (1 << j);
+                    }
+
+                    // Send can message
+                    CanExtFrame frame;
+                    frame.id = 0x194;
+                    frame.data[3] = switches;
+                    // TODO needs testing!!!!
+                    BrytecBoard::sendCan(canIndex, frame);
+                }
+            }
+        }
+    }
 }
 
 void EBrytecApp::queueBrytecCanMessage(const CanExtFrame& frame)

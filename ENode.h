@@ -32,6 +32,7 @@ enum class NodeTypes : uint8_t {
     PID,
     Counter,
     Color,
+    Racepak_Switch_Panel,
     Count
 };
 

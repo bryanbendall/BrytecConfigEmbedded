@@ -17,6 +17,7 @@
 #include "Nodes/EPIDNode.h"
 #include "Nodes/EPinCurrentNode.h"
 #include "Nodes/EPushButtonNode.h"
+#include "Nodes/ERacepakSwitchPanelNode.h"
 #include "Nodes/ESwitchNode.h"
 #include "Nodes/EToggleNode.h"
 #include "Nodes/ETwoStageNode.h"
@@ -74,6 +75,8 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         return ECounterNode::CreateInPlace(spec, destination);
     case NodeTypes::Color:
         return EColorNode::CreateInPlace(spec, destination);
+    case NodeTypes::Racepak_Switch_Panel:
+        return ERacepakSwitchPanelNode::CreateInPlace(spec, destination);
 
     default:
         return nullptr;

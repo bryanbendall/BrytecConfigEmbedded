@@ -42,6 +42,7 @@ private:
     static void sendBrytecCan(const CanExtFrame& frame);
     static void sendBrytecCanBroadcasts();
     static void sendBrytecCanPinStatus(ENodeGroup& nodeGroup);
+    static void sendRacepakCan(float timestep);
     static void queueBrytecCanMessage(const CanExtFrame& frame);
     static ENodeGroupNode* findNodeGroupNode(uint8_t moduleAddress, uint16_t nodeGroupIndex);
     static void updateNodeGroupNodes();
