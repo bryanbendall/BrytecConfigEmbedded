@@ -4,8 +4,14 @@
 
 namespace Brytec {
 
-struct CanExtFrame {
+enum class CanFrameType : uint8_t {
+    Std,
+    Ext
+};
+
+struct CanFrame {
     uint32_t id = 0;
+    CanFrameType type = CanFrameType::Ext;
     uint8_t dlc = 8;
     uint8_t data[8] = {};
 
@@ -40,8 +46,8 @@ struct CanCommands {
     uint8_t data[8] = {};
 
     CanCommands() = default;
-    CanCommands(const CanExtFrame& frame);
-    CanExtFrame getFrame();
+    CanCommands(const CanFrame& frame);
+    CanFrame getFrame();
 };
 
 struct PinStatusBroadcast {
@@ -60,8 +66,8 @@ struct PinStatusBroadcast {
     float value = 0.0f;
 
     PinStatusBroadcast() = default;
-    PinStatusBroadcast(const CanExtFrame& frame);
-    CanExtFrame getFrame();
+    PinStatusBroadcast(const CanFrame& frame);
+    CanFrame getFrame();
 };
 
 struct ModuleStatusBroadcast {
@@ -72,8 +78,8 @@ struct ModuleStatusBroadcast {
     uint16_t nodeArraySize = 0;
 
     ModuleStatusBroadcast() = default;
-    ModuleStatusBroadcast(const CanExtFrame& frame);
-    CanExtFrame getFrame();
+    ModuleStatusBroadcast(const CanFrame& frame);
+    CanFrame getFrame();
 
 private:
     static constexpr uint16_t nodeGroupIndex = CanCommands::NoNodeGroup;

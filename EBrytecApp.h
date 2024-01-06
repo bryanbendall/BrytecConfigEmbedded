@@ -26,7 +26,7 @@ public:
     static void initalize();
     static bool isDeserializeOk();
     static void update(float timestep);
-    static void canReceived(uint8_t canIndex, const CanExtFrame& frame);
+    static void canReceived(uint8_t canIndex, const CanFrame& frame);
     static void brytecUsbReceived(const Brytec::UsbPacket& packet);
     static void processCanCommands();
 
@@ -39,11 +39,11 @@ private:
     static ENode* getInitialValueNode(int startIndex, int nodeCount);
     static ENode* getFinalValueNode(int startIndex, int nodeCount);
     static ENode* getPinCurrentNode(int startIndex, int nodeCount);
-    static void sendBrytecCan(const CanExtFrame& frame);
+    static void sendBrytecCan(const CanFrame& frame);
     static void sendBrytecCanBroadcasts();
     static void sendBrytecCanPinStatus(ENodeGroup& nodeGroup);
     static void sendRacepakCan(float timestep);
-    static void queueBrytecCanMessage(const CanExtFrame& frame);
+    static void queueBrytecCanMessage(const CanFrame& frame);
     static ENodeGroupNode* findNodeGroupNode(uint8_t moduleAddress, uint16_t nodeGroupIndex);
     static void updateNodeGroupNodes();
     static void updateCurrents(float timestep);

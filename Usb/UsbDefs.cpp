@@ -12,11 +12,12 @@ UsbPacketType UsbPacket::getType()
 }
 
 template <>
-void UsbPacket::set(const CanExtFrame& frame)
+void UsbPacket::set(const CanFrame& frame)
 {
     Brytec::BinaryBufferSerializer ser(data, bufferSize);
 
     ser.writeRaw<uint8_t>((uint8_t)UsbPacketType::Can);
+    ser.writeRaw<uint8_t>((uint8_t)frame.type);
     ser.writeRaw<uint32_t>(frame.id);
     ser.writeRaw<uint8_t>(frame.dlc);
     ser.writeRaw<uint8_t>(frame.data[0]);
@@ -32,9 +33,9 @@ void UsbPacket::set(const CanExtFrame& frame)
 }
 
 template <>
-CanExtFrame UsbPacket::as() const
+CanFrame UsbPacket::as() const
 {
-    CanExtFrame frame;
+    CanFrame frame;
 
     Brytec::BinaryArrayDeserializer des(data, length);
 
@@ -43,6 +44,7 @@ CanExtFrame UsbPacket::as() const
     if (type != UsbPacketType::Can)
         return frame;
 
+    des.readRaw<uint8_t>((uint8_t*)&frame.type);
     des.readRaw<uint32_t>(&frame.id);
     des.readRaw<uint8_t>(&frame.dlc);
     des.readRaw<uint8_t>(&frame.data[0]);

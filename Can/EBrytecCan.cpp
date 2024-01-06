@@ -6,23 +6,35 @@
 
 namespace Brytec {
 
-bool CanExtFrame::isBroadcast() const
+bool CanFrame::isBroadcast() const
 {
+    if (type != CanFrameType::Ext)
+        return false;
+
     return (id & ((uint32_t)1 << 28));
 }
 
-bool CanExtFrame::isPinBroadcast() const
+bool CanFrame::isPinBroadcast() const
 {
+    if (type != CanFrameType::Ext)
+        return false;
+
     return isBroadcast() && ((id & 0xFFFF) != CanCommands::NoNodeGroup);
 }
 
-bool CanExtFrame::isModuleBroadcast() const
+bool CanFrame::isModuleBroadcast() const
 {
+    if (type != CanFrameType::Ext)
+        return false;
+
     return isBroadcast() && ((id & 0xFFFF) == CanCommands::NoNodeGroup);
 }
 
-CanCommands::CanCommands(const CanExtFrame& frame)
+CanCommands::CanCommands(const CanFrame& frame)
 {
+    if (frame.type != CanFrameType::Ext)
+        return;
+
     // Is a broadcast
     if (frame.isBroadcast())
         return;
@@ -34,9 +46,9 @@ CanCommands::CanCommands(const CanExtFrame& frame)
     memcpy(data, frame.data, 8);
 }
 
-CanExtFrame CanCommands::getFrame()
+CanFrame CanCommands::getFrame()
 {
-    CanExtFrame frame;
+    CanFrame frame;
 
     frame.id = 0;
     // Broadcast Flag 0
@@ -49,8 +61,11 @@ CanExtFrame CanCommands::getFrame()
     return frame;
 }
 
-PinStatusBroadcast::PinStatusBroadcast(const CanExtFrame& frame)
+PinStatusBroadcast::PinStatusBroadcast(const CanFrame& frame)
 {
+    if (frame.type != CanFrameType::Ext)
+        return;
+
     // Not a pin broadcast
     if (!frame.isPinBroadcast())
         return;
@@ -69,9 +84,9 @@ PinStatusBroadcast::PinStatusBroadcast(const CanExtFrame& frame)
     current = (float)tempCurrent / 100.0f;
 }
 
-CanExtFrame PinStatusBroadcast::getFrame()
+CanFrame PinStatusBroadcast::getFrame()
 {
-    CanExtFrame frame;
+    CanFrame frame;
 
     frame.id = 0;
     frame.id |= ((uint32_t)1 << 28); // Broadcast Flag
@@ -87,8 +102,11 @@ CanExtFrame PinStatusBroadcast::getFrame()
     return frame;
 }
 
-ModuleStatusBroadcast::ModuleStatusBroadcast(const CanExtFrame& frame)
+ModuleStatusBroadcast::ModuleStatusBroadcast(const CanFrame& frame)
 {
+    if (frame.type != CanFrameType::Ext)
+        return;
+
     // Not a module broadcast
     if (!frame.isModuleBroadcast())
         return;
@@ -101,9 +119,9 @@ ModuleStatusBroadcast::ModuleStatusBroadcast(const CanExtFrame& frame)
     des.readRaw<uint16_t>(&nodeArraySize);
 }
 
-CanExtFrame ModuleStatusBroadcast::getFrame()
+CanFrame ModuleStatusBroadcast::getFrame()
 {
-    CanExtFrame frame;
+    CanFrame frame;
 
     frame.id = 0;
     frame.id |= ((uint32_t)1 << 28); // Broadcast Flag
