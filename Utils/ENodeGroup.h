@@ -12,16 +12,16 @@ struct ENodeGroup {
     bool usedOnBus;
     uint16_t index;
     IOTypes::Types type;
-    uint32_t startNodeIndex;
     uint8_t nodeCount;
     uint8_t currentLimit;
     bool alwaysRetry;
     uint8_t maxRetries;
     float retryDelay;
+    uint32_t startNodeIndex;
 
-    bool tripped = false;
     float trippedTimer = 0.0f;
     float retryTimer = 0.0f;
+    bool tripped = false;
     uint8_t numberRetries = 0;
 
     void setupPin();
