@@ -7,6 +7,7 @@
 #include "Nodes/ECurveNode.h"
 #include "Nodes/EDelayNode.h"
 #include "Nodes/EFinalValueNode.h"
+#include "Nodes/EHolleyBroadcastNode.h"
 #include "Nodes/EInitialValueNode.h"
 #include "Nodes/EInvertNode.h"
 #include "Nodes/EMapValueNode.h"
@@ -77,6 +78,8 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         return EColorNode::CreateInPlace(spec, destination);
     case NodeTypes::Racepak_Switch_Panel:
         return ERacepakSwitchPanelNode::CreateInPlace(spec, destination);
+    case NodeTypes::Holley_Broadcast:
+        return EHolleyBroadcastNode::CreateInPlace(spec, destination);
 
     default:
         return nullptr;

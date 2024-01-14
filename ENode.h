@@ -33,6 +33,7 @@ enum class NodeTypes : uint8_t {
     Counter,
     Color,
     Racepak_Switch_Panel,
+    Holley_Broadcast,
     Count
 };
 

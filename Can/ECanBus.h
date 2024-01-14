@@ -9,6 +9,7 @@ struct CanTypes {
     enum class Types : uint8_t {
         Disabled,
         Brytec,
+        Holley,
         Racepak,
         Custom,
         Count

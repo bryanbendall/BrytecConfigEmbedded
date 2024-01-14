@@ -35,6 +35,7 @@ private:
     static void deserializeModule();
     static void setupModule();
     static void setupPins();
+    static void setupHolleyBroadcastQueue();
     static ENode* getNode(int index);
     static ENode* getInitialValueNode(int startIndex, int nodeCount);
     static ENode* getFinalValueNode(int startIndex, int nodeCount);
@@ -46,6 +47,7 @@ private:
     static void queueBrytecCanMessage(const CanFrame& frame);
     static ENodeGroupNode* findNodeGroupNode(uint8_t moduleAddress, uint16_t nodeGroupIndex);
     static void updateNodeGroupNodes();
+    static void updateHolleyBroadcastNodes();
     static void updateCurrents(float timestep);
     static void evaulateJustNodes(float timestep);
     static void sendCanNak();

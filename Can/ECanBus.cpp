@@ -5,6 +5,7 @@ namespace Brytec {
 const char* CanTypes::Strings[] = {
     "Disabled",
     "Brytec",
+    "Holley",
     "Racepak",
     "Custom"
 };
