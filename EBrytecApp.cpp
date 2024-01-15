@@ -473,9 +473,8 @@ void EBrytecApp::setupHolleyBroadcastQueue()
 
     // Find total holley node count
     uint32_t holleyNodeCount = 0;
-    for (int i = 0; i < s_data.nodeVector.getSize(); i++) {
-        ENode* node = s_data.nodeVector.at(i);
-        if (node->NodeType() == NodeTypes::Holley_Broadcast)
+    for (ENode& node : s_data.nodeVector) {
+        if (node.NodeType() == NodeTypes::Holley_Broadcast)
             holleyNodeCount++;
     }
 
@@ -486,12 +485,11 @@ void EBrytecApp::setupHolleyBroadcastQueue()
 
     // Find empty channel or the same channel to eliminate doubles
     uint32_t trimmedHolleyNodeCount = 0;
-    for (int i = 0; i < s_data.nodeVector.getSize(); i++) {
-        ENode* node = s_data.nodeVector.at(i);
-        if (node->NodeType() == NodeTypes::Holley_Broadcast) {
+    for (ENode& node : s_data.nodeVector) {
+        if (node.NodeType() == NodeTypes::Holley_Broadcast) {
             for (int j = 0; j < holleyNodeCount; j++) {
-                if (channelBuffer[j] == UINT32_MAX | channelBuffer[j] == node->GetValue(0)) {
-                    channelBuffer[j] = node->GetValue(0);
+                if (channelBuffer[j] == UINT32_MAX | channelBuffer[j] == node.GetValue(0)) {
+                    channelBuffer[j] = node.GetValue(0);
                     trimmedHolleyNodeCount++;
                     break;
                 }
@@ -514,10 +512,10 @@ ENode* EBrytecApp::getNode(int index)
 
 ENode* EBrytecApp::getInitialValueNode(int startIndex, int nodeCount)
 {
-    for (int i = startIndex; i < startIndex + nodeCount; i++) {
-        ENode* node = s_data.nodeVector.at(i);
+    ENodesVector::Iterator node(s_data.nodeVector.at(startIndex));
+    for (int i = 0; i < nodeCount; i++, node++) {
         if (node->NodeType() == NodeTypes::Initial_Value)
-            return node;
+            return &*node;
     }
 
     return nullptr;
@@ -537,10 +535,10 @@ ENode* EBrytecApp::getFinalValueNode(int startIndex, int nodeCount)
 
 ENode* EBrytecApp::getPinCurrentNode(int startIndex, int nodeCount)
 {
-    for (int i = startIndex; i < startIndex + nodeCount; i++) {
-        ENode* node = s_data.nodeVector.at(i);
+    ENodesVector::Iterator node(s_data.nodeVector.at(startIndex));
+    for (int i = 0; i < nodeCount; i++, node++) {
         if (node->NodeType() == NodeTypes::PinCurrent)
-            return node;
+            return &*node;
     }
 
     return nullptr;
@@ -598,11 +596,9 @@ void EBrytecApp::sendRacepakCan(float timestep)
     for (uint8_t canIndex = 0; canIndex < MAX_CAN_BUSES; canIndex++) {
         if (s_data.canBuses[canIndex].type == CanTypes::Types::Racepak) {
 
-            for (uint32_t i = 0; i < s_data.nodeVector.count(); i++) {
-
-                ENode* node = s_data.nodeVector.at(i);
-                if (node->NodeType() == NodeTypes::Racepak_Switch_Panel) {
-                    ERacepakSwitchPanelNode* racepakNode = (ERacepakSwitchPanelNode*)node;
+            for (ENode& node : s_data.nodeVector) {
+                if (node.NodeType() == NodeTypes::Racepak_Switch_Panel) {
+                    ERacepakSwitchPanelNode* racepakNode = (ERacepakSwitchPanelNode*)&node;
 
                     // Read all switch values
                     uint8_t switches = 0;
@@ -639,11 +635,9 @@ void EBrytecApp::queueBrytecCanMessage(const CanFrame& frame)
 
 ENodeGroupNode* EBrytecApp::findNodeGroupNode(uint8_t moduleAddress, uint16_t nodeGroupIndex)
 {
-    for (uint32_t i = 0; i < s_data.nodeVector.count(); i++) {
-
-        ENode* node = s_data.nodeVector.at(i);
-        if (node->NodeType() == NodeTypes::Node_Group) {
-            ENodeGroupNode* nodeGroupNode = (ENodeGroupNode*)node;
+    for (ENode& node : s_data.nodeVector) {
+        if (node.NodeType() == NodeTypes::Node_Group) {
+            ENodeGroupNode* nodeGroupNode = (ENodeGroupNode*)&node;
             if (nodeGroupNode->getModuleAddress() == moduleAddress && nodeGroupNode->getNodeGroupIndex() == nodeGroupIndex)
                 return nodeGroupNode;
         }
@@ -656,10 +650,9 @@ void EBrytecApp::updateNodeGroupNodes()
 {
     // Internal nodes to this module
     {
-        for (unsigned int i = 0; i < s_data.nodeVector.count(); i++) {
-            ENode* node = s_data.nodeVector.at(i);
-            if (node->NodeType() == NodeTypes::Node_Group) {
-                ENodeGroupNode* nodeGroupNode = (ENodeGroupNode*)node;
+        for (ENode& node : s_data.nodeVector) {
+            if (node.NodeType() == NodeTypes::Node_Group) {
+                ENodeGroupNode* nodeGroupNode = (ENodeGroupNode*)&node;
                 if (nodeGroupNode->getModuleAddress() == s_data.moduleAddress) {
 
                     // In this module
@@ -684,10 +677,9 @@ void EBrytecApp::updateNodeGroupNodes()
                 continue;
 
             // We need to go through all nodes beacuse we might match more then one
-            for (uint32_t i = 0; i < s_data.nodeVector.count(); i++) {
-                ENode* node = s_data.nodeVector.at(i);
-                if (node->NodeType() == NodeTypes::Node_Group) {
-                    ENodeGroupNode* nodeGroupNode = (ENodeGroupNode*)node;
+            for (ENode& node : s_data.nodeVector) {
+                if (node.NodeType() == NodeTypes::Node_Group) {
+                    ENodeGroupNode* nodeGroupNode = (ENodeGroupNode*)&node;
                     if (nodeGroupNode->getModuleAddress() == pinStatus->moduleAddress && nodeGroupNode->getNodeGroupIndex() == pinStatus->nodeGroupIndex)
                         nodeGroupNode->SetValue(99, pinStatus->value);
                 }
@@ -703,10 +695,9 @@ void EBrytecApp::updateHolleyBroadcastNodes()
 
     for (int queueIndex = 0; queueIndex < queue.getSize(); queueIndex++) {
         // We need to go through all nodes beacuse we might match more then one
-        for (uint32_t i = 0; i < s_data.nodeVector.count(); i++) {
-            ENode* node = s_data.nodeVector.at(i);
-            if (node->NodeType() == NodeTypes::Holley_Broadcast) {
-                EHolleyBroadcastNode* holleyNode = (EHolleyBroadcastNode*)node;
+        for (ENode& node : s_data.nodeVector) {
+            if (node.NodeType() == NodeTypes::Holley_Broadcast) {
+                EHolleyBroadcastNode* holleyNode = (EHolleyBroadcastNode*)&node;
                 *holleyNode->GetOutput(0) = queue.getValue(queueIndex);
             }
         }
