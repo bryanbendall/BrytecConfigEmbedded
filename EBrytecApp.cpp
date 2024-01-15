@@ -480,15 +480,15 @@ void EBrytecApp::setupHolleyBroadcastQueue()
 
     // Buffer to hold channel numbers
     uint32_t* channelBuffer = (uint32_t*)malloc(sizeof(uint32_t) * holleyNodeCount);
-    for (int i = 0; i < holleyNodeCount; i++)
+    for (uint32_t i = 0; i < holleyNodeCount; i++)
         channelBuffer[i] = UINT32_MAX;
 
     // Find empty channel or the same channel to eliminate doubles
     uint32_t trimmedHolleyNodeCount = 0;
     for (ENode& node : s_data.nodeVector) {
         if (node.NodeType() == NodeTypes::Holley_Broadcast) {
-            for (int j = 0; j < holleyNodeCount; j++) {
-                if (channelBuffer[j] == UINT32_MAX | channelBuffer[j] == node.GetValue(0)) {
+            for (uint32_t j = 0; j < holleyNodeCount; j++) {
+                if ((channelBuffer[j] == UINT32_MAX) | (channelBuffer[j] == node.GetValue(0))) {
                     channelBuffer[j] = node.GetValue(0);
                     trimmedHolleyNodeCount++;
                     break;
@@ -499,7 +499,7 @@ void EBrytecApp::setupHolleyBroadcastQueue()
 
     // Add channel to queue
     s_data.holleyBcQueue.init(trimmedHolleyNodeCount);
-    for (int i = 0; i < trimmedHolleyNodeCount; i++)
+    for (uint32_t i = 0; i < trimmedHolleyNodeCount; i++)
         s_data.holleyBcQueue.insert(i, HolleyBroadcast(channelBuffer[i]));
 
     free(channelBuffer);
@@ -693,7 +693,7 @@ void EBrytecApp::updateHolleyBroadcastNodes()
     // Copy queue in case we get new messages while we are updating
     ECanHolleyBroadcastQueue queue = s_data.holleyBcQueue;
 
-    for (int queueIndex = 0; queueIndex < queue.getSize(); queueIndex++) {
+    for (uint32_t queueIndex = 0; queueIndex < queue.getSize(); queueIndex++) {
         // We need to go through all nodes beacuse we might match more then one
         for (ENode& node : s_data.nodeVector) {
             if (node.NodeType() == NodeTypes::Holley_Broadcast) {
