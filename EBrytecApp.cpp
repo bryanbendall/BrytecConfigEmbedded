@@ -690,15 +690,15 @@ void EBrytecApp::updateNodeGroupNodes()
 
 void EBrytecApp::updateHolleyBroadcastNodes()
 {
-    // Copy queue in case we get new messages while we are updating
-    ECanHolleyBroadcastQueue queue = s_data.holleyBcQueue;
+    // Switch buffers in case we get new messages while we are updating
+    s_data.holleyBcQueue.swapBuffers();
 
-    for (uint32_t queueIndex = 0; queueIndex < queue.getSize(); queueIndex++) {
+    for (uint32_t queueIndex = 0; queueIndex < s_data.holleyBcQueue.getSize(); queueIndex++) {
         // We need to go through all nodes beacuse we might match more then one
         for (ENode& node : s_data.nodeVector) {
             if (node.NodeType() == NodeTypes::Holley_Broadcast) {
                 EHolleyBroadcastNode* holleyNode = (EHolleyBroadcastNode*)&node;
-                *holleyNode->GetOutput(0) = queue.getValue(queueIndex);
+                *holleyNode->GetOutput(0) = s_data.holleyBcQueue.getValue(queueIndex);
             }
         }
     }

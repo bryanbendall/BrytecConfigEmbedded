@@ -19,17 +19,19 @@ class ECanHolleyBroadcastQueue {
 
 public:
     ECanHolleyBroadcastQueue() = default;
-    ECanHolleyBroadcastQueue(ECanHolleyBroadcastQueue& other);
+    ECanHolleyBroadcastQueue(ECanHolleyBroadcastQueue& other) = delete;
 
     void init(uint32_t size);
     void reset();
+    void swapBuffers();
     void insert(uint32_t index, const HolleyBroadcast& bc);
     void update(const HolleyBroadcast& bc);
     uint32_t getSize() { return m_size; }
     float getValue(uint32_t index);
 
 private:
-    HolleyBroadcast* m_broadcasts = nullptr;
+    HolleyBroadcast* m_buffers[2];
+    uint8_t m_writeButterIndex = 0;
     uint32_t m_size = 0;
 };
 }

@@ -30,46 +30,49 @@ HolleyBroadcast::HolleyBroadcast(const CanFrame& frame)
     v[3] = frame.data[0];
 }
 
-ECanHolleyBroadcastQueue::ECanHolleyBroadcastQueue(ECanHolleyBroadcastQueue& other)
-{
-    other.init(m_size);
-    memcpy(other.m_broadcasts, m_broadcasts, sizeof(HolleyBroadcast) * m_size);
-}
-
 void ECanHolleyBroadcastQueue::init(uint32_t size)
 {
     reset();
 
     m_size = size;
-    m_broadcasts = (HolleyBroadcast*)malloc(sizeof(HolleyBroadcast) * size);
+    m_buffers[0] = (HolleyBroadcast*)malloc(sizeof(HolleyBroadcast) * size);
+    m_buffers[1] = (HolleyBroadcast*)malloc(sizeof(HolleyBroadcast) * size);
 }
 
 void ECanHolleyBroadcastQueue::reset()
 {
-    free(m_broadcasts);
-    m_broadcasts = nullptr;
+    free(m_buffers[0]);
+    free(m_buffers[1]);
+    m_buffers[0] = nullptr;
+    m_buffers[1] = nullptr;
     m_size = 0;
+}
+
+void ECanHolleyBroadcastQueue::swapBuffers()
+{
+    m_writeButterIndex++;
+    m_writeButterIndex = m_writeButterIndex % 2;
 }
 
 void ECanHolleyBroadcastQueue::insert(uint32_t index, const HolleyBroadcast& bc)
 {
-    if (!m_broadcasts)
+    if (!m_buffers[m_writeButterIndex])
         return;
 
     if (index >= m_size)
         return;
 
-    m_broadcasts[index] = bc;
+    m_buffers[m_writeButterIndex][index] = bc;
 }
 
 void ECanHolleyBroadcastQueue::update(const HolleyBroadcast& bc)
 {
-    if (!m_broadcasts)
+    if (!m_buffers[m_writeButterIndex])
         return;
 
     for (int i = 0; i < m_size; i++) {
-        if (m_broadcasts[i].channel == bc.channel) {
-            m_broadcasts[i] = bc;
+        if (m_buffers[m_writeButterIndex][i].channel == bc.channel) {
+            m_buffers[m_writeButterIndex][i] = bc;
             return;
         }
     }
@@ -80,6 +83,13 @@ float ECanHolleyBroadcastQueue::getValue(uint32_t index)
     if (index >= m_size)
         return 0.0f;
 
-    return m_broadcasts[index].value;
+    // Get the buffer that is not being wrote to
+    uint8_t buffIndex = m_writeButterIndex++;
+    buffIndex = buffIndex % 2;
+
+    if (!m_buffers[buffIndex])
+        return 0.0f;
+
+    return m_buffers[buffIndex][index].value;
 }
 }
