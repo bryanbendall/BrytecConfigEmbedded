@@ -32,7 +32,7 @@ bool CanFrame::isModuleBroadcast() const
 
 CanCommands::CanCommands(const CanFrame& frame)
 {
-    if (frame.type != CanFrameType::Ext)
+    if (frame.type != CanFrameType::Ext || frame.dlc < 8)
         return;
 
     // Is a broadcast
@@ -49,6 +49,8 @@ CanCommands::CanCommands(const CanFrame& frame)
 CanFrame CanCommands::getFrame()
 {
     CanFrame frame;
+    frame.type = CanFrameType::Ext;
+    frame.dlc = 8;
 
     frame.id = 0;
     // Broadcast Flag 0
@@ -63,7 +65,7 @@ CanFrame CanCommands::getFrame()
 
 PinStatusBroadcast::PinStatusBroadcast(const CanFrame& frame)
 {
-    if (frame.type != CanFrameType::Ext)
+    if (frame.type != CanFrameType::Ext || frame.dlc < 4)
         return;
 
     // Not a pin broadcast
@@ -74,19 +76,24 @@ PinStatusBroadcast::PinStatusBroadcast(const CanFrame& frame)
     moduleAddress = (frame.id >> 16);
     nodeGroupIndex = frame.id;
 
-    uint16_t tempVoltage = 0;
-    uint16_t tempCurrent = 0;
     BinaryArrayDeserializer des(frame.data, 8);
-    des.readRaw<uint16_t>(&tempVoltage);
-    des.readRaw<uint16_t>(&tempCurrent);
     des.readRaw<float>(&value);
-    voltage = (float)tempVoltage / 100.0f;
-    current = (float)tempCurrent / 100.0f;
+
+    if (frame.dlc == 8) {
+        uint16_t tempVoltage = 0;
+        uint16_t tempCurrent = 0;
+        des.readRaw<uint16_t>(&tempVoltage);
+        des.readRaw<uint16_t>(&tempCurrent);
+        voltage = (float)tempVoltage / 100.0f;
+        current = (float)tempCurrent / 100.0f;
+    }
 }
 
 CanFrame PinStatusBroadcast::getFrame()
 {
     CanFrame frame;
+    frame.type = CanFrameType::Ext;
+    frame.dlc = 8;
 
     frame.id = 0;
     frame.id |= ((uint32_t)1 << 28); // Broadcast Flag
@@ -95,16 +102,19 @@ CanFrame PinStatusBroadcast::getFrame()
     frame.id |= nodeGroupIndex;
 
     BinaryBufferSerializer ser(frame.data, 8);
+    ser.writeRaw<float>(value);
     ser.writeRaw<uint16_t>((uint16_t)(voltage * 100.0f));
     ser.writeRaw<uint16_t>((uint16_t)(current * 100.0f));
-    ser.writeRaw<float>(value);
+
+    if (voltage == 0.0f && current == 0.0f)
+        frame.dlc = 4;
 
     return frame;
 }
 
 ModuleStatusBroadcast::ModuleStatusBroadcast(const CanFrame& frame)
 {
-    if (frame.type != CanFrameType::Ext)
+    if (frame.type != CanFrameType::Ext || frame.dlc < 4)
         return;
 
     // Not a module broadcast
@@ -122,6 +132,8 @@ ModuleStatusBroadcast::ModuleStatusBroadcast(const CanFrame& frame)
 CanFrame ModuleStatusBroadcast::getFrame()
 {
     CanFrame frame;
+    frame.type = CanFrameType::Ext;
+    frame.dlc = 4;
 
     frame.id = 0;
     frame.id |= ((uint32_t)1 << 28); // Broadcast Flag

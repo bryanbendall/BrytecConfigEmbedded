@@ -61,9 +61,9 @@ struct PinStatusBroadcast {
     StatusFlags statusFlags = StatusFlags::DISABLED; // 4 bits
     uint8_t moduleAddress = 0;
     uint16_t nodeGroupIndex = 0;
-    float current = 0.0f; // 2 decimal places
-    float voltage = 0.0f; // 2 decimal places
     float value = 0.0f;
+    float voltage = 0.0f; // 2 decimal places
+    float current = 0.0f; // 2 decimal places
 
     PinStatusBroadcast() = default;
     PinStatusBroadcast(const CanFrame& frame);
