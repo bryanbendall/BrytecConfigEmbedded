@@ -70,7 +70,7 @@ void ECanHolleyBroadcastQueue::update(const HolleyBroadcast& bc)
     if (!m_buffers[m_writeButterIndex])
         return;
 
-    for (int i = 0; i < m_size; i++) {
+    for (uint32_t i = 0; i < m_size; i++) {
         if (m_buffers[m_writeButterIndex][i].channel == bc.channel) {
             m_buffers[m_writeButterIndex][i] = bc;
             return;
