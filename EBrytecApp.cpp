@@ -744,7 +744,7 @@ void EBrytecApp::sendCanModuleStatus()
     bc.moduleAddress = s_data.moduleAddress;
     bc.mode = (uint8_t)s_data.mode;
     bc.deserializeOk = s_data.deserializeOk;
-    bc.nodeArraySize = s_data.nodeVector.getSize();
+    bc.nodePercent = s_data.nodeVector.getSize() * 100 / NODES_VECTOR_SIZE_BYTES;
 
     CanFrame frame = bc.getFrame();
     sendBrytecCan(frame);

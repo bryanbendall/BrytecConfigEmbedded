@@ -75,7 +75,7 @@ struct ModuleStatusBroadcast {
     uint8_t moduleAddress = 0;
     bool deserializeOk = false;
     uint8_t mode = 0;
-    uint16_t nodeArraySize = 0;
+    uint8_t nodePercent = 0;
 
     ModuleStatusBroadcast() = default;
     ModuleStatusBroadcast(const CanFrame& frame);

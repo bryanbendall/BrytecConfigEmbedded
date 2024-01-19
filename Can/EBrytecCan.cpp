@@ -114,7 +114,7 @@ CanFrame PinStatusBroadcast::getFrame()
 
 ModuleStatusBroadcast::ModuleStatusBroadcast(const CanFrame& frame)
 {
-    if (frame.type != CanFrameType::Ext || frame.dlc < 4)
+    if (frame.type != CanFrameType::Ext || frame.dlc < 3)
         return;
 
     // Not a module broadcast
@@ -126,14 +126,14 @@ ModuleStatusBroadcast::ModuleStatusBroadcast(const CanFrame& frame)
     BinaryArrayDeserializer des(frame.data, 8);
     des.readRaw<uint8_t>(&mode);
     des.readRaw<bool>(&deserializeOk);
-    des.readRaw<uint16_t>(&nodeArraySize);
+    des.readRaw<uint8_t>(&nodePercent);
 }
 
 CanFrame ModuleStatusBroadcast::getFrame()
 {
     CanFrame frame;
     frame.type = CanFrameType::Ext;
-    frame.dlc = 4;
+    frame.dlc = 3;
 
     frame.id = 0;
     frame.id |= ((uint32_t)1 << 28); // Broadcast Flag
@@ -143,7 +143,7 @@ CanFrame ModuleStatusBroadcast::getFrame()
     BinaryBufferSerializer ser(frame.data, 8);
     ser.writeRaw<uint8_t>((uint8_t)mode);
     ser.writeRaw<bool>(deserializeOk);
-    ser.writeRaw<uint16_t>(nodeArraySize);
+    ser.writeRaw<uint8_t>(nodePercent);
 
     return frame;
 }
