@@ -9,6 +9,7 @@
 #include "Nodes/EFinalValueNode.h"
 #include "Nodes/EHolleyBroadcastNode.h"
 #include "Nodes/EInitialValueNode.h"
+#include "Nodes/EInterpolateNode.h"
 #include "Nodes/EInvertNode.h"
 #include "Nodes/EMapValueNode.h"
 #include "Nodes/EMathNode.h"
@@ -80,6 +81,8 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         return ERacepakSwitchPanelNode::CreateInPlace(spec, destination);
     case NodeTypes::Holley_Broadcast:
         return EHolleyBroadcastNode::CreateInPlace(spec, destination);
+    case NodeTypes::Interpolate:
+        return EInterpolateNode::CreateInPlace(spec, destination);
 
     default:
         return nullptr;
