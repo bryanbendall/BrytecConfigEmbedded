@@ -25,7 +25,7 @@ ENode* EInterpolateNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destinati
 
     auto interpolateType = (InterpolateType)spec.values[0];
 
-#ifdef ENODE_FULL_TEMPLATE
+#if ENODE_FULL_TEMPLATE
 
     auto in = spec.connections[0];
     auto transitionTime = spec.connections[1];

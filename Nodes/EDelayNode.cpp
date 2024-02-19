@@ -8,7 +8,7 @@ ENode* EDelayNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     if (spec.type != NodeTypes::Delay || spec.numInputs != 2 || spec.numValues != 1)
         return nullptr;
 
-#ifdef ENODE_FULL_TEMPLATE
+#if ENODE_FULL_TEMPLATE
 
     auto in = spec.connections[0];
     auto delayTime = spec.connections[1];

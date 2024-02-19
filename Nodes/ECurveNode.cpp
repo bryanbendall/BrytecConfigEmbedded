@@ -10,7 +10,7 @@ ENode* ECurveNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 
     auto curveType = (CurveType)spec.values[0];
 
-#ifdef ENODE_FULL_TEMPLATE
+#if ENODE_FULL_TEMPLATE
 
     auto in = spec.connections[0];
     auto repeat = spec.connections[1];

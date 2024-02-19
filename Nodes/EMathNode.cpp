@@ -10,7 +10,7 @@ ENode* EMathNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 
     auto mathType = (MathType)spec.values[0];
 
-#ifdef ENODE_FULL_TEMPLATE
+#if ENODE_FULL_TEMPLATE
 
     auto input0 = spec.connections[0];
     auto input1 = spec.connections[1];

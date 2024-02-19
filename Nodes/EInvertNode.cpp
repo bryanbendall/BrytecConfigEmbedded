@@ -8,7 +8,7 @@ ENode* EInvertNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     if (spec.type != NodeTypes::Invert || spec.numInputs != 1 || spec.numValues != 0)
         return nullptr;
 
-#ifdef ENODE_FULL_TEMPLATE
+#if ENODE_FULL_TEMPLATE
 
     auto in = spec.connections[0];
 
