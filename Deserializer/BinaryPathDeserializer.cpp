@@ -40,5 +40,13 @@ bool BinaryPathDeserializer::readInternal(uint8_t* data, uint32_t dataSize)
         return false;
     }
 }
+
+void BinaryPathDeserializer::getRawData(uint8_t* dest, uint32_t offset, uint32_t length)
+{
+    if (offset + length > m_dataLength)
+        return;
+
+    memcpy(dest, &m_data[offset], length);
+}
 }
 #endif

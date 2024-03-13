@@ -13,6 +13,8 @@ class BinaryPathDeserializer : public BinaryDeserializer {
 public:
     BinaryPathDeserializer(std::filesystem::path path);
     ~BinaryPathDeserializer();
+    uint32_t getTotalLength() { return m_dataLength; }
+    void getRawData(uint8_t* dest, uint32_t offset, uint32_t length);
 
 protected:
     bool readInternal(uint8_t* data, uint32_t dataSize) override;
