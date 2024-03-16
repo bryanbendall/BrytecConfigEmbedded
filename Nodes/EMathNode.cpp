@@ -2,6 +2,21 @@
 
 namespace Brytec {
 
+#define MathMacroTemplate(type)                                                \
+    case type:                                                                 \
+        if (input0 == Float && input1 == Float)                                \
+            return new (destination) EMathNodeInternal<type, float, float>();  \
+        if (input0 == Float && input1 == Pointer)                              \
+            return new (destination) EMathNodeInternal<type, float, float*>(); \
+        if (input0 == Pointer && input1 == Float)                              \
+            return new (destination) EMathNodeInternal<type, float*, float>(); \
+        if (input0 == Pointer && input1 == Pointer)                            \
+        return new (destination) EMathNodeInternal<type, float*, float*>()
+
+#define MathMacro(type) \
+    case type:          \
+        return new (destination) EMathNodeInternal<type, float, float>()
+
 ENode* EMathNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
 
@@ -16,45 +31,13 @@ ENode* EMathNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     auto input1 = spec.connections[1];
 
     switch (mathType) {
-    case MathType::Add:
-        if (input0 == Float && input1 == Float)
-            return new (destination) EMathNodeInternal<MathType::Add, float, float>();
-        if (input0 == Float && input1 == Pointer)
-            return new (destination) EMathNodeInternal<MathType::Add, float, float*>();
-        if (input0 == Pointer && input1 == Float)
-            return new (destination) EMathNodeInternal<MathType::Add, float*, float>();
-        if (input0 == Pointer && input1 == Pointer)
-            return new (destination) EMathNodeInternal<MathType::Add, float*, float*>();
 
-    case MathType::Subtract:
-        if (input0 == Float && input1 == Float)
-            return new (destination) EMathNodeInternal<MathType::Subtract, float, float>();
-        if (input0 == Float && input1 == Pointer)
-            return new (destination) EMathNodeInternal<MathType::Subtract, float, float*>();
-        if (input0 == Pointer && input1 == Float)
-            return new (destination) EMathNodeInternal<MathType::Subtract, float*, float>();
-        if (input0 == Pointer && input1 == Pointer)
-            return new (destination) EMathNodeInternal<MathType::Subtract, float*, float*>();
-
-    case MathType::Multiply:
-        if (input0 == Float && input1 == Float)
-            return new (destination) EMathNodeInternal<MathType::Multiply, float, float>();
-        if (input0 == Float && input1 == Pointer)
-            return new (destination) EMathNodeInternal<MathType::Multiply, float, float*>();
-        if (input0 == Pointer && input1 == Float)
-            return new (destination) EMathNodeInternal<MathType::Multiply, float*, float>();
-        if (input0 == Pointer && input1 == Pointer)
-            return new (destination) EMathNodeInternal<MathType::Multiply, float*, float*>();
-
-    case MathType::Divide:
-        if (input0 == Float && input1 == Float)
-            return new (destination) EMathNodeInternal<MathType::Divide, float, float>();
-        if (input0 == Float && input1 == Pointer)
-            return new (destination) EMathNodeInternal<MathType::Divide, float, float*>();
-        if (input0 == Pointer && input1 == Float)
-            return new (destination) EMathNodeInternal<MathType::Divide, float*, float>();
-        if (input0 == Pointer && input1 == Pointer)
-            return new (destination) EMathNodeInternal<MathType::Divide, float*, float*>();
+        MathMacroTemplate(MathType::Add);
+        MathMacroTemplate(MathType::Subtract);
+        MathMacroTemplate(MathType::Multiply);
+        MathMacroTemplate(MathType::Divide);
+        MathMacroTemplate(MathType::Min);
+        MathMacroTemplate(MathType::Max);
 
     default:
         break;
@@ -62,17 +45,13 @@ ENode* EMathNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 
 #else
     switch (mathType) {
-    case MathType::Add:
-        return new (destination) EMathNodeInternal<MathType::Add, float, float>();
 
-    case MathType::Subtract:
-        return new (destination) EMathNodeInternal<MathType::Subtract, float, float>();
-
-    case MathType::Multiply:
-        return new (destination) EMathNodeInternal<MathType::Multiply, float, float>();
-
-    case MathType::Divide:
-        return new (destination) EMathNodeInternal<MathType::Divide, float, float>();
+        MathMacro(MathType::Add);
+        MathMacro(MathType::Subtract);
+        MathMacro(MathType::Multiply);
+        MathMacro(MathType::Divide);
+        MathMacro(MathType::Min);
+        MathMacro(MathType::Max);
 
     default:
         break;

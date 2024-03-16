@@ -9,6 +9,8 @@ enum class MathType : uint8_t {
     Subtract,
     Multiply,
     Divide,
+    Min,
+    Max,
     Count
 };
 
@@ -74,6 +76,12 @@ public:
 
         if constexpr (type == MathType::Divide)
             m_out = m_input1.getValue() / m_input2.getValue();
+
+        if constexpr (type == MathType::Min)
+            m_out = m_input1.getValue() > m_input2.getValue() ? m_input2.getValue() : m_input1.getValue();
+
+        if constexpr (type == MathType::Max)
+            m_out = m_input1.getValue() < m_input2.getValue() ? m_input2.getValue() : m_input1.getValue();
     }
 
     uint32_t Size() override { return sizeof(*this); }
