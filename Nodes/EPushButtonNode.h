@@ -81,21 +81,21 @@ public:
 
     void Evaluate(float timestep) override
     {
-        bool button = ToBool(m_button.getValue());
-        bool neutralSafety = ToBool(m_neutralSafety.getValue());
-        bool engineRunning = ToBool(m_engineRunning.getValue());
+        bool button = FloatToBool(m_button);
+        bool neutralSafety = FloatToBool(m_neutralSafety);
+        bool engineRunning = FloatToBool(m_engineRunning);
 
-        if (engineRunning && ToBool(m_starterOut)) {
+        if (engineRunning && FloatToBool(m_starterOut)) {
             m_starterOut = 0.0f;
             return;
         }
 
-        if (ToBool(m_lastButtonState) == button) {
+        if (FloatToBool(m_lastButtonState) == button) {
             return;
         }
         m_lastButtonState = button;
 
-        if (button && !ToBool(m_ignitionOut)) {
+        if (button && !FloatToBool(m_ignitionOut)) {
             m_ignitionOut = 1.0f;
             m_starterOut = 0.0f;
             return;

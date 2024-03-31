@@ -80,27 +80,27 @@ public:
 
     void Evaluate(float timestep) override
     {
-        bool up = ToBool(m_up.getValue());
-        bool down = ToBool(m_down.getValue());
+        bool up = FloatToBool(m_up);
+        bool down = FloatToBool(m_down);
 
-        if (ToBool(m_lastUp) != up) {
+        if (FloatToBool(m_lastUp) != up) {
             m_lastUp = up;
             if (up)
                 m_out++;
         }
 
-        if (ToBool(m_lastDown) != down) {
+        if (FloatToBool(m_lastDown) != down) {
             m_lastDown = down;
             if (down)
                 m_out--;
         }
 
         // Clamp
-        if (m_out >= m_max.getValue())
-            m_out = m_max.getValue();
+        if (m_out >= m_max)
+            m_out = m_max;
 
-        if (m_out <= m_min.getValue())
-            m_out = m_min.getValue();
+        if (m_out <= m_min)
+            m_out = m_min;
     }
 
     uint32_t Size() override { return sizeof(*this); }

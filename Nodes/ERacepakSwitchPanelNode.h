@@ -36,7 +36,7 @@ public:
         if (index >= RACEPAK_SWITCH_PANEL_NUM_INPUTS)
             return 0.0f;
 
-        return m_in[index].getValue();
+        return m_in[index];
     }
 
     float* GetOutput(uint8_t index = 0) override

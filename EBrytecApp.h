@@ -36,6 +36,7 @@ private:
     static void setupModule();
     static void setupPins();
     static void setupHolleyBroadcastQueue();
+    static void setupCustomCanQueue();
     static ENode* getNode(int index);
     static ENode* getInitialValueNode(int startIndex, int nodeCount);
     static ENode* getFinalValueNode(int startIndex, int nodeCount);
@@ -48,6 +49,7 @@ private:
     static ENodeGroupNode* findNodeGroupNode(uint8_t moduleAddress, uint16_t nodeGroupIndex);
     static void updateNodeGroupNodes();
     static void updateHolleyBroadcastNodes();
+    static void updateCustomCanNodes();
     static void updateCurrents(float timestep);
     static void evaulateJustNodes(float timestep);
     static void sendCanNak();

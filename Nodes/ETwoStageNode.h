@@ -62,10 +62,10 @@ public:
 
     void Evaluate(float timestep) override
     {
-        bool stage1Trigger = ToBool(m_stage1Trigger.getValue());
-        float stage1Percent = m_stage1Percent.getValue();
-        bool stage2Trigger = ToBool(m_stage2Trigger.getValue());
-        float stage2Percent = m_stage2Percent.getValue();
+        bool stage1Trigger = FloatToBool(m_stage1Trigger);
+        float stage1Percent = m_stage1Percent;
+        bool stage2Trigger = FloatToBool(m_stage2Trigger);
+        float stage2Percent = m_stage2Percent;
 
         if (stage2Trigger) {
             m_out = stage2Percent;

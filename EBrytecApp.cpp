@@ -3,9 +3,11 @@
 #include "Can/ECanBus.h"
 #include "Can/ECanCommandQueue.h"
 #include "Can/ECanHolleyBroadcastQueue.h"
+#include "Can/ECustomCanQueue.h"
 #include "Can/EPinStatusQueue.h"
 #include "Deserializer/BinaryArrayDeserializer.h"
 #include "Deserializer/BinaryBufferSerializer.h"
+#include "Nodes/ECanBusNode.h"
 #include "Nodes/EFinalValueNode.h"
 #include "Nodes/EHolleyBroadcastNode.h"
 #include "Nodes/EInitialValueNode.h"
@@ -28,6 +30,7 @@ struct EBrytecAppData {
     ECanCommandQueue canCommandQueue;
     ECanBus canBuses[MAX_CAN_BUSES] = {};
     ECanHolleyBroadcastQueue holleyBcQueue;
+    ECustomCanQueue customCanQueue[MAX_CAN_BUSES];
 };
 static EBrytecAppData s_data;
 
@@ -60,11 +63,11 @@ void EBrytecApp::update(float timestep)
     // Update current and over current
     updateCurrents(timestep);
 
-    // Update node group nodes
     updateNodeGroupNodes();
 
-    // Update Holley Broadcasts
     updateHolleyBroadcastNodes();
+
+    updateCustomCanNodes();
 
     // Get inputs
     for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
@@ -114,6 +117,10 @@ void EBrytecApp::canReceived(uint8_t canIndex, const CanFrame& frame)
     default:
         break;
     }
+
+    // Handle custom can
+    if (s_data.customCanQueue[canIndex].getSize() > 0)
+        s_data.customCanQueue[canIndex].update(frame);
 }
 
 void EBrytecApp::brytecUsbReceived(const Brytec::UsbPacket& packet)
@@ -437,6 +444,8 @@ void EBrytecApp::deserializeModule()
 
     setupHolleyBroadcastQueue();
 
+    setupCustomCanQueue();
+
     s_data.deserializeOk = true;
 }
 
@@ -462,7 +471,7 @@ void EBrytecApp::setupPins()
 
 void EBrytecApp::setupHolleyBroadcastQueue()
 {
-    // If we don't hava a Holley can setup don't do anything
+    // If we don't have a Holley can setup don't do anything
     bool hasHolleyCan = false;
     for (int i = 0; i < MAX_CAN_BUSES; i++) {
         if (s_data.canBuses[i].type == CanTypes::Types::Holley)
@@ -478,6 +487,10 @@ void EBrytecApp::setupHolleyBroadcastQueue()
             holleyNodeCount++;
     }
 
+    // Early out if we dont have any nodes
+    if (holleyNodeCount == 0)
+        return;
+
     // Buffer to hold channel numbers
     uint32_t* channelBuffer = (uint32_t*)malloc(sizeof(uint32_t) * holleyNodeCount);
     for (uint32_t i = 0; i < holleyNodeCount; i++)
@@ -488,10 +501,11 @@ void EBrytecApp::setupHolleyBroadcastQueue()
     for (ENode& node : s_data.nodeVector) {
         if (node.NodeType() == NodeTypes::Holley_Broadcast) {
             for (uint32_t j = 0; j < holleyNodeCount; j++) {
-                if ((channelBuffer[j] == UINT32_MAX) | (channelBuffer[j] == node.GetValue(0))) {
-                    channelBuffer[j] = node.GetValue(0);
+                uint32_t channel = FloatToInt(node.GetValue(0));
+                if ((channelBuffer[j] == UINT32_MAX) | (channelBuffer[j] == channel)) {
+                    channelBuffer[j] = channel;
                     trimmedHolleyNodeCount++;
-                    break;
+                    continue;
                 }
             }
         }
@@ -503,6 +517,59 @@ void EBrytecApp::setupHolleyBroadcastQueue()
         s_data.holleyBcQueue.insert(i, HolleyBroadcast(channelBuffer[i]));
 
     free(channelBuffer);
+}
+
+void EBrytecApp::setupCustomCanQueue()
+{
+    // Count ECanBusNodes per can channel
+    uint32_t nodeCounts[MAX_CAN_BUSES] = { 0 };
+    for (ENode& node : s_data.nodeVector) {
+        if (node.NodeType() == NodeTypes::CanBus) {
+            // ECanBusNode* canBusNode = (ECanBusNode*)&node;
+            uint8_t canIndex = node.GetValue(1);
+            if (canIndex > MAX_CAN_BUSES)
+                continue;
+            nodeCounts[canIndex]++;
+        }
+    }
+
+    for (uint8_t canBusIndex = 0; canBusIndex < MAX_CAN_BUSES; canBusIndex++) {
+
+        // We dont have any nodes for this can bus
+        if (nodeCounts[canBusIndex] == 0)
+            continue;
+
+        // Buffer to count id and skip doubles
+        uint32_t* tempBuffer = (uint32_t*)malloc(sizeof(uint32_t) * nodeCounts[canBusIndex]);
+        for (uint32_t i = 0; i < nodeCounts[canBusIndex]; i++)
+            tempBuffer[i] = UINT32_MAX;
+
+        // Find empty id or the same id to eliminate doubles
+        uint32_t trimmedCount = 0;
+        for (ENode& node : s_data.nodeVector) {
+            if (node.NodeType() == NodeTypes::Holley_Broadcast) {
+                for (uint32_t j = 0; j < trimmedCount; j++) {
+                    // Check against can bus id
+                    uint32_t id = FloatToInt(node.GetValue(0));
+                    if ((tempBuffer[j] == UINT32_MAX) | (tempBuffer[j] == id)) {
+                        tempBuffer[j] = id;
+                        trimmedCount++;
+                        continue;
+                    }
+                }
+            }
+        }
+
+        // Add id to queue
+        s_data.customCanQueue[canBusIndex].init(trimmedCount);
+        for (uint32_t i = 0; i < trimmedCount; i++) {
+            CanFrame frame;
+            frame.id = tempBuffer[i];
+            s_data.customCanQueue[canBusIndex].insert(i, frame);
+        }
+
+        free(tempBuffer);
+    }
 }
 
 ENode* EBrytecApp::getNode(int index)
@@ -696,9 +763,27 @@ void EBrytecApp::updateHolleyBroadcastNodes()
     for (uint32_t queueIndex = 0; queueIndex < s_data.holleyBcQueue.getSize(); queueIndex++) {
         // We need to go through all nodes beacuse we might match more then one
         for (ENode& node : s_data.nodeVector) {
-            if (node.NodeType() == NodeTypes::Holley_Broadcast) {
-                EHolleyBroadcastNode* holleyNode = (EHolleyBroadcastNode*)&node;
-                *holleyNode->GetOutput(0) = s_data.holleyBcQueue.getValue(queueIndex);
+            if (node.NodeType() == NodeTypes::Holley_Broadcast)
+                *node.GetOutput(0) = s_data.holleyBcQueue.getValue(queueIndex);
+        }
+    }
+}
+
+void EBrytecApp::updateCustomCanNodes()
+{
+    for (uint32_t canBusIndex = 0; canBusIndex < MAX_CAN_BUSES; canBusIndex++) {
+
+        // No nodes for this can index
+        if (s_data.customCanQueue->getSize() == 0)
+            continue;
+
+        for (uint32_t queueIndex = 0; queueIndex < s_data.customCanQueue[canBusIndex].getSize(); queueIndex++) {
+            // We need to go through all nodes beacuse we might match more then one
+            for (ENode& node : s_data.nodeVector) {
+                if (node.NodeType() == NodeTypes::CanBus) {
+                    ECanBusNodeInternal* customCanNode = (ECanBusNodeInternal*)&node;
+                    customCanNode->setCanFrame(s_data.customCanQueue[canBusIndex].getFrame(queueIndex));
+                }
             }
         }
     }

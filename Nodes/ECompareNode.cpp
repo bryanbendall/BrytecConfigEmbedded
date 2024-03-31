@@ -7,7 +7,7 @@ ENode* ECompareNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     if (spec.type != NodeTypes::Compare || spec.numInputs != 2 || spec.numValues != 1)
         return nullptr;
 
-    auto compareType = (CompareType)spec.values[0];
+    auto compareType = (CompareType)FloatToInt(spec.values[0]);
 
 #if ENODE_FULL_TEMPLATE
 

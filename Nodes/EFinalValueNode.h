@@ -40,7 +40,7 @@ public:
     float* GetOutput(uint8_t index = 0) override
     {
         // TODO revisit this to eliminate extra float
-        m_out = m_input1.getValue();
+        m_out = m_input1;
         return &m_out;
     }
 

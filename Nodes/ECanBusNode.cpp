@@ -2,21 +2,11 @@
 
 namespace Brytec {
 
-void ECanBusNode::SetInput(uint8_t index, float* output)
+ENode* ECanBusNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
-}
+    if (spec.type != NodeTypes::CanBus || spec.numInputs != 0 || spec.numValues != 5)
+        return nullptr;
 
-void ECanBusNode::SetValue(uint8_t index, float value)
-{
+    return new (destination) ECanBusNodeInternal();
 }
-
-float* ECanBusNode::GetOutput(uint8_t index)
-{
-    return &id;
-}
-
-void ECanBusNode::Evaluate(float timestep)
-{
-}
-
 }

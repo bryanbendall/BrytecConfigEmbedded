@@ -68,32 +68,32 @@ public:
         m_out = 0.0f;
 
         if constexpr (type == CompareType::Equal) {
-            if (fabs(m_input1.getValue() - m_input2.getValue()) <= m_epsilon)
+            if (fabs(m_input1 - m_input2) <= FloatEpsilon)
                 m_out = 1.0f;
         }
 
         if constexpr (type == CompareType::NotEqual) {
-            if (fabs(m_input1.getValue() - m_input2.getValue()) > m_epsilon)
+            if (fabs(m_input1 - m_input2) > FloatEpsilon)
                 m_out = 1.0f;
         }
 
         if constexpr (type == CompareType::Greater) {
-            if (m_input1.getValue() > m_input2.getValue())
+            if (m_input1 > m_input2)
                 m_out = 1.0f;
         }
 
         if constexpr (type == CompareType::GreaterEqual) {
-            if (m_input1.getValue() >= m_input2.getValue())
+            if (m_input1 >= m_input2)
                 m_out = 1.0f;
         }
 
         if constexpr (type == CompareType::Less) {
-            if (m_input1.getValue() < m_input2.getValue())
+            if (m_input1 < m_input2)
                 m_out = 1.0f;
         }
 
         if constexpr (type == CompareType::LessEqual) {
-            if (m_input1.getValue() <= m_input2.getValue())
+            if (m_input1 <= m_input2)
                 m_out = 1.0f;
         }
     }
@@ -111,8 +111,6 @@ private:
     ValueAndPointer m_input2;
 #endif
     float m_out;
-
-    static constexpr float m_epsilon = 0.0001f;
 };
 
 }

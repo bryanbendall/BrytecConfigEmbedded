@@ -48,26 +48,33 @@ struct ENodeSpec {
     NodeTypes type;
 
     uint8_t numInputs = 0;
-    ConnectionType connections[8];
+    ConnectionType connections[10];
 
     uint8_t numValues = 0;
-    float values[8];
+    float values[10];
 
     uint8_t moduleAddress = 0;
     uint16_t pinIndex = 0;
 };
 
-inline bool ToBool(float f)
+static constexpr float FloatEpsilon = 0.0001f;
+
+inline bool FloatToBool(float f)
 {
-    if (f >= 0.0001f)
+    if (f >= FloatEpsilon)
         return true;
     else
         return false;
 }
 
-inline bool isEqual(float a, float b)
+inline bool FloatIsEqual(float a, float b)
 {
-    return fabs((a - b)) <= 0.0001f;
+    return fabs((a - b)) <= FloatEpsilon;
+}
+
+inline int FloatToInt(float a)
+{
+    return (int)(a + FloatEpsilon);
 }
 
 class ENode {

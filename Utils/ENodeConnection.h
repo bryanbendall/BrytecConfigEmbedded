@@ -22,7 +22,7 @@ enum ConnectionType : uint8_t {
 class ValueAndPointer {
 
 public:
-    float getValue()
+    operator float() const
     {
         if (m_pointer)
             return *m_pointer;
@@ -50,7 +50,7 @@ template <typename T>
 class ValueOrPointer {
 
 public:
-    T getValue()
+    operator T() const
     {
         return m_value;
     }
@@ -73,7 +73,7 @@ template <typename T>
 class ValueOrPointer<T*> {
 
 public:
-    T getValue()
+    operator T() const
     {
         if (m_value)
             return *m_value;

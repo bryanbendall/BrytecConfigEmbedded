@@ -75,8 +75,8 @@ public:
 
     void Evaluate(float timestep) override
     {
-        if (m_timeSinceLastUpdate >= m_timeout.getValue())
-            m_out = m_defaultValue.getValue();
+        if (m_timeSinceLastUpdate >= m_timeout)
+            m_out = m_defaultValue;
 
         m_timeSinceLastUpdate += timestep;
     }

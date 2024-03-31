@@ -58,13 +58,13 @@ public:
 
     void Evaluate(float timestep) override
     {
-        bool in = ToBool(m_in.getValue());
-        float delayTime = m_delayTime.getValue();
+        bool in = FloatToBool(m_in);
+        float delayTime = m_delayTime;
 
         if (in) {
             m_timerCounter += timestep;
             if (m_timerCounter >= delayTime) {
-                m_out = m_in.getValue();
+                m_out = m_in;
                 m_timerCounter = delayTime;
             }
         } else {

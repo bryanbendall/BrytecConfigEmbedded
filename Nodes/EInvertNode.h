@@ -44,7 +44,7 @@ public:
 
     void Evaluate(float timestep) override
     {
-        bool in = ToBool(m_in.getValue());
+        bool in = FloatToBool(m_in);
 
         if (!in) {
             m_out = 1.0f;

@@ -56,9 +56,9 @@ public:
 
     void Evaluate(float timestep) override
     {
-        bool selection = ToBool(m_selection.getValue());
-        float input1 = m_input1.getValue();
-        float input2 = m_input2.getValue();
+        bool selection = FloatToBool(m_selection);
+        float input1 = m_input1;
+        float input2 = m_input2;
 
         if (selection)
             m_out = input1;

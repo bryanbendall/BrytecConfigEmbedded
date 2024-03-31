@@ -66,22 +66,22 @@ public:
     void Evaluate(float timestep) override
     {
         if constexpr (type == MathType::Add)
-            m_out = m_input1.getValue() + m_input2.getValue();
+            m_out = m_input1 + m_input2;
 
         if constexpr (type == MathType::Subtract)
-            m_out = m_input1.getValue() - m_input2.getValue();
+            m_out = m_input1 - m_input2;
 
         if constexpr (type == MathType::Multiply)
-            m_out = m_input1.getValue() * m_input2.getValue();
+            m_out = m_input1 * m_input2;
 
         if constexpr (type == MathType::Divide)
-            m_out = m_input1.getValue() / m_input2.getValue();
+            m_out = m_input1 / m_input2;
 
         if constexpr (type == MathType::Min)
-            m_out = m_input1.getValue() > m_input2.getValue() ? m_input2.getValue() : m_input1.getValue();
+            m_out = m_input1 > m_input2 ? m_input2 : m_input1;
 
         if constexpr (type == MathType::Max)
-            m_out = m_input1.getValue() < m_input2.getValue() ? m_input2.getValue() : m_input1.getValue();
+            m_out = m_input1 < m_input2 ? m_input2 : m_input1;
     }
 
     uint32_t Size() override { return sizeof(*this); }

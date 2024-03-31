@@ -72,13 +72,13 @@ public:
 
     void Evaluate(float timestep) override
     {
-        float x = m_fromMin.getValue();
-        float y = m_toMin.getValue();
-        float x1 = m_fromMax.getValue();
-        float y1 = m_toMax.getValue();
+        float x = m_fromMin;
+        float y = m_toMin;
+        float x1 = m_fromMax;
+        float y1 = m_toMax;
         float sloap = (y - y1) / (x - x1);
 
-        m_out = (sloap * (m_in.getValue() - x1)) + y1;
+        m_out = (sloap * (m_in - x1)) + y1;
     }
 
     uint32_t Size() override { return sizeof(*this); }

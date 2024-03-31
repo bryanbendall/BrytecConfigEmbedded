@@ -59,12 +59,12 @@ public:
     void Evaluate(float timestep) override
     {
 
-        if (ToBool(m_in.getValue()) == ToBool(m_lastIn)) {
+        if (FloatToBool(m_in) == FloatToBool(m_lastIn)) {
             return;
         }
 
-        if (ToBool(m_in.getValue())) {
-            if (ToBool(m_lastOut))
+        if (FloatToBool(m_in)) {
+            if (FloatToBool(m_lastOut))
                 m_out = 0.0f;
             else
                 m_out = 1.0f;

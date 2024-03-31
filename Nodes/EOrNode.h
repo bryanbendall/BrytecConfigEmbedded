@@ -40,7 +40,7 @@ public:
         m_out = 1.0f;
 
         for (auto* input : m_inputs) {
-            if (input && ToBool(*input))
+            if (input && FloatToBool(*input))
                 return;
         }
 

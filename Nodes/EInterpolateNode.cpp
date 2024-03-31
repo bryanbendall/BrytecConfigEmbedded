@@ -23,7 +23,7 @@ ENode* EInterpolateNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destinati
     if (spec.type != NodeTypes::Interpolate || spec.numInputs != 2 || spec.numValues != 3)
         return nullptr;
 
-    auto interpolateType = (InterpolateType)spec.values[0];
+    auto interpolateType = (InterpolateType)FloatToInt(spec.values[0]);
 
 #if ENODE_FULL_TEMPLATE
 

@@ -80,9 +80,9 @@ public:
 
     void Evaluate(float timestep) override
     {
-        bool in = ToBool(m_in.getValue());
-        bool repeat = ToBool(m_repeat.getValue());
-        float timeout = m_timeout.getValue();
+        bool in = FloatToBool(m_in);
+        bool repeat = FloatToBool(m_repeat);
+        float timeout = m_timeout;
 
         if (!in) {
             m_timerCounter = 0.0f;

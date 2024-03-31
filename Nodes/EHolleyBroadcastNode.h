@@ -19,7 +19,7 @@ public:
 
     void SetValue(uint8_t index, float value) override
     {
-        m_channel = value;
+        m_channel = FloatToInt(value);
     }
 
     float GetValue(uint8_t index) override

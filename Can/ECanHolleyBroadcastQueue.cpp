@@ -56,13 +56,14 @@ void ECanHolleyBroadcastQueue::swapBuffers()
 
 void ECanHolleyBroadcastQueue::insert(uint32_t index, const HolleyBroadcast& bc)
 {
-    if (!m_buffers[m_writeButterIndex])
-        return;
-
     if (index >= m_size)
         return;
 
-    m_buffers[m_writeButterIndex][index] = bc;
+    if (!m_buffers[0] || !m_buffers[1])
+        return;
+
+    m_buffers[0][index] = bc;
+    m_buffers[1][index] = bc;
 }
 
 void ECanHolleyBroadcastQueue::update(const HolleyBroadcast& bc)

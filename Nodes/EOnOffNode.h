@@ -50,8 +50,8 @@ public:
 
     void Evaluate(float timestep) override
     {
-        bool on = ToBool(m_on.getValue());
-        bool off = ToBool(m_off.getValue());
+        bool on = FloatToBool(m_on);
+        bool off = FloatToBool(m_off);
 
         if (off) {
             m_out = 0.0f;

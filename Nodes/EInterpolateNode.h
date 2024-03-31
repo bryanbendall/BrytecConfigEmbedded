@@ -79,19 +79,19 @@ public:
     void Evaluate(float timestep) override
     {
 
-        float transitionTime = m_delayTime.getValue();
+        float transitionTime = m_delayTime;
 
         float preTimer = m_timerCounter;
         m_timerCounter += timestep;
 
-        if (m_timerCounter >= transitionTime || isEqual(m_in.getValue(), m_out)) {
+        if (m_timerCounter >= transitionTime || FloatIsEqual(m_in, m_out)) {
             m_timerCounter = 0.0f;
-            m_out = m_in.getValue();
+            m_out = m_in;
 
         } else {
             // End point
             float x1 = 1.0f;
-            float y1 = m_in.getValue();
+            float y1 = m_in;
 
             // Previous point
             float x2 = preTimer / transitionTime;
@@ -149,7 +149,7 @@ public:
             }
 
             // Set output
-            m_out = (m_in.getValue() - y) * t + y;
+            m_out = (m_in - y) * t + y;
         }
     }
 
@@ -159,13 +159,13 @@ public:
 
     void easeInExpo(float& t)
     {
-        if (!isEqual(t, 0.0f))
+        if (!FloatIsEqual(t, 0.0f))
             t = powf(2.0f, 10.0f * t - 10.0f);
     }
 
     void easeOutExpo(float& t)
     {
-        if (isEqual(t, 1.0f))
+        if (FloatIsEqual(t, 1.0f))
             t = 1.0f;
         else
             t = 1.0f - powf(2.0f, -10.0f * t);
@@ -173,12 +173,12 @@ public:
 
     void easeInOutExpo(float& t)
     {
-        if (isEqual(t, 0.0f)) {
+        if (FloatIsEqual(t, 0.0f)) {
             t = 0.0f;
             return;
         }
 
-        if (isEqual(t, 1.0f)) {
+        if (FloatIsEqual(t, 1.0f)) {
             t = 1.0f;
             return;
         }
