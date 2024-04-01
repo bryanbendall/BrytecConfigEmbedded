@@ -6,13 +6,13 @@
 
 namespace Brytec {
 
-class ECanBusNode : public ENode {
+class ECanBusInputNode : public ENode {
 
 public:
     static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
 };
 
-class ECanBusNodeInternal : public ECanBusNode {
+class ECanBusInputNodeInternal : public ECanBusInputNode {
 
     enum Endian : uint8_t {
         Little,
@@ -130,7 +130,7 @@ public:
         return sizeof(*this);
     }
 
-    NodeTypes NodeType() override { return NodeTypes::CanBus; }
+    NodeTypes NodeType() override { return NodeTypes::CanBusInput; }
 
     void setCanFrame(CanFrame frame)
     {

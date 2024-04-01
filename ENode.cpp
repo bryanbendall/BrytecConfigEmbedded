@@ -1,6 +1,6 @@
 #include "ENode.h"
 #include "Nodes/EAndNode.h"
-#include "Nodes/ECanBusNode.h"
+#include "Nodes/ECanBusInputNode.h"
 #include "Nodes/EColorNode.h"
 #include "Nodes/ECompareNode.h"
 #include "Nodes/ECounterNode.h"
@@ -67,8 +67,8 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         return EValueNode::CreateInPlace(spec, destination);
     case NodeTypes::Switch:
         return ESwitchNode::CreateInPlace(spec, destination);
-    case NodeTypes::CanBus:
-        return ECanBusNode::CreateInPlace(spec, destination);
+    case NodeTypes::CanBusInput:
+        return ECanBusInputNode::CreateInPlace(spec, destination);
     case NodeTypes::PinCurrent:
         return EPinCurrentNode::CreateInPlace(spec, destination);
     case NodeTypes::PID:

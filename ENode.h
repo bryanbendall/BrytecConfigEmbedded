@@ -26,7 +26,7 @@ enum class NodeTypes : uint8_t {
     Math,
     Value,
     Switch,
-    CanBus,
+    CanBusInput,
     Convert,
     PinCurrent,
     PID,
