@@ -35,6 +35,7 @@ enum class NodeTypes : uint8_t {
     Racepak_Switch_Panel,
     Holley_Broadcast,
     Interpolate,
+    CanBusOutput,
     Count
 };
 

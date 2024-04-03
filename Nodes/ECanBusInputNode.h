@@ -10,16 +10,13 @@ class ECanBusInputNode : public ENode {
 
 public:
     static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-};
 
-class ECanBusInputNodeInternal : public ECanBusInputNode {
-
-    enum Endian : uint8_t {
+    enum class Endian : uint8_t {
         Little,
         Big
     };
 
-    enum DataType : uint8_t {
+    enum class DataType : uint8_t {
         Uint8,
         Uint16,
         Uint32,
@@ -28,6 +25,9 @@ class ECanBusInputNodeInternal : public ECanBusInputNode {
         Int32,
         Float
     };
+};
+
+class ECanBusInputNodeInternal : public ECanBusInputNode {
 
 public:
     void SetInput(uint8_t index, float* output) override
@@ -63,9 +63,9 @@ public:
         case 1:
             return m_canIndex;
         case 2:
-            return m_endian;
+            return (float)m_endian;
         case 3:
-            return m_dataType;
+            return (float)m_dataType;
         case 4:
             return m_starByte;
         }
@@ -81,43 +81,43 @@ public:
     void Evaluate(float timestep) override
     {
         switch (m_dataType) {
-        case Uint8:
+        case DataType::Uint8:
             if (m_starByte > 7)
                 return;
             m_out = getFloat<uint8_t>(&m_frame.data[m_starByte], m_endian);
             break;
 
-        case Uint16:
+        case DataType::Uint16:
             if (m_starByte > 6)
                 return;
             m_out = getFloat<uint16_t>(&m_frame.data[m_starByte], m_endian);
             break;
 
-        case Uint32:
+        case DataType::Uint32:
             if (m_starByte > 4)
                 return;
             m_out = getFloat<uint32_t>(&m_frame.data[m_starByte], m_endian);
             break;
 
-        case Int8:
+        case DataType::Int8:
             if (m_starByte > 7)
                 return;
             m_out = getFloat<int8_t>(&m_frame.data[m_starByte], m_endian);
             break;
 
-        case Int16:
+        case DataType::Int16:
             if (m_starByte > 6)
                 return;
             m_out = getFloat<int16_t>(&m_frame.data[m_starByte], m_endian);
             break;
 
-        case Int32:
+        case DataType::Int32:
             if (m_starByte > 4)
                 return;
             m_out = getFloat<int32_t>(&m_frame.data[m_starByte], m_endian);
             break;
 
-        case Float:
+        case DataType::Float:
             if (m_starByte > 4)
                 return;
             m_out = getFloat<float>(&m_frame.data[m_starByte], m_endian);
@@ -142,15 +142,15 @@ private:
     float getFloat(uint8_t* data, Endian endian)
     {
         uint8_t typeSize = sizeof(T);
-        float finalValue = 0.0f;
-        uint8_t* tempValue = (uint8_t*)&finalValue;
+        T value;
+        uint8_t* tempValue = (uint8_t*)&value;
         for (uint8_t index = 0; index < typeSize; index++) {
             if (endian == Endian::Little)
                 tempValue[index] = data[index];
             if (endian == Endian::Big)
-                tempValue[index] = data[typeSize - index];
+                tempValue[index] = data[typeSize - 1 - index];
         }
-        return finalValue;
+        return value;
     }
 
 private:

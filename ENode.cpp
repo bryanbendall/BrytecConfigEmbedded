@@ -1,6 +1,7 @@
 #include "ENode.h"
 #include "Nodes/EAndNode.h"
 #include "Nodes/ECanBusInputNode.h"
+#include "Nodes/ECanBusOutputNode.h"
 #include "Nodes/EColorNode.h"
 #include "Nodes/ECompareNode.h"
 #include "Nodes/ECounterNode.h"
@@ -83,6 +84,8 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         return EHolleyBroadcastNode::CreateInPlace(spec, destination);
     case NodeTypes::Interpolate:
         return EInterpolateNode::CreateInPlace(spec, destination);
+    case NodeTypes::CanBusOutput:
+        return ECanBusOutputNode::CreateInPlace(spec, destination);
 
     default:
         return nullptr;
