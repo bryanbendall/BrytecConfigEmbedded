@@ -34,6 +34,20 @@ public:
     };
 };
 
+template <typename T>
+void setData(const float& value, uint8_t* dest, ECanBusOutputNode::Endian endian)
+{
+    uint8_t typeSize = sizeof(T);
+    T intValue = FloatToInt(value);
+    uint8_t* tempValue = (uint8_t*)&intValue;
+    for (uint8_t index = 0; index < typeSize; index++) {
+        if (endian == ECanBusOutputNode::Endian::Little)
+            dest[index] = tempValue[index];
+        if (endian == ECanBusOutputNode::Endian::Big)
+            dest[typeSize - 1 - index] = tempValue[index];
+    }
+}
+
 template <typename Id_t, typename Data_t, typename Send_t>
 class ECanBusOutputNodeInternal : public ECanBusOutputNode {
 
@@ -191,33 +205,6 @@ public:
     NodeTypes NodeType() override { return NodeTypes::CanBusOutput; }
 
 private:
-    template <typename T>
-    void setData(const float& value, uint8_t* dest, Endian endian)
-    {
-        uint8_t typeSize = sizeof(T);
-        T intValue = FloatToInt(value);
-        uint8_t* tempValue = (uint8_t*)&intValue;
-        for (uint8_t index = 0; index < typeSize; index++) {
-            if (endian == Endian::Little)
-                dest[index] = tempValue[index];
-            if (endian == Endian::Big)
-                dest[typeSize - 1 - index] = tempValue[index];
-        }
-    }
-
-    template <>
-    void setData<float>(const float& value, uint8_t* dest, Endian endian)
-    {
-        uint8_t typeSize = sizeof(float);
-        uint8_t* tempValue = (uint8_t*)&value;
-        for (uint8_t index = 0; index < typeSize; index++) {
-            if (endian == Endian::Little)
-                dest[index] = tempValue[index];
-            if (endian == Endian::Big)
-                dest[typeSize - 1 - index] = tempValue[index];
-        }
-    }
-
 private:
 #ifdef ENODE_FULL_TEMPLATE
     ValueOrPointer<Id_t> m_id;
@@ -235,4 +222,6 @@ private:
     uint8_t m_starByte;
     float m_lastSend;
 };
+
+
 }

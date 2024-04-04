@@ -39,4 +39,17 @@ ENode* ECanBusOutputNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destinat
 
     return nullptr;
 }
+
+template <>
+void setData<float>(const float& value, uint8_t* dest, ECanBusOutputNode::Endian endian)
+{
+    uint8_t typeSize = sizeof(float);
+    uint8_t* tempValue = (uint8_t*)&value;
+    for (uint8_t index = 0; index < typeSize; index++) {
+        if (endian == ECanBusOutputNode::Endian::Little)
+            dest[index] = tempValue[index];
+        if (endian == ECanBusOutputNode::Endian::Big)
+            dest[typeSize - 1 - index] = tempValue[index];
+    }
+}
 }
