@@ -85,7 +85,7 @@ float ECanHolleyBroadcastQueue::getValue(uint32_t index)
         return 0.0f;
 
     // Get the buffer that is not being wrote to
-    uint8_t buffIndex = m_writeButterIndex++;
+    uint8_t buffIndex = m_writeButterIndex + 1;
     buffIndex = buffIndex % 2;
 
     if (!m_buffers[buffIndex])

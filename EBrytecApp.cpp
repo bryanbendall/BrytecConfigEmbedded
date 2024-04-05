@@ -225,6 +225,14 @@ void EBrytecApp::processCanCommands()
     }
 }
 
+CanFrame EBrytecApp::getCustomCanFrame(uint8_t canIndex, uint32_t index)
+{
+    if (canIndex >= MAX_CAN_BUSES)
+        return CanFrame();
+
+    return s_data.customCanInputQueue[canIndex].getFrame(index);
+}
+
 void EBrytecApp::setMode(Mode mode)
 {
     switch (mode) {
@@ -547,13 +555,15 @@ void EBrytecApp::setupCustomCanInputQueue()
         // Find empty id or the same id to eliminate doubles
         uint32_t trimmedCount = 0;
         for (ENode& node : s_data.nodeVector) {
-            if (node.NodeType() == NodeTypes::Holley_Broadcast) {
-                for (uint32_t j = 0; j < trimmedCount; j++) {
+            if (node.NodeType() == NodeTypes::CanBusInput) {
+                for (uint32_t j = 0; j < nodeCounts[canBusIndex]; j++) {
                     // Check against can bus id
                     uint32_t id = FloatToInt(node.GetValue(0));
                     if ((tempBuffer[j] == UINT32_MAX) | (tempBuffer[j] == id)) {
                         tempBuffer[j] = id;
                         trimmedCount++;
+                        ECanBusInputNodeInternal* canNode = (ECanBusInputNodeInternal*)&node;
+                        canNode->setCanFrameIndex(j);
                         continue;
                     }
                 }
@@ -774,18 +784,10 @@ void EBrytecApp::updateCustomCanInputNodes()
     for (uint32_t canBusIndex = 0; canBusIndex < MAX_CAN_BUSES; canBusIndex++) {
 
         // No nodes for this can index
-        if (s_data.customCanInputQueue->getSize() == 0)
+        if (s_data.customCanInputQueue[canBusIndex].getSize() == 0)
             continue;
 
-        for (uint32_t queueIndex = 0; queueIndex < s_data.customCanInputQueue[canBusIndex].getSize(); queueIndex++) {
-            // We need to go through all nodes beacuse we might match more then one
-            for (ENode& node : s_data.nodeVector) {
-                if (node.NodeType() == NodeTypes::CanBusInput) {
-                    ECanBusInputNodeInternal* customCanNode = (ECanBusInputNodeInternal*)&node;
-                    customCanNode->setCanFrame(s_data.customCanInputQueue[canBusIndex].getFrame(queueIndex));
-                }
-            }
-        }
+        s_data.customCanInputQueue[canBusIndex].swapBuffers();
     }
 }
 

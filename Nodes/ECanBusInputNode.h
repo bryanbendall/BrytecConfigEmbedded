@@ -3,6 +3,7 @@
 #include "ENode.h"
 
 #include "Can/EBrytecCan.h"
+#include "EBrytecApp.h"
 
 namespace Brytec {
 
@@ -80,47 +81,53 @@ public:
 
     void Evaluate(float timestep) override
     {
+        CanFrame frame = EBrytecApp::getCustomCanFrame(m_canIndex, m_frameIndex);
+        if (!frame)
+            return;
+
+        // TODO check for timeout?
+
         switch (m_dataType) {
         case DataType::Uint8:
             if (m_starByte > 7)
                 return;
-            m_out = getFloat<uint8_t>(&m_frame.data[m_starByte], m_endian);
+            m_out = getFloat<uint8_t>(&frame.data[m_starByte], m_endian);
             break;
 
         case DataType::Uint16:
             if (m_starByte > 6)
                 return;
-            m_out = getFloat<uint16_t>(&m_frame.data[m_starByte], m_endian);
+            m_out = getFloat<uint16_t>(&frame.data[m_starByte], m_endian);
             break;
 
         case DataType::Uint32:
             if (m_starByte > 4)
                 return;
-            m_out = getFloat<uint32_t>(&m_frame.data[m_starByte], m_endian);
+            m_out = getFloat<uint32_t>(&frame.data[m_starByte], m_endian);
             break;
 
         case DataType::Int8:
             if (m_starByte > 7)
                 return;
-            m_out = getFloat<int8_t>(&m_frame.data[m_starByte], m_endian);
+            m_out = getFloat<int8_t>(&frame.data[m_starByte], m_endian);
             break;
 
         case DataType::Int16:
             if (m_starByte > 6)
                 return;
-            m_out = getFloat<int16_t>(&m_frame.data[m_starByte], m_endian);
+            m_out = getFloat<int16_t>(&frame.data[m_starByte], m_endian);
             break;
 
         case DataType::Int32:
             if (m_starByte > 4)
                 return;
-            m_out = getFloat<int32_t>(&m_frame.data[m_starByte], m_endian);
+            m_out = getFloat<int32_t>(&frame.data[m_starByte], m_endian);
             break;
 
         case DataType::Float:
             if (m_starByte > 4)
                 return;
-            m_out = getFloat<float>(&m_frame.data[m_starByte], m_endian);
+            m_out = getFloat<float>(&frame.data[m_starByte], m_endian);
             break;
         }
     }
@@ -132,9 +139,9 @@ public:
 
     NodeTypes NodeType() override { return NodeTypes::CanBusInput; }
 
-    void setCanFrame(CanFrame frame)
+    void setCanFrameIndex(uint32_t index)
     {
-        m_frame = frame;
+        m_frameIndex = index;
     }
 
 private:
@@ -159,7 +166,7 @@ private:
     Endian m_endian;
     DataType m_dataType;
     uint8_t m_starByte;
-    float m_out;
-    CanFrame m_frame;
+    float m_out = 0.0f;
+    uint32_t m_frameIndex = UINT32_MAX;
 };
 }

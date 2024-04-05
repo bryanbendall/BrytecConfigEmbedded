@@ -20,7 +20,8 @@ public:
     CanFrame getFrame(uint32_t index);
 
 private:
-    CanFrame* m_buffers[2];
+    uint32_t* m_addresses = nullptr;
+    CanFrame* m_buffers[2] = { nullptr };
     uint8_t m_writeButterIndex = 0;
     uint32_t m_size = 0;
 };
