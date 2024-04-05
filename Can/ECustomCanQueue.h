@@ -14,7 +14,7 @@ public:
     void init(uint32_t size);
     void reset();
     void swapBuffers();
-    void insert(uint32_t index, const CanFrame& frame);
+    void insert(uint32_t index, uint32_t id);
     void update(const CanFrame& frame);
     uint32_t getSize() { return m_size; }
     CanFrame getFrame(uint32_t index);

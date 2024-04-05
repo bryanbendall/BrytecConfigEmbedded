@@ -13,6 +13,12 @@ void ECustomCanQueue::init(uint32_t size)
     m_addresses = (uint32_t*)malloc(sizeof(uint32_t) * size);
     m_buffers[0] = (CanFrame*)malloc(sizeof(CanFrame) * size);
     m_buffers[1] = (CanFrame*)malloc(sizeof(CanFrame) * size);
+
+    // Clear buffers
+    for (uint32_t i = 0; i < m_size; i++) {
+        m_buffers[0][i] = CanFrame();
+        m_buffers[1][i] = CanFrame();
+    }
 }
 
 void ECustomCanQueue::reset()
@@ -31,15 +37,14 @@ void ECustomCanQueue::swapBuffers()
     // Get the buffer that is not being wrote to and clear it
     uint8_t buffIndex = m_writeButterIndex + 1;
     buffIndex = buffIndex % 2;
-    for (uint32_t i = 0; i < m_size; i++) {
+    for (uint32_t i = 0; i < m_size; i++)
         m_buffers[buffIndex][i] = CanFrame();
-    }
 
     m_writeButterIndex++;
     m_writeButterIndex = m_writeButterIndex % 2;
 }
 
-void ECustomCanQueue::insert(uint32_t index, const CanFrame& frame)
+void ECustomCanQueue::insert(uint32_t index, uint32_t id)
 {
     if (index >= m_size)
         return;
@@ -47,7 +52,7 @@ void ECustomCanQueue::insert(uint32_t index, const CanFrame& frame)
     if (!m_addresses)
         return;
 
-    m_addresses[index] = frame.id;
+    m_addresses[index] = id;
 }
 
 void ECustomCanQueue::update(const CanFrame& frame)

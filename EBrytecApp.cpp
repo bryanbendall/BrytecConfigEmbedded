@@ -564,7 +564,7 @@ void EBrytecApp::setupCustomCanInputQueue()
                         trimmedCount++;
                         ECanBusInputNodeInternal* canNode = (ECanBusInputNodeInternal*)&node;
                         canNode->setCanFrameIndex(j);
-                        continue;
+                        j = nodeCounts[canBusIndex]; // Break from loop
                     }
                 }
             }
@@ -572,11 +572,8 @@ void EBrytecApp::setupCustomCanInputQueue()
 
         // Add id to queue
         s_data.customCanInputQueue[canBusIndex].init(trimmedCount);
-        for (uint32_t i = 0; i < trimmedCount; i++) {
-            CanFrame frame;
-            frame.id = tempBuffer[i];
-            s_data.customCanInputQueue[canBusIndex].insert(i, frame);
-        }
+        for (uint32_t i = 0; i < trimmedCount; i++)
+            s_data.customCanInputQueue[canBusIndex].insert(i, tempBuffer[i]);
 
         free(tempBuffer);
     }
