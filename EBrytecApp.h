@@ -30,6 +30,7 @@ public:
     static void brytecUsbReceived(const Brytec::UsbPacket& packet);
     static void processCanCommands();
     static CanFrame getCustomCanFrame(uint8_t canIndex, uint32_t index);
+    static CanFrame getHolleyFrame(uint32_t index);
 
 private:
     static void setMode(Mode mode);

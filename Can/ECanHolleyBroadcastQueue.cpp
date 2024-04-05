@@ -5,38 +5,20 @@
 
 namespace Brytec {
 
-HolleyBroadcast::HolleyBroadcast(uint32_t channleNumber)
-    : channel(channleNumber)
-{
-}
-
-HolleyBroadcast::HolleyBroadcast(const CanFrame& frame)
-{
-    // Not the right format
-    if (frame.type != CanFrameType::Ext)
-        return;
-
-    // Not from ecu
-    if (((frame.id >> 11) & 0x07) != 0x02)
-        return;
-
-    channel = (frame.id & 0x1FFC000) >> 14;
-
-    // Convert from big endian to small endian
-    uint8_t* v = (uint8_t*)&value;
-    v[0] = frame.data[3];
-    v[1] = frame.data[2];
-    v[2] = frame.data[1];
-    v[3] = frame.data[0];
-}
-
 void ECanHolleyBroadcastQueue::init(uint32_t size)
 {
     reset();
 
     m_size = size;
-    m_buffers[0] = (HolleyBroadcast*)malloc(sizeof(HolleyBroadcast) * size);
-    m_buffers[1] = (HolleyBroadcast*)malloc(sizeof(HolleyBroadcast) * size);
+    m_channels = (uint32_t*)malloc(sizeof(uint32_t) * size);
+    m_buffers[0] = (CanFrame*)malloc(sizeof(CanFrame) * size);
+    m_buffers[1] = (CanFrame*)malloc(sizeof(CanFrame) * size);
+
+    // Clear buffers
+    for (uint32_t i = 0; i < m_size; i++) {
+        m_buffers[0][i] = CanFrame();
+        m_buffers[1][i] = CanFrame();
+    }
 }
 
 void ECanHolleyBroadcastQueue::reset()
@@ -50,47 +32,64 @@ void ECanHolleyBroadcastQueue::reset()
 
 void ECanHolleyBroadcastQueue::swapBuffers()
 {
+    // Get the buffer that is not being wrote to and clear it
+    uint8_t buffIndex = m_writeButterIndex + 1;
+    buffIndex = buffIndex % 2;
+    for (uint32_t i = 0; i < m_size; i++)
+        m_buffers[buffIndex][i] = CanFrame();
+
     m_writeButterIndex++;
     m_writeButterIndex = m_writeButterIndex % 2;
 }
 
-void ECanHolleyBroadcastQueue::insert(uint32_t index, const HolleyBroadcast& bc)
+void ECanHolleyBroadcastQueue::insert(uint32_t index, uint32_t channel)
 {
     if (index >= m_size)
         return;
 
-    if (!m_buffers[0] || !m_buffers[1])
+    if (!m_channels)
         return;
 
-    m_buffers[0][index] = bc;
-    m_buffers[1][index] = bc;
+    m_channels[index] = channel;
 }
 
-void ECanHolleyBroadcastQueue::update(const HolleyBroadcast& bc)
+void ECanHolleyBroadcastQueue::update(const CanFrame& frame)
 {
     if (!m_buffers[m_writeButterIndex])
         return;
 
+    uint32_t frameChannel = getChannel(frame);
+
     for (uint32_t i = 0; i < m_size; i++) {
-        if (m_buffers[m_writeButterIndex][i].channel == bc.channel) {
-            m_buffers[m_writeButterIndex][i] = bc;
+        if (m_channels[i] == frameChannel) {
+            m_buffers[m_writeButterIndex][i] = frame;
             return;
         }
     }
 }
 
-float ECanHolleyBroadcastQueue::getValue(uint32_t index)
+CanFrame ECanHolleyBroadcastQueue::getFrame(uint32_t index)
 {
     if (index >= m_size)
-        return 0.0f;
+        return CanFrame();
 
     // Get the buffer that is not being wrote to
     uint8_t buffIndex = m_writeButterIndex + 1;
     buffIndex = buffIndex % 2;
 
-    if (!m_buffers[buffIndex])
-        return 0.0f;
+    return m_buffers[buffIndex][index];
+}
 
-    return m_buffers[buffIndex][index].value;
+uint32_t ECanHolleyBroadcastQueue::getChannel(const CanFrame& frame)
+{
+    // Not the right format
+    if (frame.type != CanFrameType::Ext)
+        return UINT32_MAX;
+
+    // Not from ecu
+    if (((frame.id >> 11) & 0x07) != 0x02)
+        return UINT32_MAX;
+
+    return (frame.id & 0x1FFC000) >> 14;
 }
 }

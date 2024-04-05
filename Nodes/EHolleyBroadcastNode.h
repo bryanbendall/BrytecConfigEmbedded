@@ -2,6 +2,9 @@
 
 #include "ENode.h"
 
+#include "Can/EBrytecCan.h"
+#include "EBrytecApp.h"
+
 namespace Brytec {
 
 class EHolleyBroadcastNode : public ENode {
@@ -39,14 +42,30 @@ public:
 
     void Evaluate(float timestep) override
     {
+        CanFrame frame = EBrytecApp::getHolleyFrame(m_frameIndex);
+        if (!frame)
+            return;
+
+        // Convert from big endian to small endian
+        uint8_t* v = (uint8_t*)&m_out;
+        v[0] = frame.data[3];
+        v[1] = frame.data[2];
+        v[2] = frame.data[1];
+        v[3] = frame.data[0];
     }
 
     uint32_t Size() override { return sizeof(*this); }
 
     NodeTypes NodeType() override { return NodeTypes::Holley_Broadcast; }
 
+    void setCanFrameIndex(uint32_t index)
+    {
+        m_frameIndex = index;
+    }
+
 private:
     uint32_t m_channel;
-    float m_out;
+    float m_out = 0.0f;
+    uint32_t m_frameIndex = UINT32_MAX;
 };
 }

@@ -107,10 +107,7 @@ void EBrytecApp::canReceived(uint8_t canIndex, const CanFrame& frame)
         break;
 
     case CanTypes::Types::Holley: {
-        HolleyBroadcast holleyBc(frame);
-        if (!holleyBc)
-            break;
-        s_data.holleyBcQueue.update(holleyBc);
+        s_data.holleyBcQueue.update(frame);
         break;
     }
 
@@ -231,6 +228,11 @@ CanFrame EBrytecApp::getCustomCanFrame(uint8_t canIndex, uint32_t index)
         return CanFrame();
 
     return s_data.customCanInputQueue[canIndex].getFrame(index);
+}
+
+CanFrame EBrytecApp::getHolleyFrame(uint32_t index)
+{
+    return s_data.holleyBcQueue.getFrame(index);
 }
 
 void EBrytecApp::setMode(Mode mode)
@@ -513,7 +515,9 @@ void EBrytecApp::setupHolleyBroadcastQueue()
                 if ((channelBuffer[j] == UINT32_MAX) | (channelBuffer[j] == channel)) {
                     channelBuffer[j] = channel;
                     trimmedHolleyNodeCount++;
-                    continue;
+                    EHolleyBroadcastNodeInternal* holleyNode = (EHolleyBroadcastNodeInternal*)&node;
+                    holleyNode->setCanFrameIndex(j);
+                    j = holleyNodeCount; // Break from loop
                 }
             }
         }
@@ -522,7 +526,7 @@ void EBrytecApp::setupHolleyBroadcastQueue()
     // Add channel to queue
     s_data.holleyBcQueue.init(trimmedHolleyNodeCount);
     for (uint32_t i = 0; i < trimmedHolleyNodeCount; i++)
-        s_data.holleyBcQueue.insert(i, HolleyBroadcast(channelBuffer[i]));
+        s_data.holleyBcQueue.insert(i, channelBuffer[i]);
 
     free(channelBuffer);
 }
@@ -766,14 +770,6 @@ void EBrytecApp::updateHolleyBroadcastNodes()
 {
     // Switch buffers in case we get new messages while we are updating
     s_data.holleyBcQueue.swapBuffers();
-
-    for (uint32_t queueIndex = 0; queueIndex < s_data.holleyBcQueue.getSize(); queueIndex++) {
-        // We need to go through all nodes beacuse we might match more then one
-        for (ENode& node : s_data.nodeVector) {
-            if (node.NodeType() == NodeTypes::Holley_Broadcast)
-                *node.GetOutput(0) = s_data.holleyBcQueue.getValue(queueIndex);
-        }
-    }
 }
 
 void EBrytecApp::updateCustomCanInputNodes()
