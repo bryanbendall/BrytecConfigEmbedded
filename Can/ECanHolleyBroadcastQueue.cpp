@@ -59,6 +59,8 @@ void ECanHolleyBroadcastQueue::update(const CanFrame& frame)
         return;
 
     uint32_t frameChannel = getChannel(frame);
+    if (frameChannel == UINT32_MAX)
+        return;
 
     for (uint32_t i = 0; i < m_size; i++) {
         if (m_channels[i] == frameChannel) {
