@@ -78,26 +78,26 @@ public:
         return &m_out;
     }
 
-    void Evaluate(float timestep) override
+    void Evaluate(uint32_t timestepMs) override
     {
         bool in = FloatToBool(m_in);
         bool repeat = FloatToBool(m_repeat);
-        float timeout = m_timeout;
+        uint32_t timeout = FloatTimeToMs(m_timeout);
 
         if (!in) {
-            m_timerCounter = 0.0f;
+            m_timerCounter = 0;
             m_out = 0.0f;
             return;
         }
 
-        m_timerCounter += timestep;
+        m_timerCounter += timestepMs;
         if (m_timerCounter > timeout) {
             if (repeat)
-                m_timerCounter = 0.0f;
+                m_timerCounter = 0;
             else
                 m_timerCounter = timeout;
         }
-        float curveProgress = m_timerCounter / timeout;
+        float curveProgress = (float)m_timerCounter / (float)timeout;
 
         if constexpr (type == CurveType::Toggle) {
             if (curveProgress > 0.5f)
@@ -135,7 +135,7 @@ private:
     ValueAndPointer m_repeat;
     ValueAndPointer m_timeout;
 #endif
-    float m_timerCounter;
+    uint32_t m_timerCounter;
     float m_out;
 };
 

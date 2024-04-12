@@ -56,19 +56,19 @@ public:
         return &m_out;
     }
 
-    void Evaluate(float timestep) override
+    void Evaluate(uint32_t timestepMs) override
     {
         bool in = FloatToBool(m_in);
-        float delayTime = m_delayTime;
+        uint32_t delayTime = FloatTimeToMs(m_delayTime);
 
         if (in) {
-            m_timerCounter += timestep;
+            m_timerCounter += timestepMs;
             if (m_timerCounter >= delayTime) {
                 m_out = m_in;
                 m_timerCounter = delayTime;
             }
         } else {
-            m_timerCounter = 0.0f;
+            m_timerCounter = 0;
             m_out = 0.0f;
         }
     }
@@ -85,7 +85,7 @@ private:
     ValueAndPointer m_in;
     ValueAndPointer m_delayTime;
 #endif
-    float m_timerCounter;
+    uint32_t m_timerCounter;
     float m_out;
 };
 

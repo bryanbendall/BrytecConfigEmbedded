@@ -78,7 +78,7 @@ public:
         return &m_out;
     }
 
-    void Evaluate(float timestep) override
+    void Evaluate(uint32_t timestepMs) override
     {
         bool up = FloatToBool(m_up);
         bool down = FloatToBool(m_down);

@@ -57,7 +57,7 @@ public:
         return &m_out;
     }
 
-    void Evaluate(float timestep) override
+    void Evaluate(uint32_t timestepMs) override
     {
         // Clamp color channels
         float red = m_red;

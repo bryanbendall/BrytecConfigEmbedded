@@ -14,7 +14,7 @@ public:
         return 0.0f;
     }
     float* GetOutput(uint8_t index) override;
-    void Evaluate(float timestep) override;
+    void Evaluate(uint32_t timestepMs) override;
     uint32_t Size() override { return sizeof(EConvertNode); };
     NodeTypes NodeType() override { return NodeTypes::Convert; }
 

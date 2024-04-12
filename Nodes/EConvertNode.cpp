@@ -15,7 +15,7 @@ float* EConvertNode::GetOutput(uint8_t index)
     return nullptr;
 }
 
-void EConvertNode::Evaluate(float timestep)
+void EConvertNode::Evaluate(uint32_t timestepMs)
 {
 }
 

@@ -49,7 +49,7 @@ bool EBrytecApp::isDeserializeOk()
     return s_data.deserializeOk;
 }
 
-void EBrytecApp::update(float timestep)
+void EBrytecApp::update(uint32_t timestepMs)
 {
     processCanCommands();
 
@@ -61,7 +61,7 @@ void EBrytecApp::update(float timestep)
         return;
 
     // Update current and over current
-    updateCurrents(timestep);
+    updateCurrents(timestepMs);
 
     updateNodeGroupNodes();
 
@@ -75,7 +75,7 @@ void EBrytecApp::update(float timestep)
     }
 
     // Calculate all nodes
-    s_data.nodeVector.evaluateAll(timestep);
+    s_data.nodeVector.evaluateAll(timestepMs);
 
     // Set outputs
     for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
@@ -83,14 +83,14 @@ void EBrytecApp::update(float timestep)
     }
 
     // Send can data
-    static float canDataTimer = 0.0f;
-    canDataTimer += timestep;
+    static uint32_t canDataTimer = 0;
+    canDataTimer += timestepMs;
     if (canDataTimer >= CAN_UPDATE_FREQUENCY) {
         sendBrytecCanBroadcasts();
-        canDataTimer = 0.0f;
+        canDataTimer = 0;
     }
 
-    sendRacepakCan(timestep);
+    sendRacepakCan(timestepMs);
 }
 
 void EBrytecApp::canReceived(uint8_t canIndex, const CanFrame& frame)
@@ -398,7 +398,9 @@ void EBrytecApp::deserializeModule()
 
         des->readRaw<uint8_t>(&currentNodeGroup->maxRetries);
 
-        des->readRaw<float>(&currentNodeGroup->retryDelay);
+        float retryDelay;
+        des->readRaw<float>(&retryDelay);
+        currentNodeGroup->retryDelay = FloatTimeToMs(retryDelay);
 
         // Create nodes in vector
         {
@@ -660,16 +662,16 @@ void EBrytecApp::sendBrytecCanPinStatus(ENodeGroup& nodeGroup)
     BrytecBoard::sendBrytecCanUsb(frame);
 }
 
-void EBrytecApp::sendRacepakCan(float timestep)
+void EBrytecApp::sendRacepakCan(uint32_t timestepMs)
 {
-    static float racepakTimer = 0.0f;
-    racepakTimer += timestep;
+    static uint32_t racepakTimer = 0;
+    racepakTimer += timestepMs;
 
     // Early out if not time to send
-    if (racepakTimer < 0.1f)
+    if (racepakTimer < 100)
         return;
 
-    racepakTimer = 0.0f;
+    racepakTimer = 0;
 
     for (uint8_t canIndex = 0; canIndex < MAX_CAN_BUSES; canIndex++) {
         if (s_data.canBuses[canIndex].type == CanTypes::Types::Racepak) {
@@ -784,16 +786,16 @@ void EBrytecApp::updateCustomCanInputNodes()
     }
 }
 
-void EBrytecApp::updateCurrents(float timestep)
+void EBrytecApp::updateCurrents(uint32_t timestepMs)
 {
     for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++)
-        s_data.nodeGroups[i].updatePinCurrent(timestep);
+        s_data.nodeGroups[i].updatePinCurrent(timestepMs);
 }
 
-void EBrytecApp::evaulateJustNodes(float timestep)
+void EBrytecApp::evaulateJustNodes(uint32_t timestepMs)
 {
     // Calculate all nodes
-    s_data.nodeVector.evaluateAll(timestep);
+    s_data.nodeVector.evaluateAll(timestepMs);
 }
 
 void EBrytecApp::sendCanNak()

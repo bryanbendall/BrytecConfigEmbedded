@@ -42,7 +42,7 @@ public:
         return &m_out;
     }
 
-    void Evaluate(float timestep) override
+    void Evaluate(uint32_t timestepMs) override
     {
         bool in = FloatToBool(m_in);
 

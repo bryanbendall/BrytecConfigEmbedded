@@ -83,15 +83,12 @@ public:
         return &m_out;
     }
 
-    void Evaluate(float timestep) override
+    void Evaluate(uint32_t timestepMs) override
     {
-        // timestep from seconds to milliseconds
-        timestep *= 1000;
-
         float error = m_target - m_input;
         float proportional = error;
-        m_integral = m_integral + error * timestep;
-        float derivative = (error - m_previousError) / timestep;
+        m_integral = m_integral + error * (float)timestepMs;
+        float derivative = (error - m_previousError) / (float)timestepMs;
         m_out = m_P * proportional + m_I * m_integral + m_D * derivative;
         m_previousError = error;
     }

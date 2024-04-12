@@ -56,7 +56,7 @@ public:
         return &m_out;
     }
 
-    void Evaluate(float timestep) override
+    void Evaluate(uint32_t timestepMs) override
     {
 
         if (FloatToBool(m_in) == FloatToBool(m_lastIn)) {

@@ -76,16 +76,16 @@ public:
         return &m_out;
     }
 
-    void Evaluate(float timestep) override
+    void Evaluate(uint32_t timestepMs) override
     {
 
-        float transitionTime = m_delayTime;
+        uint32_t transitionTime = FloatTimeToMs(m_delayTime);
 
-        float preTimer = m_timerCounter;
-        m_timerCounter += timestep;
+        uint32_t preTimer = m_timerCounter;
+        m_timerCounter += timestepMs;
 
         if (m_timerCounter >= transitionTime || FloatIsEqual(m_in, m_out)) {
-            m_timerCounter = 0.0f;
+            m_timerCounter = 0;
             m_out = m_in;
 
         } else {
@@ -94,7 +94,7 @@ public:
             float y1 = m_in;
 
             // Previous point
-            float x2 = preTimer / transitionTime;
+            float x2 = (float)preTimer / (float)transitionTime;
             // Easing
             {
                 if constexpr (type == InterpolateType::Linear) { }
@@ -125,7 +125,7 @@ public:
             float y = m * (0.0f - x1) + y1;
 
             // New t value
-            float t = m_timerCounter / transitionTime;
+            float t = (float)m_timerCounter / (float)transitionTime;
             // Easing
             {
                 if constexpr (type == InterpolateType::Linear) { }
@@ -209,14 +209,13 @@ public:
 
 private:
 #ifdef ENODE_FULL_TEMPLATE
-    ValueOrPointer<Input1_t>
-        m_in;
+    ValueOrPointer<Input1_t> m_in;
     ValueOrPointer<Input2_t> m_delayTime;
 #else
     ValueAndPointer m_in;
     ValueAndPointer m_delayTime;
 #endif
-    float m_timerCounter;
+    uint32_t m_timerCounter;
     float m_out;
 };
 }

@@ -40,7 +40,7 @@ public:
         return &m_out;
     }
 
-    void Evaluate(float timestep) override
+    void Evaluate(uint32_t timestepMs) override
     {
         CanFrame frame = EBrytecApp::getHolleyFrame(m_frameIndex);
         if (!frame)

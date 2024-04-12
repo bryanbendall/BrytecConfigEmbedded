@@ -54,7 +54,7 @@ public:
         return &m_out;
     }
 
-    void Evaluate(float timestep) override
+    void Evaluate(uint32_t timestepMs) override
     {
         bool selection = FloatToBool(m_selection);
         float input1 = m_input1;

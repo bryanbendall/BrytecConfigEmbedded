@@ -73,12 +73,12 @@ public:
         return &m_out;
     }
 
-    void Evaluate(float timestep) override
+    void Evaluate(uint32_t timestepMs) override
     {
-        if (m_timeSinceLastUpdate >= m_timeout)
+        if (m_timeSinceLastUpdate >= FloatTimeToMs(m_timeout))
             m_out = m_defaultValue;
-
-        m_timeSinceLastUpdate += timestep;
+        else
+            m_timeSinceLastUpdate += timestepMs;
     }
 
     uint32_t Size() override { return sizeof(*this); }
@@ -99,7 +99,7 @@ private:
     ValueAndPointer m_defaultValue;
     ValueAndPointer m_timeout;
 #endif
-    float m_timeSinceLastUpdate = 0.0f;
+    uint32_t m_timeSinceLastUpdate = 0;
     float m_out;
 };
 

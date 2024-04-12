@@ -79,46 +79,46 @@ public:
         return nullptr;
     }
 
-    void Evaluate(float timestep) override
+    void Evaluate(uint32_t timestepMs) override
     {
-        bool button = FloatToBool(m_button);
-        bool neutralSafety = FloatToBool(m_neutralSafety);
-        bool engineRunning = FloatToBool(m_engineRunning);
+        // bool button = FloatToBool(m_button);
+        // bool neutralSafety = FloatToBool(m_neutralSafety);
+        // bool engineRunning = FloatToBool(m_engineRunning);
 
-        if (engineRunning && FloatToBool(m_starterOut)) {
-            m_starterOut = 0.0f;
-            return;
-        }
+        // if (engineRunning && FloatToBool(m_starterOut)) {
+        //     m_starterOut = 0.0f;
+        //     return;
+        // }
 
-        if (FloatToBool(m_lastButtonState) == button) {
-            return;
-        }
-        m_lastButtonState = button;
+        // if (FloatToBool(m_lastButtonState) == button) {
+        //     return;
+        // }
+        // m_lastButtonState = button;
 
-        if (button && !FloatToBool(m_ignitionOut)) {
-            m_ignitionOut = 1.0f;
-            m_starterOut = 0.0f;
-            return;
-        }
+        // if (button && !FloatToBool(m_ignitionOut)) {
+        //     m_ignitionOut = 1.0f;
+        //     m_starterOut = 0.0f;
+        //     return;
+        // }
 
-        if (button && !engineRunning && !neutralSafety) {
-            m_ignitionOut = 0.0f;
-            m_starterOut = 0.0f;
-            return;
-        }
+        // if (button && !engineRunning && !neutralSafety) {
+        //     m_ignitionOut = 0.0f;
+        //     m_starterOut = 0.0f;
+        //     return;
+        // }
 
-        if (button && engineRunning) {
-            m_ignitionOut = 0.0f;
-            m_starterOut = 0.0f;
-            return;
-        }
+        // if (button && engineRunning) {
+        //     m_ignitionOut = 0.0f;
+        //     m_starterOut = 0.0f;
+        //     return;
+        // }
 
-        if (button && !engineRunning && neutralSafety) {
-            m_starterOut = 1.0f;
-            return;
-        }
+        // if (button && !engineRunning && neutralSafety) {
+        //     m_starterOut = 1.0f;
+        //     return;
+        // }
 
-        m_starterOut = 0.0f;
+        // m_starterOut = 0.0f;
     }
 
     uint32_t Size() override { return sizeof(*this); }

@@ -45,23 +45,22 @@ void ENodeGroup::updateFinalValue()
     BrytecBoard::setPinValue(index, type, *output);
 }
 
-void ENodeGroup::updatePinCurrent(float timestep)
+void ENodeGroup::updatePinCurrent(uint32_t timestepMs)
 {
     if (!enabled)
         return;
 
     float current = BrytecBoard::getPinCurrent(index);
-    checkOverCurrent(timestep, current);
+    checkOverCurrent(timestepMs, current);
 
-    ENode* node
-        = EBrytecApp::getPinCurrentNode(startNodeIndex, nodeCount);
+    ENode* node = EBrytecApp::getPinCurrentNode(startNodeIndex, nodeCount);
     if (!node)
         return;
 
     node->SetValue(0, current);
 }
 
-void ENodeGroup::checkOverCurrent(float timestep, float current)
+void ENodeGroup::checkOverCurrent(uint32_t timestepMs, float current)
 {
     // Skip if current limit not supported
     if (currentLimit == 0)
@@ -80,10 +79,10 @@ void ENodeGroup::checkOverCurrent(float timestep, float current)
         }
 
         // Check retry timer
-        retryTimer += timestep;
+        retryTimer += timestepMs;
         if (retryTimer >= retryDelay) {
             tripped = false;
-            retryTimer = 0.0f;
+            retryTimer = 0;
             numberRetries += 1;
             return;
         }
@@ -92,19 +91,19 @@ void ENodeGroup::checkOverCurrent(float timestep, float current)
 
         // Slow blow current limit
         if (current >= (float)currentLimit)
-            trippedTimer += timestep;
-        else
-            trippedTimer -= timestep;
-
-        // Clamp timer to min of 0
-        if (trippedTimer < 0.0f)
-            trippedTimer = 0.0f;
+            trippedTimer += timestepMs;
+        else {
+            if (timestepMs > trippedTimer)
+                trippedTimer = 0;
+            else
+                trippedTimer -= timestepMs;
+        }
 
         // Shut down pin
         if (trippedTimer >= TrippedTime) {
             BrytecBoard::setPinValue(index, type, 0.0f);
             tripped = true;
-            trippedTimer = 0.0f;
+            trippedTimer = 0;
         }
     }
 }

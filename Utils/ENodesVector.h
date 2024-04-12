@@ -100,10 +100,10 @@ public:
         at(nodeIndex)->SetInput(inputIndex, at(connectedNodeIndex)->GetOutput(outputIndex));
     }
 
-    void evaluateAll(float timestep)
+    void evaluateAll(uint32_t timestepMs)
     {
         for (ENode& n : *this)
-            n.Evaluate(timestep);
+            n.Evaluate(timestepMs);
     }
 
     void reset()

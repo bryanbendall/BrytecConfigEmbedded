@@ -63,7 +63,7 @@ public:
         return &m_out;
     }
 
-    void Evaluate(float timestep) override
+    void Evaluate(uint32_t timestepMs) override
     {
         if constexpr (type == MathType::Add)
             m_out = m_input1 + m_input2;

@@ -60,7 +60,7 @@ public:
         return &m_out;
     }
 
-    void Evaluate(float timestep) override
+    void Evaluate(uint32_t timestepMs) override
     {
         bool stage1Trigger = FloatToBool(m_stage1Trigger);
         float stage1Percent = m_stage1Percent;

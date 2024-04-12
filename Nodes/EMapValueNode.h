@@ -70,7 +70,7 @@ public:
         return &m_out;
     }
 
-    void Evaluate(float timestep) override
+    void Evaluate(uint32_t timestepMs) override
     {
         float x = m_fromMin;
         float y = m_toMin;
