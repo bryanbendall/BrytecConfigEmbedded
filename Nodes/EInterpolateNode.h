@@ -48,12 +48,14 @@ public:
         case 1:
             m_delayTime.setValue(value);
             break;
+#ifdef NODES_SIMULATION
         case 3:
             m_timerCounter = value;
             break;
         case 4:
             m_out = value;
             break;
+#endif
         }
     }
 

@@ -55,9 +55,11 @@ public:
         case 2:
             m_timeout.setValue(value);
             break;
+#ifdef NODES_SIMULATION
         case 4:
             m_timerCounter = value;
             break;
+#endif
         }
     }
 

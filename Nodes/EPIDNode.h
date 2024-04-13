@@ -57,12 +57,14 @@ public:
         case 4:
             m_D.setValue(value);
             break;
+#ifdef NODES_SIMULATION
         case 5:
             m_previousError = value;
             break;
         case 6:
             m_integral = value;
             break;
+#endif
         }
     }
 

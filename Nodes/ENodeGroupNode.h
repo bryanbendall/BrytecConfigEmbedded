@@ -46,12 +46,13 @@ public:
         case 1:
             m_timeout.setValue(value);
             break;
+#ifdef NODES_SIMULATION
         case 2:
-            // Simulation value
             m_out = value;
             break;
+#endif
         case 99:
-            m_timeSinceLastUpdate = 0.0f;
+            m_timeSinceLastUpdate = 0;
             m_out = value;
             break;
         }

@@ -29,6 +29,7 @@ public:
         case 0:
             m_in.setValue(value);
             break;
+#ifdef NODES_SIMULATION
         case 1:
             m_lastIn = value;
             break;
@@ -36,6 +37,7 @@ public:
             m_lastOut = value;
             m_out = value;
             break;
+#endif
         }
     }
 
@@ -59,22 +61,22 @@ public:
     void Evaluate(uint32_t timestepMs) override
     {
 
-        if (FloatToBool(m_in) == FloatToBool(m_lastIn)) {
+        if (m_in == m_lastIn) {
             return;
         }
 
-        if (FloatToBool(m_in)) {
-            if (FloatToBool(m_lastOut))
+        if (m_in) {
+            if (m_lastOut)
                 m_out = 0.0f;
             else
                 m_out = 1.0f;
 
             m_lastOut = m_out;
-            m_lastIn = 1.0f;
+            m_lastIn = true;
             return;
         }
 
-        m_lastIn = 0.0f;
+        m_lastIn = false;
     }
 
     uint32_t Size() override { return sizeof(*this); }
@@ -87,8 +89,8 @@ private:
 #else
     ValueAndPointer m_in;
 #endif
-    float m_lastIn;
-    float m_lastOut;
+    bool m_lastIn;
+    bool m_lastOut;
     float m_out;
 };
 

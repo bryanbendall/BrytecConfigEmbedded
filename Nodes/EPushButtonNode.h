@@ -41,6 +41,7 @@ public:
         case 2:
             m_engineRunning.setValue(value);
             break;
+#ifdef NODES_SIMULATION
         case 3:
             m_lastButtonState = value;
             break;
@@ -50,6 +51,7 @@ public:
         case 5:
             m_starterOut = value;
             break;
+#endif
         }
     }
 

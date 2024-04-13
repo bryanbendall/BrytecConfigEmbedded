@@ -35,9 +35,11 @@ public:
         case 1:
             m_delayTime.setValue(value);
             break;
+#ifdef NODES_SIMULATION
         case 2:
             m_timerCounter = value;
             break;
+#endif
         }
     }
 

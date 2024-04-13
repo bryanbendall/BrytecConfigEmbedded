@@ -47,6 +47,7 @@ public:
         case 3:
             m_max.setValue(value);
             break;
+#ifdef NODES_SIMULATION
         case 4:
             m_lastUp = value;
             break;
@@ -56,6 +57,7 @@ public:
         case 6:
             m_out = value;
             break;
+#endif
         }
     }
 
@@ -83,13 +85,13 @@ public:
         bool up = FloatToBool(m_up);
         bool down = FloatToBool(m_down);
 
-        if (FloatToBool(m_lastUp) != up) {
+        if (m_lastUp != up) {
             m_lastUp = up;
             if (up)
                 m_out++;
         }
 
-        if (FloatToBool(m_lastDown) != down) {
+        if (m_lastDown != down) {
             m_lastDown = down;
             if (down)
                 m_out--;
@@ -119,8 +121,8 @@ private:
     ValueAndPointer m_min;
     ValueAndPointer m_max;
 #endif
-    float m_lastUp;
-    float m_lastDown;
+    bool m_lastUp;
+    bool m_lastDown;
     float m_out;
 };
 
