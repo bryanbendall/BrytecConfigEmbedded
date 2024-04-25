@@ -10,7 +10,7 @@ public:
     static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
 };
 
-template <typename Input1_t>
+template <typename Input1_t, typename Reset_t>
 class EToggleNodeInternal : public EToggleNode {
 
 public:
@@ -19,6 +19,9 @@ public:
         switch (index) {
         case 0:
             m_in.setPointer(output);
+            break;
+        case 1:
+            m_reset.setPointer(output);
             break;
         }
     }
@@ -29,11 +32,14 @@ public:
         case 0:
             m_in.setValue(value);
             break;
-#ifdef NODES_SIMULATION
         case 1:
+            m_reset.setValue(value);
+            break;
+#ifdef NODES_SIMULATION
+        case 2:
             m_lastIn = value;
             break;
-        case 2:
+        case 3:
             m_lastOut = value;
             m_out = value;
             break;
@@ -44,9 +50,9 @@ public:
     float GetValue(uint8_t index) override
     {
         switch (index) {
-        case 1:
-            return m_lastIn;
         case 2:
+            return m_lastIn;
+        case 3:
             return m_lastOut;
         }
 
@@ -60,6 +66,12 @@ public:
 
     void Evaluate(uint32_t timestepMs) override
     {
+        if (m_reset) {
+            m_out = 0.0f;
+            m_lastOut = false;
+            m_lastIn = m_in;
+            return;
+        }
 
         if (m_in == m_lastIn) {
             return;
@@ -86,12 +98,13 @@ public:
 private:
 #ifdef ENODE_FULL_TEMPLATE
     ValueOrPointer<Input1_t> m_in;
+    ValueOrPointer<Reset_t> m_reset;
 #else
     ValueAndPointer m_in;
+    ValueAndPointer m_reset;
 #endif
     bool m_lastIn;
     bool m_lastOut;
     float m_out;
 };
-
 }
