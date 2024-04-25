@@ -10,7 +10,6 @@ public:
     static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
 };
 
-template <typename Input1_t, typename Input2_t, typename Input3_t, typename Input4_t>
 class ECounterNodeInternal : public ECounterNode {
 
 public:
@@ -28,6 +27,9 @@ public:
             break;
         case 3:
             m_max.setPointer(output);
+            break;
+        case 4:
+            m_loop.setPointer(output);
             break;
         }
     }
@@ -47,14 +49,17 @@ public:
         case 3:
             m_max.setValue(value);
             break;
-#ifdef NODES_SIMULATION
         case 4:
+            m_loop.setValue(value);
+            break;
+#ifdef NODES_SIMULATION
+        case 5:
             m_lastUp = value;
             break;
-        case 5:
+        case 6:
             m_lastDown = value;
             break;
-        case 6:
+        case 7:
             m_out = value;
             break;
 #endif
@@ -64,11 +69,11 @@ public:
     float GetValue(uint8_t index) override
     {
         switch (index) {
-        case 4:
-            return m_lastUp;
         case 5:
-            return m_lastDown;
+            return m_lastUp;
         case 6:
+            return m_lastDown;
+        case 7:
             return m_out;
         }
 
@@ -84,6 +89,7 @@ public:
     {
         bool up = FloatToBool(m_up);
         bool down = FloatToBool(m_down);
+        bool loop = FloatToBool(m_loop);
 
         if (m_lastUp != up) {
             m_lastUp = up;
@@ -97,12 +103,20 @@ public:
                 m_out--;
         }
 
-        // Clamp
-        if (m_out >= m_max)
-            m_out = m_max;
+        // Clamp or loop
+        if (m_out > m_max) {
+            if (loop)
+                m_out = m_min;
+            else
+                m_out = m_max;
+        }
 
-        if (m_out <= m_min)
-            m_out = m_min;
+        if (m_out < m_min) {
+            if (loop)
+                m_out = m_max;
+            else
+                m_out = m_min;
+        }
     }
 
     uint32_t Size() override { return sizeof(*this); }
@@ -110,17 +124,11 @@ public:
     NodeTypes NodeType() override { return NodeTypes::Counter; }
 
 private:
-#ifdef ENODE_FULL_TEMPLATE
-    ValueOrPointer<Input1_t> m_up;
-    ValueOrPointer<Input2_t> m_down;
-    ValueOrPointer<Input3_t> m_min;
-    ValueOrPointer<Input4_t> m_max;
-#else
     ValueAndPointer m_up;
     ValueAndPointer m_down;
     ValueAndPointer m_min;
     ValueAndPointer m_max;
-#endif
+    ValueAndPointer m_loop;
     bool m_lastUp;
     bool m_lastDown;
     float m_out;
