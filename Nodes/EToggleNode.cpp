@@ -23,7 +23,7 @@ ENode* EToggleNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         return new (destination) EToggleNodeInternal<float*, float*>();
 
 #else
-    return new (destination) EToggleNodeInternal<float>();
+    return new (destination) EToggleNodeInternal<float, float>();
 #endif
 
     return nullptr;
