@@ -100,7 +100,7 @@ public:
     NodeTypes NodeType() override { return NodeTypes::PID; }
 
 private:
-#ifdef ENODE_FULL_TEMPLATE
+#if ENODE_FULL_TEMPLATE
     ValueOrPointer<Input1_t> m_input;
     ValueOrPointer<Input2_t> m_target;
     ValueOrPointer<Input3_t> m_P;

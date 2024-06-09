@@ -93,7 +93,7 @@ public:
 private:
     uint8_t m_moduleAddress;
     uint8_t m_nodeGroupIndex;
-#ifdef ENODE_FULL_TEMPLATE
+#if ENODE_FULL_TEMPLATE
     ValueOrPointer<Input1_t> m_defaultValue;
     ValueOrPointer<Input2_t> m_timeout;
 #else

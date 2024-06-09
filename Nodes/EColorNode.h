@@ -91,7 +91,7 @@ public:
     NodeTypes NodeType() override { return NodeTypes::Color; }
 
 private:
-#ifdef ENODE_FULL_TEMPLATE
+#if ENODE_FULL_TEMPLATE
     ValueOrPointer<Input1_t> m_red;
     ValueOrPointer<Input2_t> m_green;
     ValueOrPointer<Input3_t> m_blue;

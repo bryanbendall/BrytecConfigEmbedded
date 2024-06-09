@@ -128,7 +128,7 @@ public:
     NodeTypes NodeType() override { return NodeTypes::Curve; }
 
 private:
-#ifdef ENODE_FULL_TEMPLATE
+#if ENODE_FULL_TEMPLATE
     ValueOrPointer<Input1_t> m_in;
     ValueOrPointer<Input2_t> m_repeat;
     ValueOrPointer<Input3_t> m_timeout;

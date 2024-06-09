@@ -206,7 +206,7 @@ public:
 
 private:
 private:
-#ifdef ENODE_FULL_TEMPLATE
+#if ENODE_FULL_TEMPLATE
     ValueOrPointer<Id_t> m_id;
     ValueOrPointer<Data_t> m_data;
     ValueOrPointer<Send_t> m_send;

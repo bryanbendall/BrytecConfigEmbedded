@@ -96,7 +96,7 @@ public:
     NodeTypes NodeType() override { return NodeTypes::Toggle; }
 
 private:
-#ifdef ENODE_FULL_TEMPLATE
+#if ENODE_FULL_TEMPLATE
     ValueOrPointer<Input1_t> m_in;
     ValueOrPointer<Reset_t> m_reset;
 #else

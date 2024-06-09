@@ -128,7 +128,7 @@ public:
     NodeTypes NodeType() override { return NodeTypes::Push_Button; }
 
 private:
-#ifdef ENODE_FULL_TEMPLATE
+#if ENODE_FULL_TEMPLATE
     ValueOrPointer<Input1_t> m_button;
     ValueOrPointer<Input2_t> m_neutralSafety;
     ValueOrPointer<Input3_t> m_engineRunning;
