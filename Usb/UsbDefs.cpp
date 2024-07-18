@@ -3,6 +3,7 @@
 #include "Can/EBrytecCan.h"
 #include "Deserializer/BinaryArrayDeserializer.h"
 #include "Deserializer/BinaryBufferSerializer.h"
+#include "ModuleCommand.h"
 
 namespace Brytec {
 
@@ -33,6 +34,17 @@ void UsbPacket::set(const CanFrame& frame)
 }
 
 template <>
+void UsbPacket::set(const ModuleCommand& moduleCommand)
+{
+    Brytec::BinaryBufferSerializer ser(data, bufferSize);
+
+    ser.writeRaw<uint8_t>((uint8_t)UsbPacketType::Command);
+    ser.writeRaw<uint8_t>((uint8_t)moduleCommand.command);
+
+    length = ser.getWroteLenth();
+}
+
+template <>
 CanFrame UsbPacket::as() const
 {
     CanFrame frame;
@@ -57,5 +69,22 @@ CanFrame UsbPacket::as() const
     des.readRaw<uint8_t>(&frame.data[7]);
 
     return frame;
+}
+
+template <>
+ModuleCommand UsbPacket::as() const
+{
+    ModuleCommand moduleCommand;
+
+    Brytec::BinaryArrayDeserializer des(data, length);
+
+    UsbPacketType type;
+    des.readRaw<uint8_t>((uint8_t*)&type);
+    if (type != UsbPacketType::Command)
+        return moduleCommand;
+
+    des.readRaw<uint8_t>((uint8_t*)&moduleCommand.command);
+
+    return moduleCommand;
 }
 }
