@@ -23,8 +23,10 @@ void ECanHolleyBroadcastQueue::init(uint32_t size)
 
 void ECanHolleyBroadcastQueue::reset()
 {
+    free(m_channels);
     free(m_buffers[0]);
     free(m_buffers[1]);
+    m_channels = nullptr;
     m_buffers[0] = nullptr;
     m_buffers[1] = nullptr;
     m_size = 0;
