@@ -13,11 +13,13 @@ public:
 
     void init(uint32_t size);
     void reset();
+    void updateTimestep(uint32_t timestepMs);
     void swapBuffers();
     void insert(uint32_t index, uint32_t channel);
     void update(const CanFrame& frame);
     uint32_t getSize() { return m_size; }
-    CanFrame getFrame(uint32_t index);
+    CanFrame getFrame(uint32_t index) const;
+    bool isDataValid() const;
 
 private:
     uint32_t getChannel(const CanFrame& frame);
@@ -27,5 +29,6 @@ private:
     CanFrame* m_buffers[2] = { nullptr };
     uint8_t m_writeButterIndex = 0;
     uint32_t m_size = 0;
+    uint32_t m_timeoutTime = 0;
 };
 }

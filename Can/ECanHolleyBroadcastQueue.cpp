@@ -32,6 +32,15 @@ void ECanHolleyBroadcastQueue::reset()
     m_size = 0;
 }
 
+void ECanHolleyBroadcastQueue::updateTimestep(uint32_t timestepMs)
+{
+    m_timeoutTime += timestepMs;
+
+    // Clamp timeout at something big so we don't overflow
+    if (m_timeoutTime >= 10000)
+        m_timeoutTime = 10000;
+}
+
 void ECanHolleyBroadcastQueue::swapBuffers()
 {
     // Get the buffer that is not being wrote to and clear it
@@ -57,6 +66,9 @@ void ECanHolleyBroadcastQueue::insert(uint32_t index, uint32_t channel)
 
 void ECanHolleyBroadcastQueue::update(const CanFrame& frame)
 {
+    // Reset timeout when we get a new message
+    m_timeoutTime = 0;
+
     if (!m_buffers[m_writeButterIndex])
         return;
 
@@ -72,7 +84,7 @@ void ECanHolleyBroadcastQueue::update(const CanFrame& frame)
     }
 }
 
-CanFrame ECanHolleyBroadcastQueue::getFrame(uint32_t index)
+CanFrame ECanHolleyBroadcastQueue::getFrame(uint32_t index) const
 {
     if (index >= m_size)
         return CanFrame();
@@ -82,6 +94,11 @@ CanFrame ECanHolleyBroadcastQueue::getFrame(uint32_t index)
     buffIndex = buffIndex % 2;
 
     return m_buffers[buffIndex][index];
+}
+
+bool ECanHolleyBroadcastQueue::isDataValid() const
+{
+    return m_timeoutTime < 500;
 }
 
 uint32_t ECanHolleyBroadcastQueue::getChannel(const CanFrame& frame)

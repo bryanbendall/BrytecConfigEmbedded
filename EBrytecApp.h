@@ -2,6 +2,7 @@
 
 #include "Boards/BrytecBoard.h"
 #include "Can/EBrytecCan.h"
+#include "Can/ECanHolleyBroadcastQueue.h"
 #include "Deserializer/BinaryDeserializer.h"
 #include "Usb/UsbDefs.h"
 #include "Utils/ENodeGroup.h"
@@ -30,7 +31,7 @@ public:
     static void brytecUsbReceived(const Brytec::UsbPacket& packet);
     static void processCanCommands();
     static CanFrame getCustomCanFrame(uint8_t canIndex, uint32_t index);
-    static CanFrame getHolleyFrame(uint32_t index);
+    static const ECanHolleyBroadcastQueue& getHolleyQueue();
 
 private:
     static void setMode(Mode mode);
@@ -50,7 +51,7 @@ private:
     static void queueBrytecCanMessage(const CanFrame& frame);
     static ENodeGroupNode* findNodeGroupNode(uint8_t moduleAddress, uint16_t nodeGroupIndex);
     static void updateNodeGroupNodes();
-    static void updateHolleyBroadcastNodes();
+    static void updateHolleyBroadcastNodes(uint32_t timestepMs);
     static void updateCustomCanInputNodes();
     static void updateCurrents(uint32_t timestepMs);
     static void evaulateJustNodes(uint32_t timestepMs);

@@ -2,7 +2,6 @@
 
 #include "Can/ECanBus.h"
 #include "Can/ECanCommandQueue.h"
-#include "Can/ECanHolleyBroadcastQueue.h"
 #include "Can/ECustomCanQueue.h"
 #include "Can/EPinStatusQueue.h"
 #include "Deserializer/BinaryArrayDeserializer.h"
@@ -65,7 +64,7 @@ void EBrytecApp::update(uint32_t timestepMs)
 
     updateNodeGroupNodes();
 
-    updateHolleyBroadcastNodes();
+    updateHolleyBroadcastNodes(timestepMs);
 
     updateCustomCanInputNodes();
 
@@ -230,9 +229,9 @@ CanFrame EBrytecApp::getCustomCanFrame(uint8_t canIndex, uint32_t index)
     return s_data.customCanInputQueue[canIndex].getFrame(index);
 }
 
-CanFrame EBrytecApp::getHolleyFrame(uint32_t index)
+const ECanHolleyBroadcastQueue& EBrytecApp::getHolleyQueue()
 {
-    return s_data.holleyBcQueue.getFrame(index);
+    return s_data.holleyBcQueue;
 }
 
 void EBrytecApp::setMode(Mode mode)
@@ -514,11 +513,13 @@ void EBrytecApp::setupHolleyBroadcastQueue()
         if (node.NodeType() == NodeTypes::Holley_Broadcast) {
             for (uint32_t j = 0; j < holleyNodeCount; j++) {
                 uint32_t channel = FloatToInt(node.GetValue(0));
-                if ((channelBuffer[j] == UINT32_MAX) | (channelBuffer[j] == channel)) {
-                    channelBuffer[j] = channel;
-                    trimmedHolleyNodeCount++;
+                if ((channelBuffer[j] == UINT32_MAX) || (channelBuffer[j] == channel)) {
                     EHolleyBroadcastNodeInternal* holleyNode = (EHolleyBroadcastNodeInternal*)&node;
                     holleyNode->setCanFrameIndex(j);
+                    if (channelBuffer[j] == UINT32_MAX) {
+                        channelBuffer[j] = channel;
+                        trimmedHolleyNodeCount++;
+                    }
                     j = holleyNodeCount; // Break from loop
                 }
             }
@@ -768,8 +769,10 @@ void EBrytecApp::updateNodeGroupNodes()
     }
 }
 
-void EBrytecApp::updateHolleyBroadcastNodes()
+void EBrytecApp::updateHolleyBroadcastNodes(uint32_t timestepMs)
 {
+    s_data.holleyBcQueue.updateTimestep(timestepMs);
+
     // Switch buffers in case we get new messages while we are updating
     s_data.holleyBcQueue.swapBuffers();
 }

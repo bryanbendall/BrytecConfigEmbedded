@@ -42,7 +42,12 @@ public:
 
     void Evaluate(uint32_t timestepMs) override
     {
-        CanFrame frame = EBrytecApp::getHolleyFrame(m_frameIndex);
+        if (!EBrytecApp::getHolleyQueue().isDataValid()) {
+            m_out = 0.0f;
+            return;
+        }
+
+        const CanFrame& frame = EBrytecApp::getHolleyQueue().getFrame(m_frameIndex);
         if (!frame)
             return;
 
