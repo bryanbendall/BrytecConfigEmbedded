@@ -4,6 +4,7 @@
 
 #include <cstring>
 #include <fstream>
+#include <iostream>
 
 namespace Brytec {
 
@@ -11,12 +12,26 @@ BinaryPathDeserializer::BinaryPathDeserializer(std::filesystem::path path)
 {
     std::ifstream is(path, std::ifstream::binary);
     if (is) {
-        is.seekg(0, is.end);
-        m_dataLength = is.tellg();
-        is.seekg(0, is.beg);
 
-        m_data = new uint8_t[m_dataLength];
-        is.read((char*)m_data, m_dataLength);
+        // Clear whitespace removal flag
+        is.unsetf(std::ios::skipws);
+
+        is.seekg(0, std::ios::end);
+        m_dataLength = is.tellg();
+        is.seekg(0, std::ios::beg);
+
+        m_vec.reserve(m_dataLength);
+
+        // Read the data
+        m_vec.insert(m_vec.begin(),
+            std::istream_iterator<uint8_t>(is),
+            std::istream_iterator<uint8_t>());
+
+        if (m_vec.size() != m_dataLength) {
+            std::cout << "BinaryPathDeserializer did not real all of the file!" << std::endl;
+            m_dataLength = 0;
+            m_vec.clear();
+        }
 
         is.close();
     }
@@ -24,7 +39,6 @@ BinaryPathDeserializer::BinaryPathDeserializer(std::filesystem::path path)
 
 BinaryPathDeserializer ::~BinaryPathDeserializer()
 {
-    delete[] m_data;
 }
 
 bool BinaryPathDeserializer::readInternal(uint8_t* data, uint32_t dataSize)
@@ -33,7 +47,7 @@ bool BinaryPathDeserializer::readInternal(uint8_t* data, uint32_t dataSize)
         return false;
 
     if (data) {
-        memcpy(data, &m_data[m_currentOffset], dataSize);
+        memcpy(data, &m_vec[m_currentOffset], dataSize);
         m_currentOffset += dataSize;
         return true;
     } else {
@@ -46,7 +60,7 @@ void BinaryPathDeserializer::getRawData(uint8_t* dest, uint32_t offset, uint32_t
     if (offset + length > m_dataLength)
         return;
 
-    memcpy(dest, &m_data[offset], length);
+    memcpy(dest, &m_vec[offset], length);
 }
 }
 #endif
