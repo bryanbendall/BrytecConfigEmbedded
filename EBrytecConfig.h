@@ -34,4 +34,6 @@ namespace Brytec {
 #define MAX_NODE_SIZE 64
 
 #define DEFAULT_BRYTEC_CAN_SPEED CanSpeed::Types::Speed_500kBps
+
+#define BRYTEC_NETWORK_PORT 1121
 }
