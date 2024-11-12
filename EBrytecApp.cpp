@@ -366,8 +366,14 @@ void EBrytecApp::deserializeModule()
         // TODO check version
 
         // Node Group name
+#if __has_include(<string>)
+        std::string ngName;
+        des->readRaw<std::string>(&ngName);
+        BrytecBoard::AddedNamesNodeGroup(nodeGroupIndex, ngName);
+#else
         EmptyString empty;
         des->readRaw<EmptyString>(&empty);
+#endif
 
         // Node Group uuid
         uint64_t uuid;

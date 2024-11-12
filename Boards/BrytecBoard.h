@@ -29,6 +29,9 @@ public:
     static void getTemplateData(uint8_t* dest, uint32_t offset, uint32_t length);
     static uint32_t getConfigSize();
     static void getConfigData(uint8_t* dest, uint32_t offset, uint32_t length);
+#if __has_include(<string>)
+    static void AddedNamesNodeGroup(uint16_t index, std::string ngName);
+#endif
 };
 
 }
