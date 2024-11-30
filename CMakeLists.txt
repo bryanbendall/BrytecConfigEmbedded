@@ -85,10 +85,14 @@ add_library(BrytecConfigEmbedded
                 Utils/ENodesVector.h
                 EBrytecApp.cpp
                 EBrytecApp.h
+                EBrytecConfig.h
                 ENode.cpp
                 ENode.h
                 IOTypes.cpp
                 IOTypes.h
 )
 
-target_include_directories(BrytecConfigEmbedded PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(BrytecConfigEmbedded PUBLIC 
+                            ${CMAKE_CURRENT_SOURCE_DIR}
+                            ${BrytecCustomConfigDir}
+                            )
