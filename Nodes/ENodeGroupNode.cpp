@@ -13,17 +13,17 @@ ENode* ENodeGroupNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination
     auto input1 = spec.connections[1];
 
     if (input0 == Float && input1 == Float)
-        return new (destination) ENodeGroupNodeInternal<float, float>(spec.moduleAddress, spec.pinIndex);
+        return new (destination) ENodeGroupNodeInternal<float, float>(spec.uuid);
     if (input0 == Float && input1 == Pointer)
-        return new (destination) ENodeGroupNodeInternal<float, float*>(spec.moduleAddress, spec.pinIndex);
+        return new (destination) ENodeGroupNodeInternal<float, float*>(spec.uuid);
     if (input0 == Pointer && input1 == Float)
-        return new (destination) ENodeGroupNodeInternal<float*, float>(spec.moduleAddress, spec.pinIndex);
+        return new (destination) ENodeGroupNodeInternal<float*, float>(spec.uuid);
     if (input0 == Pointer && input1 == Pointer)
-        return new (destination) ENodeGroupNodeInternal<float*, float*>(spec.moduleAddress, spec.pinIndex);
+        return new (destination) ENodeGroupNodeInternal<float*, float*>(spec.uuid);
 
 #else
 
-    return new (destination) ENodeGroupNodeInternal<float, float>(spec.moduleAddress, spec.pinIndex);
+    return new (destination) ENodeGroupNodeInternal<float, float>(spec.uuid);
 
 #endif
 

@@ -23,8 +23,8 @@ struct CanFrame {
 
 struct CanCommands {
 
-    static constexpr uint8_t AllModules = 0xFF;
-    static constexpr uint16_t NoNodeGroup = 0xFFFF;
+    static constexpr uint8_t AllModules = UINT8_MAX;
+    static constexpr uint16_t NoNodeGroup = UINT16_MAX;
 
     enum Command : uint8_t {
         None,
@@ -37,7 +37,9 @@ struct CanCommands {
         RequestDataSize,
         RequestData,
         ReserveConfigSize,
-        WriteConfigData
+        WriteConfigData,
+        RequestAddress,
+        ModuleInitalized
     };
 
     Command command = Command::None;
