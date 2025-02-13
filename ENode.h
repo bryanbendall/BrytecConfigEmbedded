@@ -36,6 +36,7 @@ enum class NodeTypes : uint8_t {
     Holley_Broadcast,
     Interpolate,
     CanBusOutput,
+    Thermistor,
     Count
 };
 

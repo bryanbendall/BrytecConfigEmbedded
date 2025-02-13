@@ -67,6 +67,8 @@ add_library(BrytecConfigEmbedded
                 Nodes/ERacepakSwitchPanelNode.h
                 Nodes/ESwitchNode.cpp
                 Nodes/ESwitchNode.h
+                Nodes/EThermistorNode.cpp
+                Nodes/EThermistorNode.h
                 Nodes/EToggleNode.cpp
                 Nodes/EToggleNode.h
                 Nodes/ETwoStageNode.cpp

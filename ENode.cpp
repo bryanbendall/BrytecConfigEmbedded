@@ -22,6 +22,7 @@
 #include "Nodes/EPushButtonNode.h"
 #include "Nodes/ERacepakSwitchPanelNode.h"
 #include "Nodes/ESwitchNode.h"
+#include "Nodes/EThermistorNode.h"
 #include "Nodes/EToggleNode.h"
 #include "Nodes/ETwoStageNode.h"
 #include "Nodes/EValueNode.h"
@@ -86,6 +87,8 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         return EInterpolateNode::CreateInPlace(spec, destination);
     case NodeTypes::CanBusOutput:
         return ECanBusOutputNode::CreateInPlace(spec, destination);
+    case NodeTypes::Thermistor:
+        return EThermistorNode::CreateInPlace(spec, destination);
 
     default:
         return nullptr;
