@@ -23,7 +23,7 @@ ENode* EMathNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     if (spec.type != NodeTypes::Math || spec.numInputs != 2 || spec.numValues != 1)
         return nullptr;
 
-    auto mathType = (MathType)FloatToInt(spec.values[0]);
+    auto mathType = (MathType)FloatToUint(spec.values[0]);
 
 #if ENODE_FULL_TEMPLATE
 

@@ -518,7 +518,7 @@ void EBrytecApp::setupHolleyBroadcastQueue()
     for (ENode& node : s_data.nodeVector) {
         if (node.NodeType() == NodeTypes::Holley_Broadcast) {
             for (uint32_t j = 0; j < holleyNodeCount; j++) {
-                uint32_t channel = FloatToInt(node.GetValue(0));
+                uint32_t channel = FloatToUint(node.GetValue(0));
                 if ((channelBuffer[j] == UINT32_MAX) || (channelBuffer[j] == channel)) {
                     EHolleyBroadcastNodeInternal* holleyNode = (EHolleyBroadcastNodeInternal*)&node;
                     holleyNode->setCanFrameIndex(j);
@@ -546,7 +546,6 @@ void EBrytecApp::setupCustomCanInputQueue()
     uint32_t nodeCounts[MAX_CAN_BUSES] = { 0 };
     for (ENode& node : s_data.nodeVector) {
         if (node.NodeType() == NodeTypes::CanBusInput) {
-            // ECanBusNode* canBusNode = (ECanBusNode*)&node;
             uint8_t canIndex = node.GetValue(1);
             if (canIndex > MAX_CAN_BUSES)
                 continue;
@@ -571,7 +570,10 @@ void EBrytecApp::setupCustomCanInputQueue()
             if (node.NodeType() == NodeTypes::CanBusInput) {
                 for (uint32_t j = 0; j < nodeCounts[canBusIndex]; j++) {
                     // Check against can bus id
-                    uint32_t id = FloatToInt(node.GetValue(0));
+                    // Id is stored as a uint32_t so we convert
+                    float floatId = node.GetValue(0);
+                    uint32_t id;
+                    memcpy(&id, &floatId, sizeof(id));
                     if ((tempBuffer[j] == UINT32_MAX) | (tempBuffer[j] == id)) {
                         tempBuffer[j] = id;
                         trimmedCount++;

@@ -36,7 +36,7 @@ void EThermistorNodeInternal::SetValue(uint8_t index, float value)
         m_temp2 = value;
         break;
     case 5:
-        m_format = (TempFormat)FloatToInt(value);
+        m_format = (TempFormat)FloatToUint(value);
         break;
     case 6:
         // Beta calculated
@@ -85,7 +85,7 @@ void EThermistorNodeInternal::CalculateBeta()
     if (m_res2 == 0.0f)
         return;
 
-    m_beta = (std::logf((m_res1 / m_res2))) / ((1.0f / ToKelvin(m_temp1)) - (1.0f / ToKelvin(m_temp2)));
+    m_beta = (std::log((m_res1 / m_res2))) / ((1.0f / ToKelvin(m_temp1)) - (1.0f / ToKelvin(m_temp2)));
 }
 
 float EThermistorNodeInternal::ToKelvin(float value)

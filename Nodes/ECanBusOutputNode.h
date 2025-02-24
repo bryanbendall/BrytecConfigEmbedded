@@ -38,7 +38,7 @@ template <typename T>
 void setData(const float& value, uint8_t* dest, ECanBusOutputNode::Endian endian)
 {
     uint8_t typeSize = sizeof(T);
-    T intValue = FloatToInt(value);
+    T intValue = FloatToUint(value);
     uint8_t* tempValue = (uint8_t*)&intValue;
     for (uint8_t index = 0; index < typeSize; index++) {
         if (endian == ECanBusOutputNode::Endian::Little)
@@ -48,7 +48,7 @@ void setData(const float& value, uint8_t* dest, ECanBusOutputNode::Endian endian
     }
 }
 
-template <typename Id_t, typename Data_t, typename Send_t>
+template <typename Data_t, typename Send_t>
 class ECanBusOutputNodeInternal : public ECanBusOutputNode {
 
 public:
@@ -56,12 +56,9 @@ public:
     {
         switch (index) {
         case 0:
-            m_id.setPointer(output);
-            break;
-        case 1:
             m_data.setPointer(output);
             break;
-        case 2:
+        case 1:
             m_send.setPointer(output);
             break;
         }
@@ -71,28 +68,29 @@ public:
     {
         switch (index) {
         case 0:
-            m_id.setValue(value);
-            break;
-        case 1:
             m_data.setValue(value);
             break;
-        case 2:
+        case 1:
             m_send.setValue(value);
             break;
+        case 2:
+            // Store as a uint32_t
+            memcpy(&m_id, &value, sizeof(m_id));
+            break;
         case 3:
-            m_canIndex = FloatToInt(value);
+            m_canIndex = FloatToUint(value);
             break;
         case 4:
-            m_frameType = (FrameType)FloatToInt(value);
+            m_frameType = (FrameType)FloatToUint(value);
             break;
         case 5:
-            m_endian = (Endian)FloatToInt(value);
+            m_endian = (Endian)FloatToUint(value);
             break;
         case 6:
-            m_dataType = (DataType)FloatToInt(value);
+            m_dataType = (DataType)FloatToUint(value);
             break;
         case 7:
-            m_starByte = FloatToInt(value);
+            m_starByte = FloatToUint(value);
             break;
         case 8:
             m_lastSend = value;
@@ -103,6 +101,12 @@ public:
     float GetValue(uint8_t index) override
     {
         switch (index) {
+        case 2: {
+            // Return as uint32_t
+            float ret;
+            memcpy(&ret, &m_id, sizeof(ret));
+            return ret;
+        }
         case 3:
             return m_canIndex;
         case 4:
@@ -133,7 +137,7 @@ public:
             m_lastSend = send;
             if (send) {
                 CanFrame frame;
-                frame.id = FloatToInt(m_id);
+                frame.id = m_id;
                 frame.type = m_frameType == FrameType::Ext ? CanFrameType::Ext : CanFrameType::Std;
 
                 switch (m_dataType) {
@@ -192,7 +196,7 @@ public:
                     break;
                 }
 
-                BrytecBoard::sendCan(FloatToInt(m_canIndex), frame);
+                BrytecBoard::sendCan(FloatToUint(m_canIndex), frame);
             }
         }
     }
@@ -207,14 +211,13 @@ public:
 private:
 private:
 #if ENODE_FULL_TEMPLATE
-    ValueOrPointer<Id_t> m_id;
     ValueOrPointer<Data_t> m_data;
     ValueOrPointer<Send_t> m_send;
 #else
-    ValueAndPointer m_id;
     ValueAndPointer m_data;
     ValueAndPointer m_send;
 #endif
+    uint32_t m_id;
     uint8_t m_canIndex;
     FrameType m_frameType;
     Endian m_endian;
@@ -222,6 +225,4 @@ private:
     uint8_t m_starByte;
     float m_lastSend;
 };
-
-
 }

@@ -22,7 +22,7 @@ public:
 
     void SetValue(uint8_t index, float value) override
     {
-        m_channel = FloatToInt(value);
+        m_channel = FloatToUint(value);
     }
 
     float GetValue(uint8_t index) override

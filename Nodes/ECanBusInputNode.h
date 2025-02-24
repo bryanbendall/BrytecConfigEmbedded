@@ -39,19 +39,20 @@ public:
     {
         switch (index) {
         case 0:
-            m_id = FloatToInt(value);
+            // Store as a uint32_t
+            memcpy(&m_id, &value, sizeof(m_id));
             break;
         case 1:
-            m_canIndex = FloatToInt(value);
+            m_canIndex = FloatToUint(value);
             break;
         case 2:
-            m_endian = (Endian)FloatToInt(value);
+            m_endian = (Endian)FloatToUint(value);
             break;
         case 3:
-            m_dataType = (DataType)FloatToInt(value);
+            m_dataType = (DataType)FloatToUint(value);
             break;
         case 4:
-            m_starByte = FloatToInt(value);
+            m_starByte = FloatToUint(value);
             break;
         }
     }
@@ -59,8 +60,12 @@ public:
     float GetValue(uint8_t index) override
     {
         switch (index) {
-        case 0:
-            return m_id;
+        case 0: {
+            // Return as uint32_t
+            float ret;
+            memcpy(&ret, &m_id, sizeof(ret));
+            return ret;
+        }
         case 1:
             return m_canIndex;
         case 2:

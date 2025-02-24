@@ -74,9 +74,9 @@ inline bool FloatIsEqual(float a, float b)
     return fabs((a - b)) <= FloatEpsilon;
 }
 
-inline int FloatToInt(float a)
+inline uint32_t FloatToUint(float a)
 {
-    return (int)(a + FloatEpsilon);
+    return (uint32_t)(a + FloatEpsilon);
 }
 
 inline uint32_t FloatTimeToMs(float time)
