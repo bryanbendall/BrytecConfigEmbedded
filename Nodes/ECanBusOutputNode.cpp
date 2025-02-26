@@ -14,13 +14,13 @@ ENode* ECanBusOutputNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destinat
 
     if (input0 == Float && input1 == Float)
         return new (destination) ECanBusOutputNodeInternal<float, float>();
-    if (input0 == Float && input1 == Float)
-        return new (destination) ECanBusOutputNodeInternal<float, float>();
+    if (input0 == Float && input1 == Pointer)
+        return new (destination) ECanBusOutputNodeInternal<float, float*>();
 
-    if (input0 == Float && input1 == Pointer)
-        return new (destination) ECanBusOutputNodeInternal<float, float*>();
-    if (input0 == Float && input1 == Pointer)
-        return new (destination) ECanBusOutputNodeInternal<float, float*>();
+    if (input0 == Pointer && input1 == Float)
+        return new (destination) ECanBusOutputNodeInternal<float*, float>();
+    if (input0 == Pointer && input1 == Pointer)
+        return new (destination) ECanBusOutputNodeInternal<float*, float*>();
 
 #else
     return new (destination) ECanBusOutputNodeInternal<float, float>();
