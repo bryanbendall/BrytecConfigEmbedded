@@ -43,6 +43,8 @@ add_library(BrytecConfigEmbedded
                 Nodes/EFinalValueNode.h
                 Nodes/EHolleyBroadcastNode.cpp
                 Nodes/EHolleyBroadcastNode.h
+                Nodes/EHolleyIoModuleNode.cpp
+                Nodes/EHolleyIoModuleNode.h
                 Nodes/EInitialValueNode.cpp
                 Nodes/EInitialValueNode.h
                 Nodes/EInvertNode.cpp

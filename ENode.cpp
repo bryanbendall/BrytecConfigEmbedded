@@ -9,6 +9,7 @@
 #include "Nodes/EDelayNode.h"
 #include "Nodes/EFinalValueNode.h"
 #include "Nodes/EHolleyBroadcastNode.h"
+#include "Nodes/EHolleyIoModuleNode.h"
 #include "Nodes/EInitialValueNode.h"
 #include "Nodes/EInterpolateNode.h"
 #include "Nodes/EInvertNode.h"
@@ -89,6 +90,8 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         return ECanBusOutputNode::CreateInPlace(spec, destination);
     case NodeTypes::Thermistor:
         return EThermistorNode::CreateInPlace(spec, destination);
+    case NodeTypes::Holley_Io_Module:
+        return EHolleyIoModuleNode::CreateInPlace(spec, destination);
 
     default:
         return nullptr;

@@ -37,6 +37,7 @@ enum class NodeTypes : uint8_t {
     Interpolate,
     CanBusOutput,
     Thermistor,
+    Holley_Io_Module,
     Count
 };
 

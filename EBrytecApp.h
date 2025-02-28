@@ -32,6 +32,7 @@ public:
     static void processCanCommands();
     static CanFrame getCustomCanFrame(uint8_t canIndex, uint32_t index);
     static const ECanHolleyBroadcastQueue& getHolleyQueue();
+    static uint8_t findCanIndex(CanTypes::Types type);
 
 private:
     static void setMode(Mode mode);

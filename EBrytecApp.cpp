@@ -234,6 +234,16 @@ const ECanHolleyBroadcastQueue& EBrytecApp::getHolleyQueue()
     return s_data.holleyBcQueue;
 }
 
+uint8_t EBrytecApp::findCanIndex(CanTypes::Types type)
+{
+    for (int i = 0; i < MAX_CAN_BUSES; i++) {
+        if (s_data.canBuses[i].type == type)
+            return i;
+    }
+
+    return 0xFF;
+}
+
 void EBrytecApp::setMode(Mode mode)
 {
     switch (mode) {
