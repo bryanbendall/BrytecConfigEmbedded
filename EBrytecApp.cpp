@@ -21,6 +21,7 @@ namespace Brytec {
 struct EBrytecAppData {
     EBrytecApp::Mode mode = EBrytecApp::Mode::Stopped;
     bool deserializeOk = false;
+    bool wasProgrammed = false;
     uint8_t moduleAddress = 254;
     ENodesVector nodeVector = {};
     ENodeGroup* nodeGroups = nullptr;
@@ -38,12 +39,6 @@ void EBrytecApp::initalize()
     deserializeModule();
     if (s_data.deserializeOk) {
         setMode(Mode::Normal);
-
-        sendBrytecAddressRequests();
-
-        CanCommands cmd;
-        cmd.command = CanCommands::ModuleInitalized;
-        sendBrytecCan(cmd.getFrame());
 
     } else
         BrytecBoard::setupCan(0, DEFAULT_BRYTEC_CAN_SPEED);
@@ -176,13 +171,6 @@ void EBrytecApp::processCanCommands()
                 deserializeModule();
                 sendCanAck();
                 sendCanModuleStatus();
-                if (s_data.deserializeOk) {
-                    CanCommands cmd;
-                    cmd.command = CanCommands::ProgramChanged;
-                    sendBrytecCan(cmd.getFrame());
-
-                    sendBrytecAddressRequests();
-                }
             }
             break;
 
@@ -313,8 +301,23 @@ void EBrytecApp::setMode(Mode mode)
         setupModule();
         setupPins();
         // Normal mode only if deserialize is ok
-        if (s_data.deserializeOk)
+        if (s_data.deserializeOk) {
             s_data.mode = mode;
+
+            if (s_data.wasProgrammed) {
+                CanCommands cmd;
+                cmd.command = CanCommands::ProgramChanged;
+                sendBrytecCan(cmd.getFrame());
+
+                s_data.wasProgrammed = false;
+            }
+
+            sendBrytecAddressRequests();
+
+            CanCommands cmd;
+            cmd.command = CanCommands::ModuleInitalized;
+            sendBrytecCan(cmd.getFrame());
+        }
         break;
     case Mode::Stopped:
         BrytecBoard::shutdownAllPins();
@@ -323,6 +326,7 @@ void EBrytecApp::setMode(Mode mode)
     case Mode::Programming:
         s_data.deserializeOk = false;
         s_data.mode = mode;
+        s_data.wasProgrammed = true;
         break;
     }
 }
@@ -438,7 +442,7 @@ void EBrytecApp::deserializeModule()
         // TODO check version
 
         // Node Group name
-#if __has_include(<string>)
+#if false //__has_include(<string>)
         std::string ngName;
         des->readRaw<std::string>(&ngName);
         BrytecBoard::AddedNamesNodeGroup(nodeGroupIndex, ngName);
