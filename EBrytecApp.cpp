@@ -21,7 +21,6 @@ namespace Brytec {
 struct EBrytecAppData {
     EBrytecApp::Mode mode = EBrytecApp::Mode::Stopped;
     bool deserializeOk = false;
-    bool wasProgrammed = false;
     uint8_t moduleAddress = 254;
     ENodesVector nodeVector = {};
     ENodeGroup* nodeGroups = nullptr;
@@ -150,7 +149,6 @@ void EBrytecApp::processCanCommands()
         switch (canCommand->command) {
         case CanCommands::Command::ChangeMode:
             setMode((EBrytecApp::Mode)canCommand->data[0]);
-            sendCanAck();
             sendCanModuleStatus();
             break;
 
@@ -165,29 +163,22 @@ void EBrytecApp::processCanCommands()
             break;
 
         case CanCommands::Command::ReloadConfig:
-            if (s_data.mode != EBrytecApp::Mode::Stopped)
-                sendCanNak();
-            else {
+            if (s_data.mode == EBrytecApp::Mode::Stopped) {
                 deserializeModule();
-                sendCanAck();
                 sendCanModuleStatus();
             }
             break;
 
         case CanCommands::Command::RequestStatus:
             if (canCommand->nodeGroupIndex == CanCommands::NoNodeGroup) {
-                sendCanAck();
                 sendCanModuleStatus();
             } else {
                 for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
                     if (s_data.nodeGroups[i].index == canCommand->nodeGroupIndex) {
-                        sendCanAck();
                         s_data.nodeGroups[i].usedOnBus = canCommand->data[0];
                         return;
                     }
                 }
-                // If there is not a node group found
-                sendCanNak();
             }
             break;
 
@@ -230,7 +221,7 @@ void EBrytecApp::processCanCommands()
             uint64_t uuid;
             des.readRaw<uint64_t>(&uuid);
 
-            if (canCommand->moduleAddress == CanCommands::AllModules && canCommand->nodeGroupIndex == CanCommands::NoNodeGroup) {
+            if (canCommand->nodeGroupIndex == CanCommands::NoNodeGroup) {
                 // If we have the node group with this uuid send address
                 for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
                     ENodeGroup& ng = s_data.nodeGroups[i];
@@ -268,12 +259,6 @@ void EBrytecApp::processCanCommands()
             sendBrytecAddressRequests();
             break;
 
-        case CanCommands::Command::ProgramChanged:
-            // See if the new module has any addresses we still need
-            clearNodeGroupNodeAddresses();
-            sendBrytecAddressRequests();
-            break;
-
         default:
             sendCanNak();
             break;
@@ -304,14 +289,6 @@ void EBrytecApp::setMode(Mode mode)
         if (s_data.deserializeOk) {
             s_data.mode = mode;
 
-            if (s_data.wasProgrammed) {
-                CanCommands cmd;
-                cmd.command = CanCommands::ProgramChanged;
-                sendBrytecCan(cmd.getFrame());
-
-                s_data.wasProgrammed = false;
-            }
-
             sendBrytecAddressRequests();
 
             CanCommands cmd;
@@ -326,7 +303,6 @@ void EBrytecApp::setMode(Mode mode)
     case Mode::Programming:
         s_data.deserializeOk = false;
         s_data.mode = mode;
-        s_data.wasProgrammed = true;
         break;
     }
 }
@@ -814,22 +790,11 @@ void EBrytecApp::sendBrytecAddressRequests()
                 && nodeGroupNode->getUuid() != 0) {
                 CanCommands cmd;
                 cmd.command = CanCommands::Command::RequestAddress;
+                cmd.moduleAddress = s_data.moduleAddress;
                 BinaryBufferSerializer ser(cmd.data, 8);
                 ser.writeRaw<uint64_t>(nodeGroupNode->getUuid());
                 sendBrytecCan(cmd.getFrame());
             }
-        }
-    }
-}
-
-void EBrytecApp::clearNodeGroupNodeAddresses()
-{
-    for (ENode& node : s_data.nodeVector) {
-        if (node.NodeType() == NodeTypes::Node_Group) {
-            ENodeGroupNode* nodeGroupNode = (ENodeGroupNode*)&node;
-
-            nodeGroupNode->setModuleAddress(CanCommands::AllModules);
-            nodeGroupNode->setNodeGroupIndex(CanCommands::NoNodeGroup);
         }
     }
 }
