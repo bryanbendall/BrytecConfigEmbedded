@@ -20,7 +20,8 @@ public:
     enum Mode : uint8_t {
         Stopped,
         Normal,
-        Programming
+        Programming,
+        Load
     };
 
 public:
@@ -50,6 +51,7 @@ private:
     static void sendBrytecCanPinStatus(ENodeGroup& nodeGroup);
     static void sendBrytecAddressRequests();
     static void sendRacepakCan(uint32_t timestepMs);
+    static void clearNodeGroupNodeAddresses();
     static void queueBrytecCanMessage(const CanFrame& frame);
     static void updateNodeGroupNodes();
     static void updateHolleyBroadcastNodes(uint32_t timestepMs);

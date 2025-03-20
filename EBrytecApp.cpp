@@ -35,11 +35,10 @@ static EBrytecAppData s_data;
 
 void EBrytecApp::initalize()
 {
-    deserializeModule();
-    if (s_data.deserializeOk) {
+    setMode(Mode::Load);
+    if (s_data.deserializeOk)
         setMode(Mode::Normal);
-
-    } else
+    else
         BrytecBoard::setupCan(0, DEFAULT_BRYTEC_CAN_SPEED);
     // Setup first can with default address so it can be programmed
 }
@@ -164,7 +163,7 @@ void EBrytecApp::processCanCommands()
 
         case CanCommands::Command::ReloadConfig:
             if (s_data.mode == EBrytecApp::Mode::Stopped) {
-                deserializeModule();
+                setMode(Mode::Load);
                 sendCanModuleStatus();
             }
             break;
@@ -283,8 +282,6 @@ void EBrytecApp::setMode(Mode mode)
 {
     switch (mode) {
     case Mode::Normal:
-        setupModule();
-        setupPins();
         // Normal mode only if deserialize is ok
         if (s_data.deserializeOk) {
             s_data.mode = mode;
@@ -298,11 +295,18 @@ void EBrytecApp::setMode(Mode mode)
         break;
     case Mode::Stopped:
         BrytecBoard::shutdownAllPins();
+        clearNodeGroupNodeAddresses();
         s_data.mode = mode;
         break;
     case Mode::Programming:
         s_data.deserializeOk = false;
         s_data.mode = mode;
+        break;
+    case Mode::Load:
+        s_data.mode = mode;
+        deserializeModule();
+        setupModule();
+        setupPins();
         break;
     }
 }
@@ -440,10 +444,9 @@ void EBrytecApp::deserializeModule()
         des->readRaw<uint8_t>(&enabled);
         currentNodeGroup->enabled = enabled;
 
-        // Node Group used on bus
+        // Node Group used on bus (not used because it is requested, TODO: Remove from config)
         uint8_t usedOnBus;
         des->readRaw<uint8_t>(&usedOnBus);
-        currentNodeGroup->usedOnBus = usedOnBus;
 
         // Current limit
         des->readRaw<uint8_t>(&currentNodeGroup->currentLimit);
@@ -795,6 +798,18 @@ void EBrytecApp::sendBrytecAddressRequests()
                 ser.writeRaw<uint64_t>(nodeGroupNode->getUuid());
                 sendBrytecCan(cmd.getFrame());
             }
+        }
+    }
+}
+
+void EBrytecApp::clearNodeGroupNodeAddresses()
+{
+    for (ENode& node : s_data.nodeVector) {
+        if (node.NodeType() == NodeTypes::Node_Group) {
+            ENodeGroupNode* nodeGroupNode = (ENodeGroupNode*)&node;
+
+            nodeGroupNode->setModuleAddress(CanCommands::AllModules);
+            nodeGroupNode->setNodeGroupIndex(CanCommands::NoNodeGroup);
         }
     }
 }
