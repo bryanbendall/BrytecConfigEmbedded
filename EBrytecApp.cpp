@@ -35,10 +35,9 @@ static EBrytecAppData s_data;
 
 void EBrytecApp::initalize()
 {
-    setMode(Mode::Load);
-    if (s_data.deserializeOk)
-        setMode(Mode::Normal);
-    else
+    setMode(Mode::Normal);
+
+    if (!s_data.deserializeOk)
         BrytecBoard::setupCan(0, DEFAULT_BRYTEC_CAN_SPEED);
     // Setup first can with default address so it can be programmed
 }
@@ -142,7 +141,7 @@ void EBrytecApp::processCanCommands()
 
         // Not for this module or all modules
         if (canCommand->moduleAddress != s_data.moduleAddress && canCommand->moduleAddress != CanCommands::AllModules
-            && canCommand->command != CanCommands::RequestAddress)
+            && canCommand->command != CanCommands::RequestAddress && canCommand->command != CanCommands::ModuleInitalized)
             continue;
 
         switch (canCommand->command) {
@@ -163,7 +162,8 @@ void EBrytecApp::processCanCommands()
 
         case CanCommands::Command::ReloadConfig:
             if (s_data.mode == EBrytecApp::Mode::Stopped) {
-                setMode(Mode::Load);
+                s_data.deserializeOk = false;
+                setMode(Mode::Normal);
                 sendCanModuleStatus();
             }
             break;
@@ -207,7 +207,8 @@ void EBrytecApp::processCanCommands()
             break;
 
         case CanCommands::Command::WriteConfigData:
-            if (s_data.mode == EBrytecApp::Mode::Programming) {
+            if (s_data.mode == EBrytecApp::Mode::Stopped) {
+                s_data.deserializeOk = false;
                 uint16_t offset = canCommand->nodeGroupIndex;
                 BrytecBoard::updateConfig(canCommand->data, 8, offset);
                 sendCanAck();
@@ -282,7 +283,12 @@ void EBrytecApp::setMode(Mode mode)
 {
     switch (mode) {
     case Mode::Normal:
-        // Normal mode only if deserialize is ok
+        if (!s_data.deserializeOk) {
+            deserializeModule();
+            setupModule();
+            setupPins();
+        }
+
         if (s_data.deserializeOk) {
             s_data.mode = mode;
 
@@ -290,6 +296,7 @@ void EBrytecApp::setMode(Mode mode)
 
             CanCommands cmd;
             cmd.command = CanCommands::ModuleInitalized;
+            cmd.moduleAddress = s_data.moduleAddress;
             sendBrytecCan(cmd.getFrame());
         }
         break;
@@ -297,16 +304,6 @@ void EBrytecApp::setMode(Mode mode)
         BrytecBoard::shutdownAllPins();
         clearNodeGroupNodeAddresses();
         s_data.mode = mode;
-        break;
-    case Mode::Programming:
-        s_data.deserializeOk = false;
-        s_data.mode = mode;
-        break;
-    case Mode::Load:
-        s_data.mode = mode;
-        deserializeModule();
-        setupModule();
-        setupPins();
         break;
     }
 }

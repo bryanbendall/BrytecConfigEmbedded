@@ -19,9 +19,7 @@ class EBrytecApp {
 public:
     enum Mode : uint8_t {
         Stopped,
-        Normal,
-        Programming,
-        Load
+        Normal
     };
 
 public:
