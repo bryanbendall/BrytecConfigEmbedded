@@ -51,7 +51,7 @@ private:
     static void sendRacepakCan(uint32_t timestepMs);
     static void clearNodeGroupNodeAddresses();
     static void queueBrytecCanMessage(const CanFrame& frame);
-    static void updateNodeGroupNodes();
+    static void updateNodeGroupNodes(uint32_t timestepMs);
     static void updateHolleyBroadcastNodes(uint32_t timestepMs);
     static void updateCustomCanInputNodes();
     static void updateCurrents(uint32_t timestepMs);

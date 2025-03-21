@@ -61,7 +61,7 @@ void EBrytecApp::update(uint32_t timestepMs)
     // Update current and over current
     updateCurrents(timestepMs);
 
-    updateNodeGroupNodes();
+    updateNodeGroupNodes(timestepMs);
 
     updateHolleyBroadcastNodes(timestepMs);
 
@@ -824,7 +824,7 @@ void EBrytecApp::queueBrytecCanMessage(const CanFrame& frame)
     }
 }
 
-void EBrytecApp::updateNodeGroupNodes()
+void EBrytecApp::updateNodeGroupNodes(uint32_t timestepMs)
 {
     // Internal nodes to this module
     {
@@ -863,6 +863,15 @@ void EBrytecApp::updateNodeGroupNodes()
                 }
             }
         }
+    }
+
+    // Find Node Group Nodes if not found yet
+    static uint32_t nodeGroupTimer = 0;
+    nodeGroupTimer += timestepMs;
+
+    if (nodeGroupTimer >= 1000) {
+        sendBrytecAddressRequests();
+        nodeGroupTimer = 0;
     }
 }
 
