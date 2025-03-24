@@ -174,7 +174,6 @@ void EBrytecApp::processCanCommands()
             } else {
                 for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
                     if (s_data.nodeGroups[i].index == canCommand->nodeGroupIndex) {
-                        printf("request status for - %u", canCommand->nodeGroupIndex);
                         s_data.nodeGroups[i].usedOnBus = canCommand->data[0];
                         return;
                     }
