@@ -697,6 +697,7 @@ void EBrytecApp::sendBrytecCan(const CanFrame& frame)
         if (s_data.canBuses[i].type == CanTypes::Types::Brytec)
             BrytecBoard::sendCan(i, frame);
     }
+    BrytecBoard::sendBrytecCanUsb(frame);
 }
 
 void EBrytecApp::sendBrytecCanBroadcasts()
@@ -726,7 +727,6 @@ void EBrytecApp::sendBrytecCanPinStatus(ENodeGroup& nodeGroup)
 
     CanFrame frame = pinStatus.getFrame();
     sendBrytecCan(frame);
-    BrytecBoard::sendBrytecCanUsb(frame);
 }
 
 void EBrytecApp::sendRacepakCan(uint32_t timestepMs)
@@ -903,7 +903,6 @@ void EBrytecApp::sendCanNak()
 
     CanFrame frame = command.getFrame();
     sendBrytecCan(frame);
-    BrytecBoard::sendBrytecCanUsb(frame);
 }
 
 void EBrytecApp::sendCanAck()
@@ -914,7 +913,6 @@ void EBrytecApp::sendCanAck()
 
     CanFrame frame = command.getFrame();
     sendBrytecCan(frame);
-    BrytecBoard::sendBrytecCanUsb(frame);
 }
 
 void EBrytecApp::sendCanModuleStatus()
@@ -927,7 +925,6 @@ void EBrytecApp::sendCanModuleStatus()
 
     CanFrame frame = bc.getFrame();
     sendBrytecCan(frame);
-    BrytecBoard::sendBrytecCanUsb(frame);
 }
 
 void EBrytecApp::sendDataSize(bool fullConfig)
@@ -947,7 +944,6 @@ void EBrytecApp::sendDataSize(bool fullConfig)
 
     CanFrame frame = command.getFrame();
     sendBrytecCan(frame);
-    BrytecBoard::sendBrytecCanUsb(frame);
 }
 
 void EBrytecApp::sendData(uint32_t offset, bool fullConfig)
@@ -962,6 +958,5 @@ void EBrytecApp::sendData(uint32_t offset, bool fullConfig)
 
     CanFrame frame = command.getFrame();
     sendBrytecCan(frame);
-    BrytecBoard::sendBrytecCanUsb(frame);
 }
 }
