@@ -141,7 +141,7 @@ void EBrytecApp::processCanCommands()
 
         // Not for this module or all modules
         if (canCommand->moduleAddress != s_data.moduleAddress && canCommand->moduleAddress != CanCommands::AllModules
-            && canCommand->command != CanCommands::RequestAddress && canCommand->command != CanCommands::ModuleInitalized)
+            && canCommand->command != CanCommands::RequestAddress)
             continue;
 
         switch (canCommand->command) {
@@ -174,6 +174,7 @@ void EBrytecApp::processCanCommands()
             } else {
                 for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
                     if (s_data.nodeGroups[i].index == canCommand->nodeGroupIndex) {
+                        printf("request status for - %u", canCommand->nodeGroupIndex);
                         s_data.nodeGroups[i].usedOnBus = canCommand->data[0];
                         return;
                     }
@@ -254,11 +255,6 @@ void EBrytecApp::processCanCommands()
             }
         } break;
 
-        case CanCommands::Command::ModuleInitalized:
-            // See if the new module has any addresses we still need
-            sendBrytecAddressRequests();
-            break;
-
         default:
             sendCanNak();
             break;
@@ -289,16 +285,9 @@ void EBrytecApp::setMode(Mode mode)
             setupPins();
         }
 
-        if (s_data.deserializeOk) {
+        if (s_data.deserializeOk)
             s_data.mode = mode;
 
-            sendBrytecAddressRequests();
-
-            CanCommands cmd;
-            cmd.command = CanCommands::ModuleInitalized;
-            cmd.moduleAddress = s_data.moduleAddress;
-            sendBrytecCan(cmd.getFrame());
-        }
         break;
     case Mode::Stopped:
         BrytecBoard::shutdownAllPins();

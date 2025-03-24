@@ -38,8 +38,7 @@ struct CanCommands {
         RequestData,
         ReserveConfigSize,
         WriteConfigData,
-        RequestAddress,
-        ModuleInitalized
+        RequestAddress
     };
 
     Command command = Command::None;
