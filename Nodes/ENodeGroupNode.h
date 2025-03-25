@@ -10,17 +10,19 @@ public:
     static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
 
     virtual uint8_t getModuleAddress() = 0;
+    virtual uint16_t getNodeGroupIndex() = 0;
+    virtual uint64_t getUuid() = 0;
 
-    virtual uint8_t getNodeGroupIndex() = 0;
+    virtual void setModuleAddress(uint8_t moduleAddress) = 0;
+    virtual void setNodeGroupIndex(uint16_t index) = 0;
 };
 
 template <typename Input1_t, typename Input2_t>
 class ENodeGroupNodeInternal : public ENodeGroupNode {
 
 public:
-    ENodeGroupNodeInternal(uint8_t moduleAddress, uint8_t nodeGroupIndex)
-        : m_moduleAddress(moduleAddress)
-        , m_nodeGroupIndex(nodeGroupIndex)
+    ENodeGroupNodeInternal(uint64_t uuid)
+        : m_uuid(uuid)
     {
     }
 
@@ -88,11 +90,18 @@ public:
 
     uint8_t getModuleAddress() override { return m_moduleAddress; }
 
-    uint8_t getNodeGroupIndex() override { return m_nodeGroupIndex; }
+    uint16_t getNodeGroupIndex() override { return m_nodeGroupIndex; }
+
+    uint64_t getUuid() override { return m_uuid; }
+
+    void setModuleAddress(uint8_t moduleAddress) override { m_moduleAddress = moduleAddress; }
+
+    void setNodeGroupIndex(uint16_t index) override { m_nodeGroupIndex = index; }
 
 private:
-    uint8_t m_moduleAddress;
-    uint8_t m_nodeGroupIndex;
+    uint8_t m_moduleAddress = UINT8_MAX;
+    uint16_t m_nodeGroupIndex = UINT16_MAX;
+    uint64_t m_uuid;
 #if ENODE_FULL_TEMPLATE
     ValueOrPointer<Input1_t> m_defaultValue;
     ValueOrPointer<Input2_t> m_timeout;

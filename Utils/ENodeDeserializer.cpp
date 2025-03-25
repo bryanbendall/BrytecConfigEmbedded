@@ -41,10 +41,12 @@ ENodeSpec ENodeDeserializer::deserializeNodeSpec(BinaryDeserializer& des)
 
     // Special case for node groups
     if (spec.type == NodeTypes::Node_Group) {
-        uint64_t uuid;
-        des.readRaw<uint64_t>(&uuid); // uuid
-        des.readRaw<uint8_t>(&spec.moduleAddress); // Module Address
-        des.readRaw<uint16_t>(&spec.pinIndex); // Pin Index
+        des.readRaw<uint64_t>(&spec.uuid); // uuid
+        // TODO remove module address and pin index from serialization
+        uint8_t moduleAddress;
+        des.readRaw<uint8_t>(&moduleAddress); // Module Address
+        uint16_t pinIndex;
+        des.readRaw<uint16_t>(&pinIndex); // Pin Index
     }
 
     return spec;

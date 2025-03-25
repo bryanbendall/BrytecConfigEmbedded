@@ -19,8 +19,7 @@ class EBrytecApp {
 public:
     enum Mode : uint8_t {
         Stopped,
-        Normal,
-        Programming
+        Normal
     };
 
 public:
@@ -41,6 +40,7 @@ private:
     static void setupPins();
     static void setupHolleyBroadcastQueue();
     static void setupCustomCanInputQueue();
+    static bool checkAndAssignNodeGroup(ENodeGroupNode* nodeGroupNode);
     static ENode* getNode(int index);
     static ENode* getInitialValueNode(int startIndex, int nodeCount);
     static ENode* getFinalValueNode(int startIndex, int nodeCount);
@@ -48,10 +48,11 @@ private:
     static void sendBrytecCan(const CanFrame& frame);
     static void sendBrytecCanBroadcasts();
     static void sendBrytecCanPinStatus(ENodeGroup& nodeGroup);
+    static void sendBrytecAddressRequests();
     static void sendRacepakCan(uint32_t timestepMs);
+    static void clearNodeGroupNodeAddresses();
     static void queueBrytecCanMessage(const CanFrame& frame);
-    static ENodeGroupNode* findNodeGroupNode(uint8_t moduleAddress, uint16_t nodeGroupIndex);
-    static void updateNodeGroupNodes();
+    static void updateNodeGroupNodes(uint32_t timestepMs);
     static void updateHolleyBroadcastNodes(uint32_t timestepMs);
     static void updateCustomCanInputNodes();
     static void updateCurrents(uint32_t timestepMs);

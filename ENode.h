@@ -56,8 +56,7 @@ struct ENodeSpec {
     uint8_t numValues = 0;
     float values[10];
 
-    uint8_t moduleAddress = 0;
-    uint16_t pinIndex = 0;
+    uint64_t uuid = 0;
 };
 
 static constexpr float FloatEpsilon = 0.0001f;

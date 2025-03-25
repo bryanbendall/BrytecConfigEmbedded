@@ -18,6 +18,7 @@ struct ENodeGroup {
     uint8_t maxRetries;
     uint32_t retryDelay;
     uint32_t startNodeIndex;
+    uint64_t uuid;
 
     uint32_t trippedTimer = 0;
     uint32_t retryTimer = 0;
