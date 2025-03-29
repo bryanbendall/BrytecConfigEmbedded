@@ -123,7 +123,7 @@ void EBrytecApp::brytecUsbReceived(const Brytec::UsbPacket& packet)
     Brytec::CanFrame frame = packet.as<Brytec::CanFrame>();
     if (frame) {
         queueBrytecCanMessage(frame);
-        sendBrytecCan(frame);
+        sendBrytecCan(frame, false);
     }
 }
 
@@ -703,13 +703,15 @@ ENode* EBrytecApp::getPinCurrentNode(int startIndex, int nodeCount)
     return nullptr;
 }
 
-void EBrytecApp::sendBrytecCan(const CanFrame& frame)
+void EBrytecApp::sendBrytecCan(const CanFrame& frame, bool toUsb)
 {
     for (int i = 0; i < MAX_CAN_BUSES; i++) {
         if (s_data.canBuses[i].type == CanTypes::Types::Brytec)
             BrytecBoard::sendCan(i, frame);
     }
-    BrytecBoard::sendBrytecCanUsb(frame);
+
+    if (toUsb)
+        BrytecBoard::sendBrytecCanUsb(frame);
 }
 
 void EBrytecApp::sendBrytecCanBroadcasts()

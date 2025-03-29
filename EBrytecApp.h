@@ -45,7 +45,7 @@ private:
     static ENode* getInitialValueNode(int startIndex, int nodeCount);
     static ENode* getFinalValueNode(int startIndex, int nodeCount);
     static ENode* getPinCurrentNode(int startIndex, int nodeCount);
-    static void sendBrytecCan(const CanFrame& frame);
+    static void sendBrytecCan(const CanFrame& frame, bool toUsb = true);
     static void sendBrytecCanBroadcasts();
     static void sendBrytecCanPinStatus(ENodeGroup& nodeGroup);
     static void sendBrytecAddressRequests();
