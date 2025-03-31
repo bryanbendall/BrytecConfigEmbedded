@@ -417,7 +417,7 @@ void EBrytecApp::deserializeModule()
         // TODO check version
 
         // Node Group name
-#if false //__has_include(<string>)
+#if __has_include(<string>) && USE_STRINGS
         std::string ngName;
         des->readRaw<std::string>(&ngName);
         BrytecBoard::AddedNamesNodeGroup(nodeGroupIndex, ngName);
@@ -656,7 +656,7 @@ bool EBrytecApp::checkAndAssignNodeGroup(ENodeGroupNode* nodeGroupNode)
     for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
         if (nodeGroupNode->getUuid() == s_data.nodeGroups[i].uuid) {
             nodeGroupNode->setModuleAddress(s_data.moduleAddress);
-            nodeGroupNode->setNodeGroupIndex(i);
+            nodeGroupNode->setNodeGroupIndex(s_data.nodeGroups[i].index);
             return true;
         }
     }
