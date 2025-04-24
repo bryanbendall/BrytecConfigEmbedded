@@ -66,6 +66,10 @@ void ECanHolleyBroadcastQueue::insert(uint32_t index, uint32_t channel)
 
 void ECanHolleyBroadcastQueue::update(const CanFrame& frame)
 {
+    // Not from ecu
+    if (((frame.id >> 11) & 0x07) != 0x02)
+        return;
+
     // Reset timeout when we get a new message
     m_timeoutTime = 0;
 
