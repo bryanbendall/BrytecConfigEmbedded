@@ -18,6 +18,8 @@ const char* IOTypes::Strings[] = {
 
     "Color",
 
-    "Internal"
+    "Internal",
+
+    "Output - Half Bridge"
 };
 }

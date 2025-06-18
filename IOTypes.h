@@ -24,6 +24,8 @@ struct IOTypes {
 
         Internal,
 
+        Output_Halfbridge, // TODO change order
+
         Count
     };
 
