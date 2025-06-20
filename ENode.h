@@ -38,6 +38,8 @@ enum class NodeTypes : uint8_t {
     CanBusOutput,
     Thermistor,
     Holley_Io_Module,
+    Mix_Color,
+    Clamp,
     Count
 };
 

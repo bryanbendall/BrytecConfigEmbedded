@@ -2,6 +2,7 @@
 #include "Nodes/EAndNode.h"
 #include "Nodes/ECanBusInputNode.h"
 #include "Nodes/ECanBusOutputNode.h"
+#include "Nodes/EClampNode.h"
 #include "Nodes/EColorNode.h"
 #include "Nodes/ECompareNode.h"
 #include "Nodes/ECounterNode.h"
@@ -15,6 +16,7 @@
 #include "Nodes/EInvertNode.h"
 #include "Nodes/EMapValueNode.h"
 #include "Nodes/EMathNode.h"
+#include "Nodes/EMixColorNode.h"
 #include "Nodes/ENodeGroupNode.h"
 #include "Nodes/EOnOffNode.h"
 #include "Nodes/EOrNode.h"
@@ -92,6 +94,10 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         return EThermistorNode::CreateInPlace(spec, destination);
     case NodeTypes::Holley_Io_Module:
         return EHolleyIoModuleNode::CreateInPlace(spec, destination);
+    case NodeTypes::Mix_Color:
+        return EMixColorNode::CreateInPlace(spec, destination);
+    case NodeTypes::Clamp:
+        return EClampNode::CreateInPlace(spec, destination);
 
     default:
         return nullptr;

@@ -25,6 +25,8 @@ add_library(BrytecConfigEmbedded
                 Nodes/ECanBusInputNode.h
                 Nodes/ECanBusOutputNode.cpp
                 Nodes/ECanBusOutputNode.h
+                Nodes/EClampNode.cpp
+                Nodes/EClampNode.h
                 Nodes/EColorNode.cpp
                 Nodes/EColorNode.h
                 Nodes/ECompareNode.cpp
@@ -53,6 +55,8 @@ add_library(BrytecConfigEmbedded
                 Nodes/EMapValueNode.h
                 Nodes/EMathNode.cpp
                 Nodes/EMathNode.h
+                Nodes/EMixColorNode.cpp
+                Nodes/EMixColorNode.h
                 Nodes/ENodeGroupNode.cpp
                 Nodes/ENodeGroupNode.h
                 Nodes/EOnOffNode.cpp
