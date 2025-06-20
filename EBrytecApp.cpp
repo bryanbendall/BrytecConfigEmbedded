@@ -65,6 +65,8 @@ void EBrytecApp::update(uint32_t timestepMs)
 
     updateNodeGroupNodes(timestepMs);
 
+    updatePreviousValueNodes(timestepMs);
+
     updateHolleyBroadcastNodes(timestepMs);
 
     updateCustomCanInputNodes();
@@ -684,6 +686,17 @@ ENode* EBrytecApp::getInitialValueNode(int startIndex, int nodeCount)
     return nullptr;
 }
 
+ENode* EBrytecApp::getPreviousValueNode(int startIndex, int nodeCount)
+{
+    ENodesVector::Iterator node(s_data.nodeVector.at(startIndex));
+    for (int i = 0; i < nodeCount; i++, node++) {
+        if (node->NodeType() == NodeTypes::PreviousValue)
+            return &*node;
+    }
+
+    return nullptr;
+}
+
 ENode* EBrytecApp::getFinalValueNode(int startIndex, int nodeCount)
 {
     // Start at the last one because it should always be the last
@@ -878,6 +891,13 @@ void EBrytecApp::updateNodeGroupNodes(uint32_t timestepMs)
     if (nodeGroupTimer >= 1000) {
         sendBrytecAddressRequests();
         nodeGroupTimer = 0;
+    }
+}
+
+void EBrytecApp::updatePreviousValueNodes(uint32_t timestepMs)
+{
+    for (uint16_t i = 0; i < s_data.nodeGroupsCount; i++) {
+        s_data.nodeGroups[i].updatePreviousValueNodes();
     }
 }
 

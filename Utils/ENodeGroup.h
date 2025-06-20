@@ -27,6 +27,7 @@ struct ENodeGroup {
 
     void setupPin();
     void updateInitialValue();
+    void updatePreviousValueNodes();
     void updateFinalValue();
     void updatePinCurrent(uint32_t timestepMs);
     void checkOverCurrent(uint32_t timestepMs, float current);

@@ -23,6 +23,7 @@
 #include "Nodes/EOrNode.h"
 #include "Nodes/EPIDNode.h"
 #include "Nodes/EPinCurrentNode.h"
+#include "Nodes/EPreviousValueNode.h"
 #include "Nodes/EPushButtonNode.h"
 #include "Nodes/ERacepakSwitchPanelNode.h"
 #include "Nodes/ESwitchNode.h"
@@ -101,6 +102,8 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         return EClampNode::CreateInPlace(spec, destination);
     case NodeTypes::DeltaTime:
         return EDeltaTimeNode::CreateInPlace(spec, destination);
+    case NodeTypes::PreviousValue:
+        return EPreviousValueNode::CreateInPlace(spec, destination);
 
     default:
         return nullptr;

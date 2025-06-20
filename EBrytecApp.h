@@ -9,7 +9,7 @@
 #include "Utils/ENodesVector.h"
 #include <stdint.h>
 
-namespace Brytec{
+namespace Brytec {
 
 class ENodeGroupNode;
 class NodeGroup;
@@ -43,6 +43,7 @@ private:
     static bool checkAndAssignNodeGroup(ENodeGroupNode* nodeGroupNode);
     static ENode* getNode(int index);
     static ENode* getInitialValueNode(int startIndex, int nodeCount);
+    static ENode* getPreviousValueNode(int startIndex, int nodeCount);
     static ENode* getFinalValueNode(int startIndex, int nodeCount);
     static ENode* getPinCurrentNode(int startIndex, int nodeCount);
     static void sendBrytecCan(const CanFrame& frame, bool toUsb = true);
@@ -53,6 +54,7 @@ private:
     static void clearNodeGroupNodeAddresses();
     static void queueBrytecCanMessage(const CanFrame& frame);
     static void updateNodeGroupNodes(uint32_t timestepMs);
+    static void updatePreviousValueNodes(uint32_t timestepMs);
     static void updateHolleyBroadcastNodes(uint32_t timestepMs);
     static void updateCustomCanInputNodes();
     static void updateCurrents(uint32_t timestepMs);

@@ -41,6 +41,7 @@ enum class NodeTypes : uint8_t {
     Mix_Color,
     Clamp,
     DeltaTime,
+    PreviousValue,
     Count
 };
 

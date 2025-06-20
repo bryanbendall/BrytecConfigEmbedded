@@ -69,6 +69,8 @@ add_library(BrytecConfigEmbedded
                 Nodes/EPIDNode.h
                 Nodes/EPinCurrentNode.cpp
                 Nodes/EPinCurrentNode.h
+                Nodes/EPreviousValueNode.cpp
+                Nodes/EPreviousValueNode.h
                 Nodes/EPushButtonNode.cpp
                 Nodes/EPushButtonNode.h
                 Nodes/ERacepakSwitchPanelNode.cpp

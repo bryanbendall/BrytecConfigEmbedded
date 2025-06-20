@@ -26,6 +26,22 @@ void ENodeGroup::updateInitialValue()
     node->SetValue(0, BrytecBoard::getPinValue(index, type));
 }
 
+void ENodeGroup::updatePreviousValueNodes()
+{
+    if (!enabled)
+        return;
+
+    ENode* previousValueNode = EBrytecApp::getPreviousValueNode(startNodeIndex, nodeCount);
+    if (!previousValueNode)
+        return;
+
+    ENode* finalValueNode = EBrytecApp::getFinalValueNode(startNodeIndex, nodeCount);
+    if (!finalValueNode)
+        return;
+
+    previousValueNode->SetValue(99, *finalValueNode->GetOutput());
+}
+
 void ENodeGroup::updateFinalValue()
 {
     if (!enabled)
