@@ -8,6 +8,7 @@
 #include "Nodes/ECounterNode.h"
 #include "Nodes/ECurveNode.h"
 #include "Nodes/EDelayNode.h"
+#include "Nodes/EDeltaTimeNode.h"
 #include "Nodes/EFinalValueNode.h"
 #include "Nodes/EHolleyBroadcastNode.h"
 #include "Nodes/EHolleyIoModuleNode.h"
@@ -98,6 +99,8 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         return EMixColorNode::CreateInPlace(spec, destination);
     case NodeTypes::Clamp:
         return EClampNode::CreateInPlace(spec, destination);
+    case NodeTypes::DeltaTime:
+        return EDeltaTimeNode::CreateInPlace(spec, destination);
 
     default:
         return nullptr;

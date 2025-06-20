@@ -40,6 +40,7 @@ enum class NodeTypes : uint8_t {
     Holley_Io_Module,
     Mix_Color,
     Clamp,
+    DeltaTime,
     Count
 };
 

@@ -41,6 +41,8 @@ add_library(BrytecConfigEmbedded
                 Nodes/EInterpolateNode.h
                 Nodes/EDelayNode.cpp
                 Nodes/EDelayNode.h
+                Nodes/EDeltaTimeNode.cpp
+                Nodes/EDeltaTimeNode.h
                 Nodes/EFinalValueNode.cpp
                 Nodes/EFinalValueNode.h
                 Nodes/EHolleyBroadcastNode.cpp
