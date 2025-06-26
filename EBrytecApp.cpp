@@ -58,7 +58,7 @@ void EBrytecApp::update(uint32_t timestepMs)
     if (!s_data.deserializeOk)
         return;
 
-    BrytecBoard::preUpdate();
+    BrytecBoard::preUpdate(timestepMs);
 
     // Update current and over current
     updateCurrents(timestepMs);
@@ -94,7 +94,7 @@ void EBrytecApp::update(uint32_t timestepMs)
 
     sendRacepakCan(timestepMs);
 
-    BrytecBoard::postUpdate();
+    BrytecBoard::postUpdate(timestepMs);
 }
 
 void EBrytecApp::canReceived(uint8_t canIndex, const CanFrame& frame)

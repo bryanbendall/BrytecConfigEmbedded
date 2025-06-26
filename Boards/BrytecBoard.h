@@ -13,8 +13,8 @@ class BrytecBoard {
 
 public:
     static BinaryDeserializer* getDeserializer();
-    static void preUpdate();
-    static void postUpdate();
+    static void preUpdate(uint32_t timestepMs);
+    static void postUpdate(uint32_t timestepMs);
     static void error(EBrytecErrors error);
     static void setupCan(uint8_t index, CanSpeed::Types speed);
     static void setupPin(uint16_t index, IOTypes::Types type);
