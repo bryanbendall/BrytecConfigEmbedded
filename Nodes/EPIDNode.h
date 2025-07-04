@@ -59,10 +59,10 @@ public:
             break;
 #ifdef NODES_SIMULATION
         case 5:
-            m_previousError = value;
+            m_lastInput = value;
             break;
         case 6:
-            m_integral = value;
+            m_iTerm = value;
             break;
 #endif
         }
@@ -72,9 +72,9 @@ public:
     {
         switch (index) {
         case 5:
-            return m_previousError;
+            return m_lastInput;
         case 6:
-            return m_integral;
+            return m_iTerm;
         }
 
         return 0.0f;
@@ -87,12 +87,34 @@ public:
 
     void Evaluate(uint32_t timestepMs) override
     {
-        float error = m_target - m_input;
-        float proportional = error;
-        m_integral = m_integral + error * (float)timestepMs;
-        float derivative = (error - m_previousError) / (float)timestepMs;
-        m_out = m_P * proportional + m_I * m_integral + m_D * derivative;
-        m_previousError = error;
+        // Adapted from:
+        // http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/
+
+        static constexpr float outMax = 1.0f;
+        static constexpr float outMin = 0.0f;
+
+        float deltaTime = timestepMs / 1000.0f;
+        float ki = (m_I * deltaTime);
+        float kd = (m_D / deltaTime);
+
+        /*Compute all the working error variables*/
+        double error = m_target - m_input;
+        m_iTerm += (ki * error);
+        if (m_iTerm > outMax)
+            m_iTerm = outMax;
+        else if (m_iTerm < outMin)
+            m_iTerm = outMin;
+        double dInput = (m_input - m_lastInput);
+
+        /*Compute PID Output*/
+        m_out = m_P * error + m_iTerm - kd * dInput;
+        if (m_out > outMax)
+            m_out = outMax;
+        else if (m_out < outMin)
+            m_out = outMin;
+
+        /*Remember some variables for next time*/
+        m_lastInput = m_input;
     }
 
     uint32_t Size() override { return sizeof(*this); }
@@ -113,9 +135,8 @@ private:
     ValueAndPointer m_I;
     ValueAndPointer m_D;
 #endif
-    float m_previousError;
-    float m_integral;
+    float m_lastInput;
+    float m_iTerm;
     float m_out;
 };
-
 }
