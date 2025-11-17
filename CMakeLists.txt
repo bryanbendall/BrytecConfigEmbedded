@@ -25,6 +25,8 @@ add_library(BrytecConfigEmbedded
                 Nodes/ECanBusInputNode.h
                 Nodes/ECanBusOutputNode.cpp
                 Nodes/ECanBusOutputNode.h
+                Nodes/EChangeNode.cpp
+                Nodes/EChangeNode.h
                 Nodes/EClampNode.cpp
                 Nodes/EClampNode.h
                 Nodes/EColorNode.cpp

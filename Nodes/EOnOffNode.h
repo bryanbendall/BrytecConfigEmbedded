@@ -35,11 +35,21 @@ public:
         case 1:
             m_off.setValue(value);
             break;
+#ifdef NODES_SIMULATION
+        case 2:
+            m_out = value;
+            break;
+#endif
         }
     }
 
     float GetValue(uint8_t index) override
     {
+        switch (index) {
+        case 2:
+            return m_out;
+        }
+
         return 0.0f;
     }
 
@@ -56,11 +66,11 @@ public:
         if (off) {
             m_out = 0.0f;
             return;
-        } else if (on) {
+        }
+        if (on) {
             m_out = 1.0f;
             return;
         }
-        m_out = 0.0f;
     }
 
     uint32_t Size() override { return sizeof(*this); }

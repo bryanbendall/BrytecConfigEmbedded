@@ -5,7 +5,7 @@ namespace Brytec {
 ENode* EOnOffNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 {
 
-    if (spec.type != NodeTypes::On_Off || spec.numInputs != 2 || spec.numValues != 0)
+    if (spec.type != NodeTypes::On_Off || spec.numInputs != 2 || spec.numValues != 1)
         return nullptr;
 
 #if ENODE_FULL_TEMPLATE

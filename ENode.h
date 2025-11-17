@@ -42,6 +42,7 @@ enum class NodeTypes : uint8_t {
     Clamp,
     DeltaTime,
     PreviousValue,
+    Change,
     Count
 };
 

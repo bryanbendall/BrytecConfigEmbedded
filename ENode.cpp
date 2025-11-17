@@ -2,6 +2,7 @@
 #include "Nodes/EAndNode.h"
 #include "Nodes/ECanBusInputNode.h"
 #include "Nodes/ECanBusOutputNode.h"
+#include "Nodes/EChangeNode.h"
 #include "Nodes/EClampNode.h"
 #include "Nodes/EColorNode.h"
 #include "Nodes/ECompareNode.h"
@@ -104,6 +105,8 @@ ENode* ENode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
         return EDeltaTimeNode::CreateInPlace(spec, destination);
     case NodeTypes::PreviousValue:
         return EPreviousValueNode::CreateInPlace(spec, destination);
+    case NodeTypes::Change:
+        return EChangeNode::CreateInPlace(spec, destination);
 
     default:
         return nullptr;
