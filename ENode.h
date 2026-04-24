@@ -86,7 +86,7 @@ inline uint32_t FloatToUint(float a)
 
 inline uint32_t FloatTimeToMs(float time)
 {
-    return time * 1000.0f;
+    return (uint32_t)(time * 1000.0f);
 }
 
 class ENode {

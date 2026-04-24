@@ -73,7 +73,7 @@ public:
             return;
         }
 
-        if (m_in == m_lastIn) {
+        if ((bool)m_in == m_lastIn) {
             return;
         }
 

@@ -22,12 +22,12 @@ struct EBrytecAppData {
     EBrytecApp::Mode mode = EBrytecApp::Mode::Stopped;
     bool deserializeOk = false;
     uint8_t moduleAddress = 254;
-    ENodesVector nodeVector = {};
+    ENodesVector nodeVector = { };
     ENodeGroup* nodeGroups = nullptr;
     uint16_t nodeGroupsCount = 0;
     EPinStatusQueue statusQueue;
     ECanCommandQueue canCommandQueue;
-    ECanBus canBuses[MAX_CAN_BUSES] = {};
+    ECanBus canBuses[MAX_CAN_BUSES] = { };
     ECanHolleyBroadcastQueue holleyBcQueue;
     ECustomCanQueue customCanInputQueue[MAX_CAN_BUSES];
 };
@@ -609,7 +609,7 @@ void EBrytecApp::setupCustomCanInputQueue()
     uint32_t nodeCounts[MAX_CAN_BUSES] = { 0 };
     for (ENode& node : s_data.nodeVector) {
         if (node.NodeType() == NodeTypes::CanBusInput) {
-            uint8_t canIndex = node.GetValue(1);
+            uint8_t canIndex = (uint8_t)node.GetValue(1);
             if (canIndex > MAX_CAN_BUSES)
                 continue;
             nodeCounts[canIndex]++;

@@ -29,7 +29,7 @@ public:
     {
         switch (index) {
         case 0:
-            return m_channel;
+            return (float)m_channel;
         }
 
         return 0.0f;

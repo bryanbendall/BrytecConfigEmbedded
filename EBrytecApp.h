@@ -66,7 +66,7 @@ private:
     static void sendData(uint32_t offset, bool fullConfig);
 
     friend class NodeGroup;
-    friend class ENodeGroup;
+    friend struct ENodeGroup;
 };
 
 }

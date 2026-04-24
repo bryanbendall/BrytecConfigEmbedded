@@ -162,7 +162,7 @@ private:
             if (endian == Endian::Big)
                 tempValue[index] = data[typeSize - 1 - index];
         }
-        return value;
+        return (float)value;
     }
 
 private:

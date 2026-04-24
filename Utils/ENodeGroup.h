@@ -12,7 +12,7 @@ struct ENodeGroup {
     bool usedOnBus;
     uint16_t index;
     IOTypes::Types type;
-    uint8_t nodeCount;
+    uint16_t nodeCount;
     uint8_t currentLimit;
     bool alwaysRetry;
     uint8_t maxRetries;

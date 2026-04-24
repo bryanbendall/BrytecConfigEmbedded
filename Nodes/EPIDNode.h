@@ -99,7 +99,7 @@ public:
 
         /*Compute all the working error variables*/
         double error = m_target - m_input;
-        m_iTerm += (ki * error);
+        m_iTerm += ((double)ki * error);
         if (m_iTerm > outMax)
             m_iTerm = outMax;
         else if (m_iTerm < outMin)
@@ -107,7 +107,7 @@ public:
         double dInput = (m_input - m_lastInput);
 
         /*Compute PID Output*/
-        m_out = m_P * error + m_iTerm - kd * dInput;
+        m_out = m_P * error + m_iTerm - (double)kd * dInput;
         if (m_out > outMax)
             m_out = outMax;
         else if (m_out < outMin)

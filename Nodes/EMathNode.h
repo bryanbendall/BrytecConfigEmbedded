@@ -78,10 +78,10 @@ public:
             m_out = m_input1 / m_input2;
 
         if constexpr (type == MathType::Min)
-            m_out = m_input1 > m_input2 ? m_input2 : m_input1;
+            m_out = m_input1 > m_input2 ? (float)m_input2 : (float)m_input1;
 
         if constexpr (type == MathType::Max)
-            m_out = m_input1 < m_input2 ? m_input2 : m_input1;
+            m_out = m_input1 < m_input2 ? (float)m_input2 : (float)m_input1;
     }
 
     uint32_t Size() override { return sizeof(*this); }
