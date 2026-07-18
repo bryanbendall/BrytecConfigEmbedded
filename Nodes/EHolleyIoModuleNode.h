@@ -98,12 +98,14 @@ public:
             float value = m_data;
             uint8_t typeSize = sizeof(float);
             uint8_t* tempValue = (uint8_t*)&value;
-            for (uint8_t index = 0; index < typeSize; index++) 
+
+            for (uint8_t index = 0; index < typeSize; index++)
                 frame.data[typeSize - 1 - index] = tempValue[index];
 
-            // Get holley can index
+            // Get holley can index and send if we have one
             uint8_t canIndex = EBrytecApp::findCanIndex(CanTypes::Types::Holley);
-            BrytecBoard::sendCan(canIndex, frame);
+            if (canIndex != 0xFF)
+                BrytecBoard::sendCan(canIndex, frame);
 
             // Reset timer counter
             m_timerCounter = 0;
