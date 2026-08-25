@@ -462,6 +462,11 @@ void EBrytecApp::deserializeModule()
         des->readRaw<float>(&retryDelay);
         currentNodeGroup->retryDelay = FloatTimeToMs(retryDelay);
 
+#ifdef NODES_SIMULATION
+        // Must be enabled to simulate
+        enabled = true;
+#endif
+
         // Create nodes in vector
         {
             uint16_t nodeCount;
@@ -471,6 +476,10 @@ void EBrytecApp::deserializeModule()
 
                 // Create Node
                 ENodeSpec spec = ENodeDeserializer::deserializeNodeSpec(*des);
+
+                // Dont add nodes if nodeGroup is not enabled
+                if (!enabled)
+                    continue;
 
                 ENode* node = s_data.nodeVector.add(spec);
                 if (!node) {
@@ -494,13 +503,19 @@ void EBrytecApp::deserializeModule()
 
             for (uint16_t nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++) {
 
-                ENode* thisNode = s_data.nodeVector.at(currentNodeGroup->startNodeIndex + nodeIndex);
+                ENode* thisNode = nullptr;
+                if (enabled)
+                    thisNode = s_data.nodeVector.at(currentNodeGroup->startNodeIndex + nodeIndex);
 
                 uint8_t inputCount;
                 des->readRaw<uint8_t>(&inputCount);
                 for (uint8_t inputIndex = 0; inputIndex < inputCount; inputIndex++) {
 
                     ENodeConnection connection = ENodeDeserializer::deserializeNodeConnection(*des);
+
+                    // No connections to add if nodeGroup is not enabled
+                    if (!enabled)
+                        continue;
 
                     if (connection.connectionNodeIndex != -1 && connection.outputIndex != -1) {
                         // Valid connection
