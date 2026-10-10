@@ -4,15 +4,16 @@
 
 namespace Brytec {
 
-ENode* EThermistorNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
+template <>
+ENode* CreateNodeInPlace<NodeTypes::Thermistor>(const ENodeSpec& spec, uint8_t* destination)
 {
     if (spec.type != NodeTypes::Thermistor || spec.numInputs != 1 || spec.numValues != 6)
         return nullptr;
 
-    return new (destination) EThermistorNodeInternal();
+    return new (destination) EThermistorNode();
 }
 
-void EThermistorNodeInternal::SetInput(uint8_t index, float* output)
+void EThermistorNode::SetInput(uint8_t index, float* output)
 {
     if (index >= 1)
         return;
@@ -20,7 +21,7 @@ void EThermistorNodeInternal::SetInput(uint8_t index, float* output)
     m_input = output;
 }
 
-void EThermistorNodeInternal::SetValue(uint8_t index, float value)
+void EThermistorNode::SetValue(uint8_t index, float value)
 {
     switch (index) {
     case 1:
@@ -46,7 +47,7 @@ void EThermistorNodeInternal::SetValue(uint8_t index, float value)
     CalculateBeta();
 }
 
-float EThermistorNodeInternal::GetValue(uint8_t index)
+float EThermistorNode::GetValue(uint8_t index)
 {
     switch (index) {
     case 1:
@@ -66,12 +67,12 @@ float EThermistorNodeInternal::GetValue(uint8_t index)
     return 0.0f;
 }
 
-float* EThermistorNodeInternal::GetOutput(uint8_t index)
+float* EThermistorNode::GetOutput(uint8_t index)
 {
     return &m_out;
 }
 
-void EThermistorNodeInternal::Evaluate(uint32_t timestepMs)
+void EThermistorNode::Evaluate(uint32_t timestepMs)
 {
     if (!m_input)
         return;
@@ -80,7 +81,7 @@ void EThermistorNodeInternal::Evaluate(uint32_t timestepMs)
     m_out = FromKelvin(tKelvin);
 }
 
-void EThermistorNodeInternal::CalculateBeta()
+void EThermistorNode::CalculateBeta()
 {
     if (m_res2 == 0.0f)
         return;
@@ -88,7 +89,7 @@ void EThermistorNodeInternal::CalculateBeta()
     m_beta = (std::log((m_res1 / m_res2))) / ((1.0f / ToKelvin(m_temp1)) - (1.0f / ToKelvin(m_temp2)));
 }
 
-float EThermistorNodeInternal::ToKelvin(float value)
+float EThermistorNode::ToKelvin(float value)
 {
     switch (m_format) {
     case Celsius:
@@ -102,7 +103,7 @@ float EThermistorNodeInternal::ToKelvin(float value)
     return 0.0f;
 }
 
-float EThermistorNodeInternal::FromKelvin(float value)
+float EThermistorNode::FromKelvin(float value)
 {
     switch (m_format) {
     case Celsius:

@@ -2,12 +2,13 @@
 
 namespace Brytec {
 
-ENode* EPinCurrentNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
+template <>
+ENode* CreateNodeInPlace<NodeTypes::PinCurrent>(const ENodeSpec& spec, uint8_t* destination)
 {
     if (spec.type != NodeTypes::PinCurrent || spec.numInputs != 0 || spec.numValues != 1)
         return nullptr;
 
-    return new (destination) EPinCurrentNodeInternal();
+    return new (destination) EPinCurrentNode();
 }
 
 }

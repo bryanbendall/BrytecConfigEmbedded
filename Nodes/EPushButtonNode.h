@@ -4,14 +4,8 @@
 
 namespace Brytec {
 
-class EPushButtonNode : public ENode {
-
-public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-};
-
 template <typename Input1_t, typename Input2_t, typename Input3_t>
-class EPushButtonNodeInternal : public EPushButtonNode {
+class EPushButtonNode : public ENode {
 
 public:
     void SetInput(uint8_t index, float* output) override

@@ -10,12 +10,6 @@ namespace Brytec {
 class EHolleyBroadcastNode : public ENode {
 
 public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-};
-
-class EHolleyBroadcastNodeInternal : public EHolleyBroadcastNode {
-
-public:
     void SetInput(uint8_t index, float* output) override
     {
     }

@@ -5,16 +5,10 @@
 
 namespace Brytec {
 
-class EColorNode : public ENode {
-
-public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-};
-
 template <typename Input1_t,
     typename Input2_t,
     typename Input3_t>
-class EColorNodeInternal : public EColorNode {
+class EColorNode : public ENode {
 
 public:
     void SetInput(uint8_t index, float* output) override

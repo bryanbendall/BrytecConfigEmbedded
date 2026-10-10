@@ -4,14 +4,8 @@
 
 namespace Brytec {
 
-class EToggleNode : public ENode {
-
-public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-};
-
 template <typename Input1_t, typename Reset_t>
-class EToggleNodeInternal : public EToggleNode {
+class EToggleNode : public ENode {
 
 public:
     void SetInput(uint8_t index, float* output) override

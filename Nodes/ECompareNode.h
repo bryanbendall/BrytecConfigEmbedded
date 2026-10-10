@@ -14,14 +14,8 @@ enum class CompareType : uint8_t {
     Count
 };
 
-class ECompareNode : public ENode {
-
-public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-};
-
 template <CompareType type, typename Input1_t, typename Input2_t>
-class ECompareNodeInternal : public ECompareNode {
+class ECompareNode : public ENode {
 
 public:
     void SetInput(uint8_t index, float* output) override

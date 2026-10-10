@@ -15,16 +15,10 @@ enum class InterpolateType : uint8_t {
     Count
 };
 
-class EInterpolateNode : public ENode {
-
-public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-};
-
 template <InterpolateType type,
     typename Input1_t,
     typename Input2_t>
-class EInterpolateNodeInternal : public EInterpolateNode {
+class EInterpolateNode : public ENode {
 
 public:
     void SetInput(uint8_t index, float* output) override

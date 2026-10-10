@@ -2,13 +2,14 @@
 
 namespace Brytec {
 
-ENode* EValueNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
+template <>
+ENode* CreateNodeInPlace<NodeTypes::Value>(const ENodeSpec& spec, uint8_t* destination)
 {
 
     if (spec.type != NodeTypes::Value || spec.numInputs != 0 || spec.numValues != 1)
         return nullptr;
 
-    return new (destination) EValueNodeInternal();
+    return new (destination) EValueNode();
 }
 
 }

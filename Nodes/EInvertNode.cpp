@@ -2,7 +2,8 @@
 
 namespace Brytec {
 
-ENode* EInvertNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
+template <>
+ENode* CreateNodeInPlace<NodeTypes::Invert>(const ENodeSpec& spec, uint8_t* destination)
 {
 
     if (spec.type != NodeTypes::Invert || spec.numInputs != 1 || spec.numValues != 0)
@@ -13,12 +14,12 @@ ENode* EInvertNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     auto in = spec.connections[0];
 
     if (in == Float)
-        return new (destination) EInvertNodeInternal<float>();
+        return new (destination) EInvertNode<float>();
     if (in == Pointer)
-        return new (destination) EInvertNodeInternal<float*>();
+        return new (destination) EInvertNode<float*>();
 
 #else
-    return new (destination) EInvertNodeInternal<float>();
+    return new (destination) EInvertNode<float>();
 
 #endif
 

@@ -2,7 +2,8 @@
 
 namespace Brytec {
 
-ENode* EToggleNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
+template <>
+ENode* CreateNodeInPlace<NodeTypes::Toggle>(const ENodeSpec& spec, uint8_t* destination)
 {
 
     if (spec.type != NodeTypes::Toggle || spec.numInputs != 2 || spec.numValues != 2)
@@ -14,16 +15,16 @@ ENode* EToggleNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     auto reset = spec.connections[1];
 
     if (in == Float && reset == Float)
-        return new (destination) EToggleNodeInternal<float, float>();
+        return new (destination) EToggleNode<float, float>();
     if (in == Float && reset == Pointer)
-        return new (destination) EToggleNodeInternal<float, float*>();
+        return new (destination) EToggleNode<float, float*>();
     if (in == Pointer && reset == Float)
-        return new (destination) EToggleNodeInternal<float*, float>();
+        return new (destination) EToggleNode<float*, float>();
     if (in == Pointer && reset == Pointer)
-        return new (destination) EToggleNodeInternal<float*, float*>();
+        return new (destination) EToggleNode<float*, float*>();
 
 #else
-    return new (destination) EToggleNodeInternal<float, float>();
+    return new (destination) EToggleNode<float, float>();
 #endif
 
     return nullptr;

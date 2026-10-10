@@ -7,12 +7,6 @@ namespace Brytec {
 class ECounterNode : public ENode {
 
 public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-};
-
-class ECounterNodeInternal : public ECounterNode {
-
-public:
     void SetInput(uint8_t index, float* output) override
     {
         switch (index) {

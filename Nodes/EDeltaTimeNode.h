@@ -7,12 +7,6 @@ namespace Brytec {
 class EDeltaTimeNode : public ENode {
 
 public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-};
-
-class EDeltaTimeNodeInternal : public EDeltaTimeNode {
-
-public:
     void SetInput(uint8_t index, float* output) override
     {
     }

@@ -7,8 +7,6 @@ namespace Brytec {
 class ENodeGroupNode : public ENode {
 
 public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-
     virtual uint8_t getModuleAddress() = 0;
     virtual uint16_t getNodeGroupIndex() = 0;
     virtual uint64_t getUuid() = 0;

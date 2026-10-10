@@ -1,5 +1,7 @@
 #include "ENodeDeserializer.h"
 
+#include "BrytecConfigEmbedded/Boards/BrytecBoard.h"
+
 namespace Brytec {
 
 ENodeSpec ENodeDeserializer::deserializeNodeSpec(BinaryDeserializer& des)
@@ -24,6 +26,12 @@ ENodeSpec ENodeDeserializer::deserializeNodeSpec(BinaryDeserializer& des)
     {
         des.readRaw<uint8_t>(&spec.numInputs);
 
+        if (spec.numInputs >= ENodeSpec::maxConnections) {
+            spec.numInputs = 0;
+            BrytecBoard::error(EBrytecErrors::SpecToManyInputs);
+            return spec;
+        }
+
         for (int i = 0; i < spec.numInputs; i++) {
             uint8_t connectionType;
             des.readRaw<uint8_t>(&connectionType);
@@ -34,6 +42,12 @@ ENodeSpec ENodeDeserializer::deserializeNodeSpec(BinaryDeserializer& des)
     // Values
     {
         des.readRaw<uint8_t>(&spec.numValues);
+
+        if (spec.numValues >= ENodeSpec::maxValues) {
+            spec.numValues = 0;
+            BrytecBoard::error(EBrytecErrors::SpecToManyValues);
+            return spec;
+        }
 
         for (int i = 0; i < spec.numValues; i++)
             des.readRaw<float>(&spec.values[i]);

@@ -12,14 +12,8 @@ enum class ChangeType : uint8_t {
     Count
 };
 
-class EChangeNode : public ENode {
-
-public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-};
-
 template <ChangeType type, typename Input1_t>
-class EChangeNodeInternal : public EChangeNode {
+class EChangeNode : public ENode {
 
 public:
     void SetInput(uint8_t index, float* output) override

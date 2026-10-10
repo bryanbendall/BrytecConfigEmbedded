@@ -13,19 +13,11 @@ enum class CurveType : uint8_t {
     Count
 };
 
-class ECurveNode : public ENode {
-
-public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-
-private:
-};
-
 template <CurveType type,
     typename Input1_t,
     typename Input2_t,
     typename Input3_t>
-class ECurveNodeInternal : public ECurveNode {
+class ECurveNode : public ENode {
 
 public:
     void SetInput(uint8_t index, float* output) override

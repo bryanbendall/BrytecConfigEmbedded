@@ -8,24 +8,19 @@
 
 namespace Brytec {
 
-class EHolleyIoModuleNode : public ENode {
-public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-
-    enum class IoInput : uint8_t {
-        Input1 = 0,
-        Input2,
-        Input3,
-        Input4,
-        Input5,
-        Input6,
-        Input7,
-        Input8
-    };
+enum class HolleyIoModuleInput : uint8_t {
+    Input1 = 0,
+    Input2,
+    Input3,
+    Input4,
+    Input5,
+    Input6,
+    Input7,
+    Input8
 };
 
 template <typename Data_t>
-class EHolleyIoModuleNodeInternal : public EHolleyIoModuleNode {
+class EHolleyIoModuleNode : public ENode {
 
 public:
     void SetInput(uint8_t index, float* output) override
@@ -47,7 +42,7 @@ public:
             m_canId = FloatToUint(value);
             break;
         case 2:
-            m_ioInput = (IoInput)FloatToUint(value);
+            m_ioInput = (HolleyIoModuleInput)FloatToUint(value);
             break;
         case 3:
             m_sendInterval = value;
@@ -127,7 +122,7 @@ private:
     ValueAndPointer m_data;
 #endif
     uint32_t m_canId;
-    IoInput m_ioInput;
+    HolleyIoModuleInput m_ioInput;
     float m_sendInterval;
     uint32_t m_timerCounter;
 };

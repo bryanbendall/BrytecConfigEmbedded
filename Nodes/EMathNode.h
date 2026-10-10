@@ -14,14 +14,8 @@ enum class MathType : uint8_t {
     Count
 };
 
-class EMathNode : public ENode {
-
-public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-};
-
 template <MathType type, typename Input1_t, typename Input2_t>
-class EMathNodeInternal : public EMathNode {
+class EMathNode : public ENode {
 
 public:
     void SetInput(uint8_t index, float* output) override

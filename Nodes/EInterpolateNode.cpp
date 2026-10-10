@@ -2,22 +2,23 @@
 
 namespace Brytec {
 
-#define InterpolateMacroTemplate(type)                                                \
-    case type:                                                                        \
-        if (in == Float && transitionTime == Float)                                   \
-            return new (destination) EInterpolateNodeInternal<type, float, float>();  \
-        if (in == Float && transitionTime == Pointer)                                 \
-            return new (destination) EInterpolateNodeInternal<type, float, float*>(); \
-        if (in == Pointer && transitionTime == Float)                                 \
-            return new (destination) EInterpolateNodeInternal<type, float*, float>(); \
-        if (in == Pointer && transitionTime == Pointer)                               \
-        return new (destination) EInterpolateNodeInternal<type, float*, float*>()
+#define InterpolateMacroTemplate(type)                                        \
+    case type:                                                                \
+        if (in == Float && transitionTime == Float)                           \
+            return new (destination) EInterpolateNode<type, float, float>();  \
+        if (in == Float && transitionTime == Pointer)                         \
+            return new (destination) EInterpolateNode<type, float, float*>(); \
+        if (in == Pointer && transitionTime == Float)                         \
+            return new (destination) EInterpolateNode<type, float*, float>(); \
+        if (in == Pointer && transitionTime == Pointer)                       \
+        return new (destination) EInterpolateNode<type, float*, float*>()
 
 #define InterpolateMacro(type) \
     case type:                 \
-        return new (destination) EInterpolateNodeInternal<type, float, float>()
+        return new (destination) EInterpolateNode<type, float, float>()
 
-ENode* EInterpolateNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
+template <>
+ENode* CreateNodeInPlace<NodeTypes::Interpolate>(const ENodeSpec& spec, uint8_t* destination)
 {
 
     if (spec.type != NodeTypes::Interpolate || spec.numInputs != 2 || spec.numValues != 3)

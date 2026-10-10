@@ -7,12 +7,6 @@ namespace Brytec {
 class EAndNode : public ENode {
 
 public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-};
-
-class EAndNodeInternal : public EAndNode {
-
-public:
     void SetInput(uint8_t index, float* output) override
     {
         if (index >= 5)
@@ -52,7 +46,7 @@ public:
     NodeTypes NodeType() override { return NodeTypes::And; }
 
 private:
-    float* m_inputs[5] = {};
+    float* m_inputs[5] = { };
     float m_out;
 };
 

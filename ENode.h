@@ -43,6 +43,7 @@ enum class NodeTypes : uint8_t {
     DeltaTime,
     PreviousValue,
     Change,
+    OneDMap,
     Count
 };
 
@@ -53,13 +54,17 @@ struct ENodeConnection {
 };
 
 struct ENodeSpec {
+    static constexpr uint8_t maxConnections = 10;
+    static constexpr uint8_t maxValues = 20;
+
+public:
     NodeTypes type;
 
     uint8_t numInputs = 0;
-    ConnectionType connections[10];
+    ConnectionType connections[maxConnections];
 
     uint8_t numValues = 0;
-    float values[10];
+    float values[maxValues];
 
     uint64_t uuid = 0;
 };
@@ -92,8 +97,6 @@ inline uint32_t FloatTimeToMs(float time)
 class ENode {
 
 public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-
     virtual void SetInput(uint8_t index, float* output) = 0;
     virtual void SetValue(uint8_t index, float value) = 0;
     virtual float GetValue(uint8_t index) = 0;
@@ -103,4 +106,8 @@ public:
     virtual NodeTypes NodeType() = 0;
 };
 
+ENode* CreateNode(const ENodeSpec& spec, uint8_t* destination);
+
+template <NodeTypes T>
+ENode* CreateNodeInPlace(const ENodeSpec& spec, uint8_t* destination);
 }

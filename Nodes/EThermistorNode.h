@@ -6,12 +6,6 @@ namespace Brytec {
 
 class EThermistorNode : public ENode {
 
-public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-};
-
-class EThermistorNodeInternal : public EThermistorNode {
-
     enum TempFormat : uint8_t {
         Celsius,
         Fahrenheit,

@@ -7,12 +7,6 @@ namespace Brytec {
 class EInitialValueNode : public ENode {
 
 public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-};
-
-class EInitialValueNodeInternal : public EInitialValueNode {
-
-public:
     void SetInput(uint8_t index, float* output) override
     {
     }

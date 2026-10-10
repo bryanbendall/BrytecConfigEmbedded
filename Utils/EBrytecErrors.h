@@ -11,7 +11,9 @@ enum class EBrytecErrors {
     FailedToCreateNode,
     NodeIndexOutOfBounds,
     BadAlloc,
-    CanBufferFull
+    CanBufferFull,
+    SpecToManyInputs,
+    SpecToManyValues
 };
 
 }

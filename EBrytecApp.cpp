@@ -598,7 +598,7 @@ void EBrytecApp::setupHolleyBroadcastQueue()
             for (uint32_t j = 0; j < holleyNodeCount; j++) {
                 uint32_t channel = FloatToUint(node.GetValue(0));
                 if ((channelBuffer[j] == UINT32_MAX) || (channelBuffer[j] == channel)) {
-                    EHolleyBroadcastNodeInternal* holleyNode = (EHolleyBroadcastNodeInternal*)&node;
+                    EHolleyBroadcastNode* holleyNode = (EHolleyBroadcastNode*)&node;
                     holleyNode->setCanFrameIndex(j);
                     if (channelBuffer[j] == UINT32_MAX) {
                         channelBuffer[j] = channel;
@@ -655,7 +655,7 @@ void EBrytecApp::setupCustomCanInputQueue()
                     if ((tempBuffer[j] == UINT32_MAX) | (tempBuffer[j] == id)) {
                         tempBuffer[j] = id;
                         trimmedCount++;
-                        ECanBusInputNodeInternal* canNode = (ECanBusInputNodeInternal*)&node;
+                        ECanBusInputNode* canNode = (ECanBusInputNode*)&node;
                         canNode->setCanFrameIndex(j);
                         j = nodeCounts[canBusIndex]; // Break from loop
                     }

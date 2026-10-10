@@ -9,9 +9,6 @@ namespace Brytec {
 
 class ECanBusInputNode : public ENode {
 
-public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-
     enum class Endian : uint8_t {
         Little,
         Big
@@ -26,9 +23,6 @@ public:
         Int32,
         Float
     };
-};
-
-class ECanBusInputNodeInternal : public ECanBusInputNode {
 
 public:
     void SetInput(uint8_t index, float* output) override

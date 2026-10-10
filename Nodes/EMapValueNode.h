@@ -4,18 +4,12 @@
 
 namespace Brytec {
 
-class EMapValueNode : public ENode {
-
-public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-};
-
 template <typename Input1_t,
     typename Input2_t,
     typename Input3_t,
     typename Input4_t,
     typename Input5_t>
-class EMapValueNodeInternal : public EMapValueNode {
+class EMapValueNode : public ENode {
 
 public:
     void SetInput(uint8_t index, float* output) override

@@ -2,7 +2,8 @@
 
 namespace Brytec {
 
-ENode* EPushButtonNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
+template <>
+ENode* CreateNodeInPlace<NodeTypes::Push_Button>(const ENodeSpec& spec, uint8_t* destination)
 {
 
     if (spec.type != NodeTypes::Push_Button || spec.numInputs != 3 || spec.numValues != 3)
@@ -15,27 +16,27 @@ ENode* EPushButtonNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destinatio
     auto engineRunning = spec.connections[2];
 
     if (button == Float && neutralSafety == Float && engineRunning == Float)
-        return new (destination) EPushButtonNodeInternal<float, float, float>();
+        return new (destination) EPushButtonNode<float, float, float>();
     if (button == Float && neutralSafety == Float && engineRunning == Pointer)
-        return new (destination) EPushButtonNodeInternal<float, float, float*>();
+        return new (destination) EPushButtonNode<float, float, float*>();
 
     if (button == Float && neutralSafety == Pointer && engineRunning == Float)
-        return new (destination) EPushButtonNodeInternal<float, float*, float>();
+        return new (destination) EPushButtonNode<float, float*, float>();
     if (button == Float && neutralSafety == Pointer && engineRunning == Pointer)
-        return new (destination) EPushButtonNodeInternal<float, float*, float*>();
+        return new (destination) EPushButtonNode<float, float*, float*>();
 
     if (button == Pointer && neutralSafety == Float && engineRunning == Float)
-        return new (destination) EPushButtonNodeInternal<float*, float, float>();
+        return new (destination) EPushButtonNode<float*, float, float>();
     if (button == Pointer && neutralSafety == Float && engineRunning == Pointer)
-        return new (destination) EPushButtonNodeInternal<float*, float, float*>();
+        return new (destination) EPushButtonNode<float*, float, float*>();
 
     if (button == Pointer && neutralSafety == Pointer && engineRunning == Float)
-        return new (destination) EPushButtonNodeInternal<float*, float*, float>();
+        return new (destination) EPushButtonNode<float*, float*, float>();
     if (button == Pointer && neutralSafety == Pointer && engineRunning == Pointer)
-        return new (destination) EPushButtonNodeInternal<float*, float*, float*>();
+        return new (destination) EPushButtonNode<float*, float*, float*>();
 
 #else
-    return new (destination) EPushButtonNodeInternal<float, float, float>();
+    return new (destination) EPushButtonNode<float, float, float>();
 
 #endif
 

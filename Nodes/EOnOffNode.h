@@ -4,14 +4,8 @@
 
 namespace Brytec {
 
-class EOnOffNode : public ENode {
-
-public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-};
-
 template <typename Input1_t, typename Input2_t>
-class EOnOffNodeInternal : public EOnOffNode {
+class EOnOffNode : public ENode {
 
 public:
     void SetInput(uint8_t index, float* output) override

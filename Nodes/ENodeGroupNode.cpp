@@ -2,7 +2,8 @@
 
 namespace Brytec {
 
-ENode* ENodeGroupNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
+template <>
+ENode* CreateNodeInPlace<NodeTypes::Node_Group>(const ENodeSpec& spec, uint8_t* destination)
 {
     if (spec.type != NodeTypes::Node_Group || spec.numInputs != 2 || spec.numValues != 1)
         return nullptr;

@@ -4,16 +4,10 @@
 
 namespace Brytec {
 
-class EClampNode : public ENode {
-
-public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-};
-
 template <typename Input_t,
     typename Min_t,
     typename Max_t>
-class EClampNodeInternal : public EClampNode {
+class EClampNode : public ENode {
 
 public:
     void SetInput(uint8_t index, float* output) override

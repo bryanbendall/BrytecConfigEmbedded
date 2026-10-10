@@ -6,12 +6,6 @@ namespace Brytec {
 
 class ERacepakSwitchPanelNode : public ENode {
 
-public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-};
-
-class ERacepakSwitchPanelNodeInternal : public ERacepakSwitchPanelNode {
-
 #define RACEPAK_SWITCH_PANEL_NUM_INPUTS 8
 
 public:

@@ -2,7 +2,8 @@
 
 namespace Brytec {
 
-ENode* ECompareNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
+template <>
+ENode* CreateNodeInPlace<NodeTypes::Compare>(const ENodeSpec& spec, uint8_t* destination)
 {
     if (spec.type != NodeTypes::Compare || spec.numInputs != 2 || spec.numValues != 1)
         return nullptr;
@@ -17,63 +18,63 @@ ENode* ECompareNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     switch (compareType) {
     case CompareType::Equal:
         if (input0 == Float && input1 == Float)
-            return new (destination) ECompareNodeInternal<CompareType::Equal, float, float>();
+            return new (destination) ECompareNode<CompareType::Equal, float, float>();
         if (input0 == Float && input1 == Pointer)
-            return new (destination) ECompareNodeInternal<CompareType::Equal, float, float*>();
+            return new (destination) ECompareNode<CompareType::Equal, float, float*>();
         if (input0 == Pointer && input1 == Float)
-            return new (destination) ECompareNodeInternal<CompareType::Equal, float*, float>();
+            return new (destination) ECompareNode<CompareType::Equal, float*, float>();
         if (input0 == Pointer && input1 == Pointer)
-            return new (destination) ECompareNodeInternal<CompareType::Equal, float*, float*>();
+            return new (destination) ECompareNode<CompareType::Equal, float*, float*>();
 
     case CompareType::NotEqual:
         if (input0 == Float && input1 == Float)
-            return new (destination) ECompareNodeInternal<CompareType::NotEqual, float, float>();
+            return new (destination) ECompareNode<CompareType::NotEqual, float, float>();
         if (input0 == Float && input1 == Pointer)
-            return new (destination) ECompareNodeInternal<CompareType::NotEqual, float, float*>();
+            return new (destination) ECompareNode<CompareType::NotEqual, float, float*>();
         if (input0 == Pointer && input1 == Float)
-            return new (destination) ECompareNodeInternal<CompareType::NotEqual, float*, float>();
+            return new (destination) ECompareNode<CompareType::NotEqual, float*, float>();
         if (input0 == Pointer && input1 == Pointer)
-            return new (destination) ECompareNodeInternal<CompareType::NotEqual, float*, float*>();
+            return new (destination) ECompareNode<CompareType::NotEqual, float*, float*>();
 
     case CompareType::Greater:
         if (input0 == Float && input1 == Float)
-            return new (destination) ECompareNodeInternal<CompareType::Greater, float, float>();
+            return new (destination) ECompareNode<CompareType::Greater, float, float>();
         if (input0 == Float && input1 == Pointer)
-            return new (destination) ECompareNodeInternal<CompareType::Greater, float, float*>();
+            return new (destination) ECompareNode<CompareType::Greater, float, float*>();
         if (input0 == Pointer && input1 == Float)
-            return new (destination) ECompareNodeInternal<CompareType::Greater, float*, float>();
+            return new (destination) ECompareNode<CompareType::Greater, float*, float>();
         if (input0 == Pointer && input1 == Pointer)
-            return new (destination) ECompareNodeInternal<CompareType::Greater, float*, float*>();
+            return new (destination) ECompareNode<CompareType::Greater, float*, float*>();
 
     case CompareType::GreaterEqual:
         if (input0 == Float && input1 == Float)
-            return new (destination) ECompareNodeInternal<CompareType::GreaterEqual, float, float>();
+            return new (destination) ECompareNode<CompareType::GreaterEqual, float, float>();
         if (input0 == Float && input1 == Pointer)
-            return new (destination) ECompareNodeInternal<CompareType::GreaterEqual, float, float*>();
+            return new (destination) ECompareNode<CompareType::GreaterEqual, float, float*>();
         if (input0 == Pointer && input1 == Float)
-            return new (destination) ECompareNodeInternal<CompareType::GreaterEqual, float*, float>();
+            return new (destination) ECompareNode<CompareType::GreaterEqual, float*, float>();
         if (input0 == Pointer && input1 == Pointer)
-            return new (destination) ECompareNodeInternal<CompareType::GreaterEqual, float*, float*>();
+            return new (destination) ECompareNode<CompareType::GreaterEqual, float*, float*>();
 
     case CompareType::Less:
         if (input0 == Float && input1 == Float)
-            return new (destination) ECompareNodeInternal<CompareType::Less, float, float>();
+            return new (destination) ECompareNode<CompareType::Less, float, float>();
         if (input0 == Float && input1 == Pointer)
-            return new (destination) ECompareNodeInternal<CompareType::Less, float, float*>();
+            return new (destination) ECompareNode<CompareType::Less, float, float*>();
         if (input0 == Pointer && input1 == Float)
-            return new (destination) ECompareNodeInternal<CompareType::Less, float*, float>();
+            return new (destination) ECompareNode<CompareType::Less, float*, float>();
         if (input0 == Pointer && input1 == Pointer)
-            return new (destination) ECompareNodeInternal<CompareType::Less, float*, float*>();
+            return new (destination) ECompareNode<CompareType::Less, float*, float*>();
 
     case CompareType::LessEqual:
         if (input0 == Float && input1 == Float)
-            return new (destination) ECompareNodeInternal<CompareType::LessEqual, float, float>();
+            return new (destination) ECompareNode<CompareType::LessEqual, float, float>();
         if (input0 == Float && input1 == Pointer)
-            return new (destination) ECompareNodeInternal<CompareType::LessEqual, float, float*>();
+            return new (destination) ECompareNode<CompareType::LessEqual, float, float*>();
         if (input0 == Pointer && input1 == Float)
-            return new (destination) ECompareNodeInternal<CompareType::LessEqual, float*, float>();
+            return new (destination) ECompareNode<CompareType::LessEqual, float*, float>();
         if (input0 == Pointer && input1 == Pointer)
-            return new (destination) ECompareNodeInternal<CompareType::LessEqual, float*, float*>();
+            return new (destination) ECompareNode<CompareType::LessEqual, float*, float*>();
 
     default:
         break;
@@ -82,22 +83,22 @@ ENode* ECompareNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
 #else
     switch (compareType) {
     case CompareType::Equal:
-        return new (destination) ECompareNodeInternal<CompareType::Equal, float, float>();
+        return new (destination) ECompareNode<CompareType::Equal, float, float>();
 
     case CompareType::NotEqual:
-        return new (destination) ECompareNodeInternal<CompareType::NotEqual, float, float>();
+        return new (destination) ECompareNode<CompareType::NotEqual, float, float>();
 
     case CompareType::Greater:
-        return new (destination) ECompareNodeInternal<CompareType::Greater, float, float>();
+        return new (destination) ECompareNode<CompareType::Greater, float, float>();
 
     case CompareType::GreaterEqual:
-        return new (destination) ECompareNodeInternal<CompareType::GreaterEqual, float, float>();
+        return new (destination) ECompareNode<CompareType::GreaterEqual, float, float>();
 
     case CompareType::Less:
-        return new (destination) ECompareNodeInternal<CompareType::Less, float, float>();
+        return new (destination) ECompareNode<CompareType::Less, float, float>();
 
     case CompareType::LessEqual:
-        return new (destination) ECompareNodeInternal<CompareType::LessEqual, float, float>();
+        return new (destination) ECompareNode<CompareType::LessEqual, float, float>();
 
     default:
         break;

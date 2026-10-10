@@ -4,16 +4,10 @@
 
 namespace Brytec {
 
-class EMixColorNode : public ENode {
-
-public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
-};
-
 template <typename Color1_t,
     typename Color2_t,
     typename Factor_t>
-class EMixColorNodeInternal : public EMixColorNode {
+class EMixColorNode : public ENode {
 
 public:
     void SetInput(uint8_t index, float* output) override

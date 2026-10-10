@@ -19,6 +19,8 @@ add_library(BrytecConfigEmbedded
                 Deserializer/BinaryBufferSerializer.h
                 Deserializer/BinaryPathDeserializer.cpp
                 Deserializer/BinaryPathDeserializer.h
+                Nodes/E1DMap.cpp
+                Nodes/E1DMap.h
                 Nodes/EAndNode.cpp
                 Nodes/EAndNode.h
                 Nodes/ECanBusInputNode.cpp

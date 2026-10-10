@@ -2,22 +2,23 @@
 
 namespace Brytec {
 
-#define MathMacroTemplate(type)                                                \
-    case type:                                                                 \
-        if (input0 == Float && input1 == Float)                                \
-            return new (destination) EMathNodeInternal<type, float, float>();  \
-        if (input0 == Float && input1 == Pointer)                              \
-            return new (destination) EMathNodeInternal<type, float, float*>(); \
-        if (input0 == Pointer && input1 == Float)                              \
-            return new (destination) EMathNodeInternal<type, float*, float>(); \
-        if (input0 == Pointer && input1 == Pointer)                            \
-        return new (destination) EMathNodeInternal<type, float*, float*>()
+#define MathMacroTemplate(type)                                        \
+    case type:                                                         \
+        if (input0 == Float && input1 == Float)                        \
+            return new (destination) EMathNode<type, float, float>();  \
+        if (input0 == Float && input1 == Pointer)                      \
+            return new (destination) EMathNode<type, float, float*>(); \
+        if (input0 == Pointer && input1 == Float)                      \
+            return new (destination) EMathNode<type, float*, float>(); \
+        if (input0 == Pointer && input1 == Pointer)                    \
+        return new (destination) EMathNode<type, float*, float*>()
 
 #define MathMacro(type) \
     case type:          \
-        return new (destination) EMathNodeInternal<type, float, float>()
+        return new (destination) EMathNode<type, float, float>()
 
-ENode* EMathNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
+template <>
+ENode* CreateNodeInPlace<NodeTypes::Math>(const ENodeSpec& spec, uint8_t* destination)
 {
 
     if (spec.type != NodeTypes::Math || spec.numInputs != 2 || spec.numValues != 1)

@@ -7,49 +7,39 @@
 
 namespace Brytec {
 
-class ECanBusOutputNode : public ENode {
-public:
-    static ENode* CreateInPlace(const ENodeSpec& spec, uint8_t* destination);
+enum class CanEndian : uint8_t {
+    Little,
+    Big
+};
 
-    enum class FrameType : uint8_t {
-        Std,
-        Ext,
-    };
-
-    enum class Endian : uint8_t {
-        Little,
-        Big
-    };
-
-    enum class DataType : uint8_t {
-        Uint8,
-        Uint16,
-        Uint32,
-        Uint64,
-        Int8,
-        Int16,
-        Int32,
-        Int64,
-        Float
-    };
+enum class CanDataType : uint8_t {
+    Uint8,
+    Uint16,
+    Uint32,
+    Uint64,
+    Int8,
+    Int16,
+    Int32,
+    Int64,
+    Float
 };
 
 template <typename T>
-void setData(const float& value, uint8_t* dest, ECanBusOutputNode::Endian endian)
+void setData(const float& value, uint8_t* dest, CanEndian endian)
 {
     uint8_t typeSize = sizeof(T);
     T intValue = FloatToUint(value);
     uint8_t* tempValue = (uint8_t*)&intValue;
     for (uint8_t index = 0; index < typeSize; index++) {
-        if (endian == ECanBusOutputNode::Endian::Little)
+        if (endian == CanEndian::Little)
             dest[index] = tempValue[index];
-        if (endian == ECanBusOutputNode::Endian::Big)
+        if (endian == CanEndian::Big)
             dest[typeSize - 1 - index] = tempValue[index];
     }
 }
 
 template <typename Data_t, typename Send_t>
-class ECanBusOutputNodeInternal : public ECanBusOutputNode {
+class ECanBusOutputNode : public ENode {
 
 public:
     void SetInput(uint8_t index, float* output) override
@@ -81,13 +71,13 @@ public:
             m_canIndex = FloatToUint(value);
             break;
         case 4:
-            m_frameType = (FrameType)FloatToUint(value);
+            m_frameType = (CanFrameType)FloatToUint(value);
             break;
         case 5:
-            m_endian = (Endian)FloatToUint(value);
+            m_endian = (CanEndian)FloatToUint(value);
             break;
         case 6:
-            m_dataType = (DataType)FloatToUint(value);
+            m_dataType = (CanDataType)FloatToUint(value);
             break;
         case 7:
             m_starByte = FloatToUint(value);
@@ -138,58 +128,58 @@ public:
             if (send) {
                 CanFrame frame;
                 frame.id = m_id;
-                frame.type = m_frameType == FrameType::Ext ? CanFrameType::Ext : CanFrameType::Std;
+                frame.type = m_frameType == CanFrameType::Ext ? CanFrameType::Ext : CanFrameType::Std;
 
                 switch (m_dataType) {
-                case DataType::Uint8:
+                case CanDataType::Uint8:
                     if (m_starByte > 7)
                         return;
                     setData<uint8_t>(m_data, &frame.data[m_starByte], m_endian);
                     break;
 
-                case DataType::Uint16:
+                case CanDataType::Uint16:
                     if (m_starByte > 6)
                         return;
                     setData<uint16_t>(m_data, &frame.data[m_starByte], m_endian);
                     break;
 
-                case DataType::Uint64:
+                case CanDataType::Uint64:
                     if (m_starByte > 0)
                         return;
                     setData<uint64_t>(m_data, &frame.data[m_starByte], m_endian);
                     break;
 
-                case DataType::Uint32:
+                case CanDataType::Uint32:
                     if (m_starByte > 4)
                         return;
                     setData<uint32_t>(m_data, &frame.data[m_starByte], m_endian);
                     break;
 
-                case DataType::Int8:
+                case CanDataType::Int8:
                     if (m_starByte > 7)
                         return;
                     setData<int8_t>(m_data, &frame.data[m_starByte], m_endian);
                     break;
 
-                case DataType::Int16:
+                case CanDataType::Int16:
                     if (m_starByte > 6)
                         return;
                     setData<int16_t>(m_data, &frame.data[m_starByte], m_endian);
                     break;
 
-                case DataType::Int32:
+                case CanDataType::Int32:
                     if (m_starByte > 4)
                         return;
                     setData<int32_t>(m_data, &frame.data[m_starByte], m_endian);
                     break;
 
-                case DataType::Int64:
+                case CanDataType::Int64:
                     if (m_starByte > 0)
                         return;
                     setData<int64_t>(m_data, &frame.data[m_starByte], m_endian);
                     break;
 
-                case DataType::Float:
+                case CanDataType::Float:
                     if (m_starByte > 4)
                         return;
                     setData<float>(m_data, &frame.data[m_starByte], m_endian);
@@ -219,9 +209,9 @@ private:
 #endif
     uint32_t m_id;
     uint8_t m_canIndex;
-    FrameType m_frameType;
-    Endian m_endian;
-    DataType m_dataType;
+    CanFrameType m_frameType;
+    CanEndian m_endian;
+    CanDataType m_dataType;
     uint8_t m_starByte;
     float m_lastSend;
 };

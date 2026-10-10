@@ -2,7 +2,8 @@
 
 namespace Brytec {
 
-ENode* EChangeNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
+template <>
+ENode* CreateNodeInPlace<NodeTypes::Change>(const ENodeSpec& spec, uint8_t* destination)
 {
 
     if (spec.type != NodeTypes::Change || spec.numInputs != 1 || spec.numValues != 3)
@@ -15,29 +16,29 @@ ENode* EChangeNode::CreateInPlace(const ENodeSpec& spec, uint8_t* destination)
     switch (changeType) {
     case ChangeType::Rising:
         if (spec.connections[0] == Float)
-            return new (destination) EChangeNodeInternal<ChangeType::Rising, float>();
+            return new (destination) EChangeNode<ChangeType::Rising, float>();
         if (spec.connections[0] == Pointer)
-            return new (destination) EChangeNodeInternal<ChangeType::Rising, float*>();
+            return new (destination) EChangeNode<ChangeType::Rising, float*>();
     case ChangeType::Falling:
         if (spec.connections[0] == Float)
-            return new (destination) EChangeNodeInternal<ChangeType::Falling, float>();
+            return new (destination) EChangeNode<ChangeType::Falling, float>();
         if (spec.connections[0] == Pointer)
-            return new (destination) EChangeNodeInternal<ChangeType::Falling, float*>();
+            return new (destination) EChangeNode<ChangeType::Falling, float*>();
     case ChangeType::Both:
         if (spec.connections[0] == Float)
-            return new (destination) EChangeNodeInternal<ChangeType::Both, float>();
+            return new (destination) EChangeNode<ChangeType::Both, float>();
         if (spec.connections[0] == Pointer)
-            return new (destination) EChangeNodeInternal<ChangeType::Both, float*>();
+            return new (destination) EChangeNode<ChangeType::Both, float*>();
     }
 
 #else
     switch (changeType) {
     case ChangeType::Rising:
-        return new (destination) EChangeNodeInternal<ChangeType::Rising, float>();
+        return new (destination) EChangeNode<ChangeType::Rising, float>();
     case ChangeType::Falling:
-        return new (destination) EChangeNodeInternal<ChangeType::Falling, float>();
+        return new (destination) EChangeNode<ChangeType::Falling, float>();
     case ChangeType::Both:
-        return new (destination) EChangeNodeInternal<ChangeType::Both, float>();
+        return new (destination) EChangeNode<ChangeType::Both, float>();
     }
 
 #endif

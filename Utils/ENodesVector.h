@@ -62,7 +62,7 @@ public:
             return nullptr;
         }
 
-        ENode* node = ENode::CreateInPlace(spec, nextData);
+        ENode* node = CreateNode(spec, nextData);
 
         if (!node) {
             BrytecBoard::error(EBrytecErrors::FailedToCreateNode);
@@ -129,7 +129,7 @@ public:
 
 private:
     // Data
-    uint8_t m_nodeData[NODES_VECTOR_SIZE_BYTES] = {};
+    uint8_t m_nodeData[NODES_VECTOR_SIZE_BYTES] = { };
 
     // Vector states
     uint32_t m_count = 0;
